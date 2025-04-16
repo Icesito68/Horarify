@@ -16,4 +16,4 @@ jobs:
           host: ${{ secrets.IP }}
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
-          script: cd /var/www/html/Horarify/; ./.scripts/prod.sh"
+          script: "cd /var/www/html/Horarify/; ./.scripts/prod.sh"
