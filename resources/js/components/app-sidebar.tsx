@@ -14,6 +14,11 @@ const mainNavItems: NavItem[] = [
         icon: Calendar,
     },
     {
+        title: 'Empleados',
+        href: '/empleados',
+        icon: Calendar,
+    },
+    {
         title: 'Contacto',
         href: '/cuenta',
         icon: Phone,
