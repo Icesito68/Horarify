@@ -15,11 +15,14 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 
 const headers = ['DNI', 'Nombre', 'Turno', 'Rotativo'];
 
-type EmpleadosProps = {
-    breadcrumbs: BreadcrumbItem[];
-  };
+const breadcrumbs: BreadcrumbItem[] = [
+  {
+    title: 'Empleados',
+    href: '/empleados',
+  },
+];
 
-export default function Empleados({ breadcrumbs }: EmpleadosProps) {
+export default function Empleados() {
   const [selected, setSelected] = useState<number[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [isRotativo, setIsRotativo] = useState(false);

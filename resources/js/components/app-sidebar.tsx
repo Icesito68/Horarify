@@ -4,7 +4,7 @@ import { NavUser } from '@/components/nav-user';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
-import { Phone, Calendar } from 'lucide-react';
+import { Phone, Calendar, User } from 'lucide-react';
 import AppLogo from './app-logo';
 import AppearanceTabs from '@/components/appearance-tabs';
 
@@ -18,7 +18,7 @@ const mainNavItems: NavItem[] = [
     {
         title: 'Empleados',
         href: '/empleados',
-        icon: Calendar,
+        icon: User,
     },
     {
         title: 'Contacto',

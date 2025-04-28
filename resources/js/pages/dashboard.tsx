@@ -2,7 +2,6 @@ import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/react';
 import Table from './calendar/table';
-import Empleados from './empleados';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
