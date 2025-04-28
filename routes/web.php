@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 // Route::get('/', function () {
 //     return Inertia::render('welcome');
@@ -18,6 +19,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
     
     Route::get('/empleados', function () {
         return Inertia::render('empleados');
+    });
+
+    Route::get('/contacto', function () {
+        return Inertia::render('contacto');
+    });
+
+    Route::fallback(function () {
+        return Inertia::render('notFound');
     });
 });
 
