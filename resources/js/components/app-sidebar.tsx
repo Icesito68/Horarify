@@ -22,7 +22,7 @@ const mainNavItems: NavItem[] = [
     },
     {
         title: 'Contacto',
-        href: '/cuenta',
+        href: '/contacto',
         icon: Phone,
     },
 ];
