@@ -17,6 +17,10 @@ const headers = ['DNI', 'Nombre', 'Turno', 'Rotativo'];
 
 const breadcrumbs: BreadcrumbItem[] = [
   {
+    title: 'Suma Norte',
+    href: '/dashboard',
+  },
+  {
     title: 'Empleados',
     href: '/empleados',
   },

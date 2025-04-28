@@ -4,6 +4,10 @@ import { Head } from '@inertiajs/react';
 
 const Breadcrumbs: BreadcrumbItem[] = [
   {
+    title: 'Suma Norte',
+    href: '/dashboard',
+  },
+  {
     title: 'Contacto',
     href: '/Contacto',
   },

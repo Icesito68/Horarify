@@ -5,6 +5,10 @@ import Table from './calendar/table';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
+        title: 'Suma Norte',
+        href: '/dashboard',
+    },
+    {
         title: 'Calendario',
         href: '/dashboard',
     },
@@ -13,7 +17,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 export default function Dashboard() {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Dashboard" />
+            <Head title="Calendario" />
             <div className="bg-card text-card-foreground shadow-md rounded-xl p-6">
                 <Table />
             </div>
