@@ -6,6 +6,8 @@ import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
 import { Phone, Calendar } from 'lucide-react';
 import AppLogo from './app-logo';
+import AppearanceTabs from '@/components/appearance-tabs';
+
 
 const mainNavItems: NavItem[] = [
     {
@@ -59,6 +61,7 @@ export function AppSidebar() {
 
             <SidebarFooter>
                 {/* <NavFooter items={footerNavItems} className="mt-auto" /> */}
+                <AppearanceTabs/>
                 <NavUser />
             </SidebarFooter>
         </Sidebar>
