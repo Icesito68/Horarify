@@ -91,21 +91,30 @@ export default function Empleados() {
         </div>
 
         {/* BOTONES */}
-        <div className="mt-4 flex justify-between">
-          <Button
-            variant="destructive"
-            disabled={selected.length === 0}
-            onClick={() => alert('Eliminar empleados seleccionados')}
-          >
-            Borrar empleado
-          </Button>
+        <div className="mt-4 flex justify-between flex-wrap gap-2">
+          <div className="flex gap-2">
+            <Button
+              variant="destructive"
+              disabled={selected.length === 0}
+              onClick={() => alert('Eliminar empleados seleccionados')}
+            >
+              Borrar empleado
+            </Button>
 
-          <Dialog open={showModal} onOpenChange={setShowModal}>
-            <DialogTrigger asChild>
-              <Button onClick={() => setShowModal(true)}>Añadir empleado</Button>
-            </DialogTrigger>
-            <DialogContent className="bg-card p-6 max-w-lg">
-              <DialogTitle className="mb-4">Nuevo Empleado</DialogTitle>
+            <Button
+              disabled={selected.length !== 1}
+              onClick={() => alert(`Editar empleado ID: ${selected[0]}`)}
+            >
+              Editar empleado
+            </Button>
+        </div>
+
+        <Dialog open={showModal} onOpenChange={setShowModal}>
+          <DialogTrigger asChild>
+            <Button onClick={() => setShowModal(true)}>Añadir empleado</Button>
+        </DialogTrigger>
+        <DialogContent className="bg-card p-6 max-w-lg">
+        <DialogTitle className="mb-4">Nuevo Empleado</DialogTitle>
 
               <div className="space-y-4">
                 <div>
