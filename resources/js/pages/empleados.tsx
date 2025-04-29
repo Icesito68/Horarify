@@ -12,24 +12,31 @@ import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { useCentro } from '@/providers/centroProvider';
 
 const headers = ['DNI', 'Nombre', 'Turno', 'Rotativo'];
 
-const breadcrumbs: BreadcrumbItem[] = [
-  {
-    title: 'Suma Norte',
-    href: '/dashboard',
-  },
-  {
-    title: 'Empleados',
-    href: '/empleados',
-  },
-];
+
+
+
 
 export default function Empleados() {
+  const { centro } = useCentro();
+  const centroNombre = centro;
   const [selected, setSelected] = useState<number[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [isRotativo, setIsRotativo] = useState(false);
+
+  const breadcrumbs: BreadcrumbItem[] = [
+    {
+      title: centroNombre,
+      href: '/dashboard',
+    },
+    {
+      title: 'Empleados',
+      href: '/empleados',
+    },
+  ];
 
   const toggleRow = (index: number) => {
     setSelected((prev) =>
