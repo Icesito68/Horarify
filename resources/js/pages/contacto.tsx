@@ -10,10 +10,6 @@ export default function Contacto() {
 
   const Breadcrumbs: BreadcrumbItem[] = [
     {
-      title: centroNombre,
-      href: '/dashboard',
-    },
-    {
       title: 'Contacto',
       href: '/Contacto',
     },

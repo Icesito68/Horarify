@@ -20,6 +20,9 @@ const mainNavItems: NavItem[] = [
         href: '/empleados',
         icon: User,
     },
+];
+
+const mainNavFooterItems: NavItem[] = [
     {
         title: 'Contacto',
         href: '/contacto',
@@ -61,6 +64,7 @@ export function AppSidebar() {
 
             <SidebarFooter>
                 {/* <NavFooter items={footerNavItems} className="mt-auto" /> */}
+                <NavMain items={mainNavFooterItems} />
                 <AppearanceTabs/>
                 <NavUser />
             </SidebarFooter>

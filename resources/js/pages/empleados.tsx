@@ -14,7 +14,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useCentro } from '@/providers/centroProvider';
 
-const headers = ['DNI', 'Nombre', 'Turno', 'Rotativo'];
+const headers = ['DNI', 'Nombre', 'Apellidos','Turno'];
 
 
 
