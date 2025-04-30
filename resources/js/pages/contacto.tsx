@@ -18,7 +18,7 @@ export default function Contacto() {
   return (
     <AppLayout breadcrumbs={Breadcrumbs}>
       <Head title={`Contacto - ${centroNombre}`} />
-      <form action="https://fabform.io/f/xxxxx" method="post">
+      <form action="https://fabform.io/f/xxxxx" method="post" className="pb-10">
         <section className="py-7">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="grid lg:grid-cols-2 grid-cols-1">
