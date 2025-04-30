@@ -1,11 +1,12 @@
 const headers = [
-    'DNI', 'Nombre', 'Lunes', 'Martes', 'Miércoles', 'Jueves',
-    'Viernes', 'Sábado', 'Domingo', 'Inicio Semana', 'Fin Semana',
+    'DNI', 'Nombre', 'Apellidos','Lunes', 'Martes', 'Miércoles', 'Jueves',
+    'Viernes', 'Sábado', 'Domingo',
   ];
   
   export default function Table() {
     return (
       <div className="bg-card text-card-foreground shadow-md rounded-xl overflow-auto">
+        <h2 className='text-lg text-center text-dark dark:text-white'>Inicio Semana-Fin Semana</h2>
         <table className="min-w-full border-collapse text-sm">
           <thead>
             <tr>
