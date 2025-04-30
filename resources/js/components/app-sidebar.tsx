@@ -20,6 +20,11 @@ const mainNavItems: NavItem[] = [
         href: '/empleados',
         icon: User,
     },
+    {
+        title: 'Dias Festivos',
+        href: '/festivos',
+        icon: User,
+    }
 ];
 
 const mainNavFooterItems: NavItem[] = [

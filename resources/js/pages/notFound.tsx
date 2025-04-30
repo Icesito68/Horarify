@@ -10,13 +10,23 @@ const Breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function NotFound() {
-    return (
-        <AppLayout breadcrumbs={Breadcrumbs}>
-            <Head title="Página no encontrada" />
-            <div className="min-h-screen flex flex-col items-center justify-center bg-background text-foreground">
-                <h1 className="text-6xl font-bold mb-4">404</h1>
-                <p className="text-lg mb-8">La página que buscas no existe.</p>
-            </div>
-        </AppLayout>        
-    );
+  return (
+    <AppLayout breadcrumbs={Breadcrumbs}>
+      <Head title="Página no encontrada" />
+      <section className="flex items-center justify-center min-h-screen bg-background text-foreground px-4">
+        <div className="text-center max-w-md">
+          <h1 className="text-[7rem] font-bold text-muted-foreground select-none">404</h1>
+          <p className="text-xl font-medium mb-6">Lo sentimos, no pudimos encontrar esta página.</p>
+
+          <a
+            href="/dashboard"
+            className="inline-block px-6 py-3 text-base font-semibold rounded-md bg-primary text-primary-foreground hover:opacity-90 transition"
+          >
+            Volver al inicio
+          </a>
+        </div>
+      </section>
+
+    </AppLayout>
+  );
 }
