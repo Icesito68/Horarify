@@ -11,7 +11,10 @@ import AuthLayout from '@/layouts/auth-layout';
 
 type RegisterForm = {
     name: string;
+    apellidos: string;
+    DNI: string;
     email: string;
+    telefono: string;
     password: string;
     password_confirmation: string;
 };
@@ -19,7 +22,10 @@ type RegisterForm = {
 export default function Register() {
     const { data, setData, post, processing, errors, reset } = useForm<Required<RegisterForm>>({
         name: '',
+        apellidos: '',
+        DNI: '',
         email: '',
+        telefono: '',
         password: '',
         password_confirmation: '',
     });
@@ -49,8 +55,63 @@ export default function Register() {
                             onChange={(e) => setData('name', e.target.value)}
                             disabled={processing}
                             placeholder="Full name"
+                            maxLength={50}
                         />
                         <InputError message={errors.name} className="mt-2" />
+                    </div>
+
+                    <div className="grid gap-2">
+                        <Label htmlFor="apellidos">Surname</Label>
+                        <Input
+                            id="apellidos"
+                            type="text"
+                            required
+                            tabIndex={2}
+                            autoComplete="family-name"
+                            value={data.apellidos}
+                            onChange={(e) => setData('apellidos', e.target.value)}
+                            disabled={processing}
+                            placeholder="Surname(s)"
+                            maxLength={75}
+                        />
+                        <InputError message={errors.apellidos} className="mt-2" />
+                    </div>
+
+                    <div className="grid gap-2">
+                        <Label htmlFor="DNI">DNI</Label>
+                        <Input
+                            id="DNI"
+                            type="text"
+                            required
+                            tabIndex={3}
+                            value={data.DNI}
+                            onChange={(e) => setData('DNI', e.target.value.toUpperCase())}
+                            disabled={processing}
+                            placeholder="DNI (e.g., 12345678A)"
+                            maxLength={9}
+                            pattern="\d{8}[A-Z]"
+                            title="DNI must be 8 digits followed by a letter (e.g., 12345678A)"
+                        />
+                        <InputError message={errors.DNI} className="mt-2" />
+                    </div>
+
+                    <div className="grid gap-2">
+                        <Label htmlFor="telefono">Phone number</Label>
+                        <Input
+                            id="telefono"
+                            type="tel"
+                            required
+                            tabIndex={4}
+                            autoComplete="tel"
+                            value={data.telefono}
+                            onChange={(e) => setData('telefono', e.target.value)}
+                            disabled={processing}
+                            placeholder="Phone number"
+                            maxLength={9}
+                            pattern="\d{9}"
+                            title="Phone number must be exactly 9 digits"
+                        />
+                        <InputError message={errors.telefono} className="mt-2" />
                     </div>
 
                     <div className="grid gap-2">
@@ -59,12 +120,13 @@ export default function Register() {
                             id="email"
                             type="email"
                             required
-                            tabIndex={2}
+                            tabIndex={5}
                             autoComplete="email"
                             value={data.email}
-                            onChange={(e) => setData('email', e.target.value)}
+                            onChange={(e) => setData('email', e.target.value.toLowerCase())}
                             disabled={processing}
                             placeholder="email@example.com"
+                            maxLength={255}
                         />
                         <InputError message={errors.email} />
                     </div>
@@ -75,12 +137,13 @@ export default function Register() {
                             id="password"
                             type="password"
                             required
-                            tabIndex={3}
+                            tabIndex={6}
                             autoComplete="new-password"
                             value={data.password}
                             onChange={(e) => setData('password', e.target.value)}
                             disabled={processing}
                             placeholder="Password"
+                            minLength={8}
                         />
                         <InputError message={errors.password} />
                     </div>
@@ -91,17 +154,18 @@ export default function Register() {
                             id="password_confirmation"
                             type="password"
                             required
-                            tabIndex={4}
+                            tabIndex={7}
                             autoComplete="new-password"
                             value={data.password_confirmation}
                             onChange={(e) => setData('password_confirmation', e.target.value)}
                             disabled={processing}
                             placeholder="Confirm password"
+                            minLength={8}
                         />
                         <InputError message={errors.password_confirmation} />
                     </div>
 
-                    <Button type="submit" className="mt-2 w-full" tabIndex={5} disabled={processing}>
+                    <Button type="submit" className="mt-2 w-full" tabIndex={8} disabled={processing}>
                         {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
                         Create account
                     </Button>
@@ -109,7 +173,7 @@ export default function Register() {
 
                 <div className="text-muted-foreground text-center text-sm">
                     Already have an account?{' '}
-                    <TextLink href={route('login')} tabIndex={6}>
+                    <TextLink href={route('login')} tabIndex={9}>
                         Log in
                     </TextLink>
                 </div>
