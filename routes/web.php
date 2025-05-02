@@ -36,3 +36,5 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';
+
+Route::resource('empleados', App\Http\Controllers\Api\EmpleadoController::class)->only('store');
