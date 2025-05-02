@@ -4,17 +4,17 @@ namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
-use App\Models\Festivo;
-use App\Models\Supermercado;
+use App\Models\Empleado;
+use App\Models\Vacaciones;
 
-class FestivoFactory extends Factory
+class VacacionesFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
      * @var string
      */
-    protected $model = Festivo::class;
+    protected $model = Vacaciones::class;
 
     /**
      * Define the model's default state.
@@ -22,9 +22,9 @@ class FestivoFactory extends Factory
     public function definition(): array
     {
         return [
-            'Fecha' => fake()->date(),
-            'Nombre' => fake()->name('[A-Za-z]{20}'),
-            'supermercado_id' => Supermercado::factory(),
+            'Fecha_inicio' => fake()->date(),
+            'Fecha_fin' => fake()->date(),
+            'empleado_id' => Empleado::factory(),
         ];
     }
 }

@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Empleado extends Model
 {
@@ -53,5 +54,10 @@ class Empleado extends Model
     public function horarios(): HasMany
     {
         return $this->hasMany(Horario::class);
+    }
+
+    public function vacaciones(): HasOne
+    {
+        return $this->hasOne(Vacaciones::class);
     }
 }

@@ -22,11 +22,10 @@ class SupermercadoFactory extends Factory
     public function definition(): array
     {
         return [
-            'Nombre' => fake()->regexify('[A-Za-z0-9]{50}'),
-            'Direccion' => fake()->regexify('[A-Za-z0-9]{100}'),
-            'NIF' => fake()->regexify('[A-Za-z0-9]{9}'),
+            'Nombre' => fake()->name('[A-Za-z]{20}'),
+            'Direccion' => fake()->address(),
+            'NIF' => fake()->regexify('^[0-9]{8}[A-Z]{1}'),
             'users_id' => User::factory(),
-            'user_id' => User::factory(),
         ];
     }
 }
