@@ -1,0 +1,48 @@
+models:
+  Supermercado:
+    Nombre: string
+    Direccion: string
+    NIF: string
+    users_id: id foreign:users
+    relationships:
+      belongsTo: users
+      hasMany: Horario, Festivos, Empleado
+
+  Horario:
+    Lunes: string
+    Martes: string
+    Miercoles: string
+    Jueves: string
+    Viernes: string
+    Sabado: string
+    Domingo: string
+    Inicio_Semana: date
+    supermercado_id: id foreign:supermercado
+    empleado_id: id foreign:empleado
+    relationships:
+      belongsTo: Supermercado, Empleado
+  
+  Empleado: 
+    DNI: string
+    Nombre: string
+    Apellidos: string
+    Telefono: string
+    Turno: string
+    Horas_Semanales: int
+    Dia_Libre: string
+    Rotativo: string
+    Especial: boolean
+    Email: email
+    supermercado_id: id foreign:supermercado
+    relationships:
+      belongsTo: Supermercado
+      hasMany: Horario
+
+  Festivo:
+    Fecha: date
+    Nombre: string
+    supermercado_id: id foreign:supermercado
+    relationships:
+      belongsTo: Supermercado
+
+seeders: Festivo, Empleado, Horario, Supermercado
