@@ -23,7 +23,7 @@ class FestivoFactory extends Factory
     {
         return [
             'Fecha' => fake()->date(),
-            'Nombre' => fake()->regexify('[A-Za-z0-9]{75}'),
+            'Nombre' => fake()->name('[A-Za-z]{20}'),
             'supermercado_id' => Supermercado::factory(),
         ];
     }
