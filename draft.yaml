@@ -3,7 +3,7 @@ models:
     Nombre: string:50
     Direccion: string:100
     NIF: string:9
-    users_id: id foreign:users
+    user_id: id foreign:users
     relationships:
       belongsTo: user
       hasMany: Horario, Festivo, Empleado

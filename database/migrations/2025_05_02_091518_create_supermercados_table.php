@@ -18,8 +18,7 @@ return new class extends Migration
             $table->string('Nombre', 50);
             $table->string('Direccion', 100);
             $table->string('NIF', 9);
-            $table->foreignId('users_id')->constrained('users');
-            $table->foreignId('user_id');
+            $table->foreignId('user_id')->constrained('users');
             $table->timestamps();
         });
 
