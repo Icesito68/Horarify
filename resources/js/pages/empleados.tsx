@@ -77,18 +77,18 @@ export default function Empleados() {
               </tr>
             </thead>
             <tbody>
-              {empleados.map((emp, i) => (
-                <tr key={i}>
+              {empleados.map((emp) => (
+                <tr key={emp.id}>
                   <td className="px-4 py-2 border border-border">
                     <Checkbox
-                      checked={selected.includes(i)}
-                      onCheckedChange={() => toggleRow(i)}
+                      checked={selected.includes(emp.id)}
+                      onCheckedChange={() => toggleRow(emp.id)}
                     />
                   </td>
-                  <td className="px-4 py-2 border border-border bg-background text-foreground">{emp.dni}</td>
-                  <td className="px-4 py-2 border border-border bg-background text-foreground">{emp.nombre}</td>
-                  <td className="px-4 py-2 border border-border bg-background text-foreground">{emp.apellidos}</td>
-                  <td className="px-4 py-2 border border-border bg-background text-foreground">{emp.turno}</td>
+                  <td className="px-4 py-2 border border-border bg-background text-foreground">{emp.DNI}</td>
+                  <td className="px-4 py-2 border border-border bg-background text-foreground">{emp.Nombre}</td>
+                  <td className="px-4 py-2 border border-border bg-background text-foreground">{emp.Apellidos}</td>
+                  <td className="px-4 py-2 border border-border bg-background text-foreground">{emp.Turno}</td>
                 </tr>
               ))}
             </tbody>

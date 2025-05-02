@@ -22,16 +22,16 @@ class EmpleadoFactory extends Factory
     public function definition(): array
     {
         return [
-            'dni' => fake()->regexify('^[0-9]{8}[A-Z]{1}'),
-            'nombre' => fake()->name('[A-Za-z]{20}'),
-            'apellidos' => fake()->name('[A-Za-z]{20}'),
-            'telefono' => fake()->regexify('^[6]{1}[0-9]{8}'),
-            'turno' => fake()->randomElement(['07:30 - 15:30','08:00 - 16:00','14:30 - 22:30','15:00 - 23:00']),
-            'horas_Semanales' => fake()->numberBetween(20, 40),
-            'dia_Libre' => fake()->randomElement(["Lunes","Martes","Miercoles","Jueves","Viernes","Sabado","Domingo"]),
-            'rotativo' => fake()->boolean(),
-            'especial' => fake()->boolean(),
-            'email' => fake()->unique()->safeEmail(),
+            'DNI' => fake()->regexify('^[0-9]{8}[A-Z]{1}'),
+            'Nombre' => fake()->name('[A-Za-z]{20}'),
+            'Apellidos' => fake()->name('[A-Za-z]{20}'),
+            'Telefono' => fake()->regexify('^[6]{1}[0-9]{8}'),
+            'Turno' => fake()->randomElement(['07:30 - 15:30','08:00 - 16:00','14:30 - 22:30','15:00 - 23:00']),
+            'Horas_Semanales' => fake()->numberBetween(20, 40),
+            'Dia_Libre' => fake()->randomElement(["Lunes","Martes","Miercoles","Jueves","Viernes","Sabado","Domingo"]),
+            'Rotativo' => fake()->boolean(),
+            'Especial' => fake()->boolean(),
+            'Email' => fake()->unique()->safeEmail(),
             'supermercado_id' => Supermercado::factory(),
         ];
     }
