@@ -12,4 +12,13 @@ class UserController extends Controller
     use DisableAuthorization;
 
     protected $model = User::class;
+
+    public function usuarioSupermercados($userId)
+    {
+        // Obtiene al usuario con sus supermercados
+        $user = User::with('supermercados')->findOrFail($userId);
+
+        // Devuelve solo los supermercados
+        return response()->json($user->supermercados);
+    }
 }

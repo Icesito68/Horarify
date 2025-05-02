@@ -20,7 +20,7 @@ class Supermercado extends Model
         'Nombre',
         'Direccion',
         'NIF',
-        'users_id',
+        'user_id',
         'user_id',
     ];
 
@@ -33,7 +33,7 @@ class Supermercado extends Model
     {
         return [
             'id' => 'integer',
-            'users_id' => 'integer',
+            'user_id' => 'integer',
             'user_id' => 'integer',
         ];
     }
