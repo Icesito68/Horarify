@@ -16,10 +16,6 @@ import { useCentro } from '@/providers/centroProvider';
 
 const headers = ['DNI', 'Nombre', 'Apellidos','Turno'];
 
-
-
-
-
 export default function Empleados() {
   const { centro } = useCentro();
   const centroNombre = centro;
@@ -49,7 +45,7 @@ export default function Empleados() {
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
       <Head title="Empleados" />
-      <div className="bg-background text-foreground min-h-screen p-6">
+      <div className="bg-background text-foreground p-6">
         <div className="bg-card text-card-foreground shadow-md rounded-xl overflow-auto">
           <table className="min-w-full border-collapse text-sm">
             <thead>

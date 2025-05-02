@@ -21,6 +21,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
         return Inertia::render('empleados');
     });
 
+    Route::get('/festivos', function () {
+        return Inertia::render('festivos');
+    });
+
     Route::get('/contacto', function () {
         return Inertia::render('contacto');
     });
