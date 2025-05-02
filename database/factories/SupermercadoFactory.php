@@ -25,7 +25,7 @@ class SupermercadoFactory extends Factory
             'Nombre' => fake()->name('[A-Za-z]{20}'),
             'Direccion' => fake()->address(),
             'NIF' => fake()->regexify('^[0-9]{8}[A-Z]{1}'),
-            'users_id' => User::factory(),
+            'user_id' => User::factory(),
         ];
     }
 }
