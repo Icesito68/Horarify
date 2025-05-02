@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Horario extends Model
+class Vacaciones extends Model
 {
     use HasFactory;
 
@@ -16,15 +16,8 @@ class Horario extends Model
      * @var array
      */
     protected $fillable = [
-        'Lunes',
-        'Martes',
-        'Miercoles',
-        'Jueves',
-        'Viernes',
-        'Sabado',
-        'Domingo',
-        'Inicio_Semana',
-        'supermercado_id',
+        'Fecha_inicio',
+        'Fecha_fin',
         'empleado_id',
     ];
 
@@ -37,15 +30,10 @@ class Horario extends Model
     {
         return [
             'id' => 'integer',
-            'Inicio_Semana' => 'date',
-            'supermercado_id' => 'integer',
+            'Fecha_inicio' => 'date',
+            'Fecha_fin' => 'date',
             'empleado_id' => 'integer',
         ];
-    }
-
-    public function supermercado(): BelongsTo
-    {
-        return $this->belongsTo(Supermercado::class);
     }
 
     public function empleado(): BelongsTo

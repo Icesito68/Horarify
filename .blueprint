@@ -3,14 +3,17 @@ created:
     - database/factories/HorarioFactory.php
     - database/factories/EmpleadoFactory.php
     - database/factories/FestivoFactory.php
-    - database/migrations/2025_05_02_074029_create_supermercados_table.php
-    - database/migrations/2025_05_02_074030_create_horarios_table.php
-    - database/migrations/2025_05_02_074031_create_empleados_table.php
-    - database/migrations/2025_05_02_074032_create_festivos_table.php
+    - database/factories/VacacionesFactory.php
+    - database/migrations/2025_05_02_093108_create_supermercados_table.php
+    - database/migrations/2025_05_02_093109_create_horarios_table.php
+    - database/migrations/2025_05_02_093110_create_empleados_table.php
+    - database/migrations/2025_05_02_093111_create_festivos_table.php
+    - database/migrations/2025_05_02_093112_create_vacaciones_table.php
     - app/Models/Supermercado.php
     - app/Models/Horario.php
     - app/Models/Empleado.php
     - app/Models/Festivo.php
+    - app/Models/Vacaciones.php
     - database/seeders/FestivoSeeder.php
     - database/seeders/EmpleadoSeeder.php
     - database/seeders/HorarioSeeder.php
@@ -19,5 +22,6 @@ models:
     User: { name: string, email: string, email_verified_at: 'timestamp nullable', password: string, remember_token: 'string:100 nullable' }
     Supermercado: { Nombre: 'string:50', Direccion: 'string:100', NIF: 'string:9', users_id: 'id foreign:users', relationships: { belongsTo: user, hasMany: 'Horario, Festivo, Empleado' } }
     Horario: { Lunes: 'string:100', Martes: 'string:100', Miercoles: 'string:100', Jueves: 'string:100', Viernes: 'string:100', Sabado: 'string:100', Domingo: 'string:100', Inicio_Semana: date, supermercado_id: 'id foreign:supermercado', empleado_id: 'id foreign:empleado', relationships: { belongsTo: 'Supermercado, Empleado' } }
-    Empleado: { DNI: 'string:9', Nombre: 'string:50', Apellidos: 'string:75', Telefono: 'string:9 nullable', Turno: 'string:25', Horas_Semanales: int, Dia_Libre: 'enum:Lunes,Martes,Miercoles,Jueves,Viernes,Sabado,Domingo', Rotativo: boolean, Especial: boolean, Email: email, supermercado_id: 'id foreign:supermercado', relationships: { belongsTo: Supermercado, hasMany: Horario } }
+    Empleado: { DNI: 'string:9', Nombre: 'string:50', Apellidos: 'string:75', Telefono: 'string:9 nullable', Turno: 'string:25', Horas_Semanales: int, Dia_Libre: 'enum:Lunes,Martes,Miercoles,Jueves,Viernes,Sabado,Domingo', Rotativo: boolean, Especial: boolean, Email: email, supermercado_id: 'id foreign:supermercado', relationships: { belongsTo: Supermercado, hasMany: Horario, hasOne: vacaciones } }
     Festivo: { Fecha: date, Nombre: 'string:75', supermercado_id: 'id foreign:supermercado', relationships: { belongsTo: Supermercado } }
+    Vacaciones: { Fecha_inicio: date, Fecha_fin: date, empleado_id: 'id foreign:empleado', relationships: { belongsTo: Empleado } }
