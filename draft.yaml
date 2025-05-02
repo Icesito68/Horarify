@@ -37,6 +37,7 @@ models:
     relationships:
       belongsTo: Supermercado
       hasMany: Horario
+      hasOne: vacaciones
 
   Festivo:
     Fecha: date
@@ -44,5 +45,12 @@ models:
     supermercado_id: id foreign:supermercado
     relationships:
       belongsTo: Supermercado
+
+  Vacaciones:
+    Fecha_inicio: date
+    Fecha_fin: date
+    empleado_id: id foreign:empleado
+    relationships:
+      belongsTo: Empleado
 
 seeders: Festivo, Empleado, Horario, Supermercado
