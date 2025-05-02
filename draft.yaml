@@ -50,4 +50,4 @@ seeders: Festivo, Empleado, Horario, Supermercado
 controllers:
   Api\Empleado:
     store:
-      validate: DNI, Nombre, Apellidos, 
+      validate: DNI, Nombre, Apellidos
