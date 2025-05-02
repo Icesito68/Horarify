@@ -12,6 +12,6 @@ class FestivoSeeder extends Seeder
      */
     public function run(): void
     {
-        Festivo::factory()->count(5)->create();
+        Festivo::factory()->count(20)->create();
     }
 }

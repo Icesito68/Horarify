@@ -2,16 +2,16 @@
 
 namespace Database\Seeders;
 
-use App\Models\Empleado;
+use App\Models\Vacaciones;
 use Illuminate\Database\Seeder;
 
-class EmpleadoSeeder extends Seeder
+class VacacionesSeeder extends Seeder
 {
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
-        Empleado::factory()->count(8)->create();
+        Vacaciones::factory()->count(10)->create();
     }
 }
