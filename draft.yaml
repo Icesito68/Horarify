@@ -1,21 +1,21 @@
 models:
   Supermercado:
-    Nombre: string
-    Direccion: string
-    NIF: string
+    Nombre: string:50
+    Direccion: string:100
+    NIF: string:9
     users_id: id foreign:users
     relationships:
       belongsTo: users
       hasMany: Horario, Festivos, Empleado
 
   Horario:
-    Lunes: string
-    Martes: string
-    Miercoles: string
-    Jueves: string
-    Viernes: string
-    Sabado: string
-    Domingo: string
+    Lunes: string:100
+    Martes: string:100
+    Miercoles: string:100
+    Jueves: string:100
+    Viernes: string:100
+    Sabado: string:100
+    Domingo: string:100
     Inicio_Semana: date
     supermercado_id: id foreign:supermercado
     empleado_id: id foreign:empleado
@@ -23,14 +23,14 @@ models:
       belongsTo: Supermercado, Empleado
   
   Empleado: 
-    DNI: string
-    Nombre: string
-    Apellidos: string
-    Telefono: string
-    Turno: string
+    DNI: string:9
+    Nombre: string:50
+    Apellidos: string:75
+    Telefono: string:9 nullable
+    Turno: string:25
     Horas_Semanales: int
-    Dia_Libre: string
-    Rotativo: string
+    Dia_Libre: enum:Lunes,Martes,Miercoles,Jueves,Viernes,Sabado,Domingo
+    Rotativo: boolean
     Especial: boolean
     Email: email
     supermercado_id: id foreign:supermercado
@@ -40,7 +40,7 @@ models:
 
   Festivo:
     Fecha: date
-    Nombre: string
+    Nombre: string:75
     supermercado_id: id foreign:supermercado
     relationships:
       belongsTo: Supermercado
