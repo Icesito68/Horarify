@@ -5,8 +5,8 @@ models:
     NIF: string:9
     users_id: id foreign:users
     relationships:
-      belongsTo: users
-      hasMany: Horario, Festivos, Empleado
+      belongsTo: user
+      hasMany: Horario, Festivo, Empleado
 
   Horario:
     Lunes: string:100
@@ -46,3 +46,8 @@ models:
       belongsTo: Supermercado
 
 seeders: Festivo, Empleado, Horario, Supermercado
+
+controllers:
+  Api\Empleado:
+    store:
+      validate: DNI, Nombre, Apellidos, 
