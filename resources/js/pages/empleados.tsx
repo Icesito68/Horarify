@@ -24,10 +24,11 @@ import { useCentro } from '@/providers/centroProvider';
 const headers = ['DNI', 'Nombre', 'Apellidos', 'Turno'];
 
 type Empleado = {
-  dni: string;
-  nombre: string;
-  apellidos: string;
-  turno: string;
+  id: number;
+  DNI: string;
+  Nombre: string;
+  Apellidos: string;
+  Turno: string;
 };
 
 export default function Empleados() {
