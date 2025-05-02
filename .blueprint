@@ -3,10 +3,10 @@ created:
     - database/factories/HorarioFactory.php
     - database/factories/EmpleadoFactory.php
     - database/factories/FestivoFactory.php
-    - database/migrations/2025_05_02_074029_create_supermercados_table.php
-    - database/migrations/2025_05_02_074030_create_horarios_table.php
-    - database/migrations/2025_05_02_074031_create_empleados_table.php
-    - database/migrations/2025_05_02_074032_create_festivos_table.php
+    - database/migrations/2025_05_02_091518_create_supermercados_table.php
+    - database/migrations/2025_05_02_091519_create_horarios_table.php
+    - database/migrations/2025_05_02_091520_create_empleados_table.php
+    - database/migrations/2025_05_02_091521_create_festivos_table.php
     - app/Models/Supermercado.php
     - app/Models/Horario.php
     - app/Models/Empleado.php
