@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
 import AppLayout from '@/layouts/app-layout';
 import { Head } from '@inertiajs/react';
 import { type BreadcrumbItem } from '@/types';
@@ -7,40 +8,54 @@ import {
   DialogTrigger,
   DialogContent,
   DialogTitle,
-} from '@/components/ui/dialog'; // usa shadcn/ui o similar
+} from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { useCentro } from '@/providers/centroProvider';
 
-const headers = ['DNI', 'Nombre', 'Apellidos','Turno'];
+const headers = ['DNI', 'Nombre', 'Apellidos', 'Turno'];
+
+type Empleado = {
+  dni: string;
+  nombre: string;
+  apellidos: string;
+  turno: string;
+};
 
 export default function Empleados() {
   const { centro } = useCentro();
   const centroNombre = centro;
+  const [empleados, setEmpleados] = useState<Empleado[]>([]);
   const [selected, setSelected] = useState<number[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [isRotativo, setIsRotativo] = useState(false);
 
   const breadcrumbs: BreadcrumbItem[] = [
-    {
-      title: centroNombre,
-      href: '/dashboard',
-    },
-    {
-      title: 'Empleados',
-      href: '/empleados',
-    },
+    { title: centroNombre, href: '/dashboard' },
+    { title: 'Empleados', href: '/empleados' },
   ];
 
   const toggleRow = (index: number) => {
     setSelected((prev) =>
-      prev.includes(index)
-        ? prev.filter((i) => i !== index)
-        : [...prev, index]
+      prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index]
     );
   };
+
+  useEffect(() => {
+    axios.get('api/empleados')
+      .then(res => setEmpleados(res.data.data))
+      .catch(err => console.error('Error cargando empleados:', err));
+  }, []);
+
+  console.log(empleados)
 
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
@@ -50,9 +65,7 @@ export default function Empleados() {
           <table className="min-w-full border-collapse text-sm">
             <thead>
               <tr>
-                <th className="bg-primary text-primary-foreground px-4 py-3 border border-border w-10">
-                  {/* Empty for checkboxes */}
-                </th>
+                <th className="bg-primary text-primary-foreground px-4 py-3 border border-border w-10" />
                 {headers.map((header) => (
                   <th
                     key={header}
@@ -64,7 +77,7 @@ export default function Empleados() {
               </tr>
             </thead>
             <tbody>
-              {[...Array(9)].map((_, i) => (
+              {empleados.map((emp, i) => (
                 <tr key={i}>
                   <td className="px-4 py-2 border border-border">
                     <Checkbox
@@ -72,14 +85,10 @@ export default function Empleados() {
                       onCheckedChange={() => toggleRow(i)}
                     />
                   </td>
-                  {headers.map((_, j) => (
-                    <td
-                      key={j}
-                      className="px-4 py-2 border border-border bg-background text-foreground"
-                    >
-                      {/* Vacío por ahora */}
-                    </td>
-                  ))}
+                  <td className="px-4 py-2 border border-border bg-background text-foreground">{emp.dni}</td>
+                  <td className="px-4 py-2 border border-border bg-background text-foreground">{emp.nombre}</td>
+                  <td className="px-4 py-2 border border-border bg-background text-foreground">{emp.apellidos}</td>
+                  <td className="px-4 py-2 border border-border bg-background text-foreground">{emp.turno}</td>
                 </tr>
               ))}
             </tbody>
@@ -103,14 +112,14 @@ export default function Empleados() {
             >
               Editar empleado
             </Button>
-        </div>
+          </div>
 
-        <Dialog open={showModal} onOpenChange={setShowModal}>
-          <DialogTrigger asChild>
-            <Button onClick={() => setShowModal(true)}>Añadir empleado</Button>
-        </DialogTrigger>
-        <DialogContent className="bg-card p-6 max-w-lg">
-        <DialogTitle className="mb-4">Nuevo Empleado</DialogTitle>
+          <Dialog open={showModal} onOpenChange={setShowModal}>
+            <DialogTrigger asChild>
+              <Button onClick={() => setShowModal(true)}>Añadir empleado</Button>
+            </DialogTrigger>
+            <DialogContent className="bg-card p-6 max-w-lg">
+              <DialogTitle className="mb-4">Nuevo Empleado</DialogTitle>
 
               <div className="space-y-4">
                 <div>
@@ -120,7 +129,12 @@ export default function Empleados() {
 
                 <div>
                   <label className="block mb-1">Nombre</label>
-                  <Input placeholder="Ej. Juan Pérez" />
+                  <Input placeholder="Ej. Juan" />
+                </div>
+
+                <div>
+                  <label className="block mb-1">Apellidos</label>
+                  <Input placeholder="Ej. Pérez Gómez" />
                 </div>
 
                 <div>
