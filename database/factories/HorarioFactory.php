@@ -23,13 +23,13 @@ class HorarioFactory extends Factory
     public function definition(): array
     {
         return [
-            'Lunes' => fake()->regexify('[A-Za-z0-9]{100}'),
-            'Martes' => fake()->regexify('[A-Za-z0-9]{100}'),
-            'Miercoles' => fake()->regexify('[A-Za-z0-9]{100}'),
-            'Jueves' => fake()->regexify('[A-Za-z0-9]{100}'),
-            'Viernes' => fake()->regexify('[A-Za-z0-9]{100}'),
-            'Sabado' => fake()->regexify('[A-Za-z0-9]{100}'),
-            'Domingo' => fake()->regexify('[A-Za-z0-9]{100}'),
+            'Lunes' => fake()->randomElement(['07:30 - 15:30','08:00 - 16:00','14:30 - 22:30','15:00 - 23:00','Libre']),
+            'Martes' => fake()->randomElement(['07:30 - 15:30','08:00 - 16:00','14:30 - 22:30','15:00 - 23:00','Libre']),
+            'Miercoles' => fake()->randomElement(['07:30 - 15:30','08:00 - 16:00','14:30 - 22:30','15:00 - 23:00','Libre']),
+            'Jueves' => fake()->randomElement(['07:30 - 15:30','08:00 - 16:00','14:30 - 22:30','15:00 - 23:00','Libre']),
+            'Viernes' => fake()->randomElement(['07:30 - 15:30','08:00 - 16:00','14:30 - 22:30','15:00 - 23:00','Libre']),
+            'Sabado' => fake()->randomElement(['07:30 - 15:30','08:00 - 16:00','14:30 - 22:30','15:00 - 23:00','Libre']),
+            'Domingo' => fake()->randomElement(['07:30 - 15:30','08:00 - 16:00','14:30 - 22:30','15:00 - 23:00','Libre']),
             'Inicio_Semana' => fake()->date(),
             'supermercado_id' => Supermercado::factory(),
             'empleado_id' => Empleado::factory(),

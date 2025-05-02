@@ -12,6 +12,6 @@ class SupermercadoSeeder extends Seeder
      */
     public function run(): void
     {
-        Supermercado::factory()->count(5)->create();
+        Supermercado::factory()->count(1)->create();
     }
 }

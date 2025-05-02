@@ -22,16 +22,16 @@ class EmpleadoFactory extends Factory
     public function definition(): array
     {
         return [
-            'DNI' => fake()->regexify('[A-Za-z0-9]{9}'),
-            'Nombre' => fake()->regexify('[A-Za-z0-9]{50}'),
-            'Apellidos' => fake()->regexify('[A-Za-z0-9]{75}'),
-            'Telefono' => fake()->regexify('[A-Za-z0-9]{9}'),
-            'Turno' => fake()->regexify('[A-Za-z0-9]{25}'),
-            'Horas_Semanales' => fake()->word(),
+            'DNI' => fake()->regexify('^[0-9]{8}[A-Z]{1}'),
+            'Nombre' => fake()->name('[A-Za-z]{20}'),
+            'Apellidos' => fake()->name('[A-Za-z]{20}'),
+            'Telefono' => fake()->regexify('^[6]{1}[0-9]{8}'),
+            'Turno' => fake()->randomElement(['07:30 - 15:30','08:00 - 16:00','14:30 - 22:30','15:00 - 23:00']),
+            'Horas_Semanales' => fake()->numberBetween(20, 40),
             'Dia_Libre' => fake()->randomElement(["Lunes","Martes","Miercoles","Jueves","Viernes","Sabado","Domingo"]),
             'Rotativo' => fake()->boolean(),
             'Especial' => fake()->boolean(),
-            'Email' => fake()->word(),
+            'Email' => fake()->unique()->safeEmail(),
             'supermercado_id' => Supermercado::factory(),
         ];
     }
