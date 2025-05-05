@@ -24,7 +24,7 @@ export const CentroProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     axios
-      .get<Supermercado[]>('/api/user/3/supermercados')
+      .get<Supermercado[]>('/api/user/1/supermercados')
       .then((res) => {
         const supermercados = res.data;
         const nombres = supermercados.map((s) => s.Nombre);
