@@ -48,6 +48,8 @@ export default function Empleados() {
   const [minutoInicioRot, setMinutoInicioRot] = useState('');
   const [horaFinRot, setHoraFinRot] = useState('');
   const [minutoFinRot, setMinutoFinRot] = useState('');
+  const [showEditModal, setShowEditModal] = useState(false);
+
 
 
   useEffect(() => {
@@ -93,6 +95,23 @@ export default function Empleados() {
       console.error('Error creando empleado:', error);
     }
   };
+
+  const handleUpdateEmpleado = async () => {
+    try {
+      const empleadoId = selected[0];
+      const response = await axios.put(`/api/empleados/${empleadoId}`, editFormData);
+      const updatedEmpleado = response.data.data;
+  
+      setEmpleados((prev) =>
+        prev.map((emp) => (emp.id === empleadoId ? updatedEmpleado : emp))
+      );
+      setShowEditModal(false);
+      setSelected([]);
+    } catch (error) {
+      console.error('Error actualizando empleado:', error);
+    }
+  };
+  
   
   const handleDeleteEmpleados = async () => {
     if (selected.length === 0) return;
@@ -108,6 +127,26 @@ export default function Empleados() {
       console.error('Error eliminando empleados:', error);
     }
   };
+
+  const openEditEmpleado = () => {
+    const empleado = empleados.find((emp) => emp.id === selected[0]);
+    if (!empleado) return;
+  
+    setEditFormData({
+      ...formData,
+      DNI: empleado.DNI,
+      Nombre: empleado.Nombre,
+      Apellidos: empleado.Apellidos,
+      Email: empleado.Email,
+      Telefono: empleado.Telefono,
+      Turno: empleado.Turno,
+      // Dia_Libre: empleado.Dia_Libre || '',
+    });
+  
+    setShowEditModal(true);
+  };
+  
+  const [editFormData, setEditFormData] = useState<typeof formData>(formData);
   
 
   const breadcrumbs: BreadcrumbItem[] = [
@@ -147,12 +186,13 @@ export default function Empleados() {
           </Button>
 
 
-            <Button
-              disabled={selected.length !== 1}
-              onClick={() => alert(`Editar empleado ID: ${selected[0]}`)}
-            >
-              Editar empleado
-            </Button>
+          <Button
+            disabled={selected.length !== 1}
+            onClick={openEditEmpleado}
+          >
+            Editar empleado
+          </Button>
+
           </div>
 
           <Dialog open={showModal} onOpenChange={setShowModal}>
@@ -366,6 +406,84 @@ export default function Empleados() {
               </div>
             </DialogContent>
           </Dialog>
+
+
+          <Dialog open={showEditModal} onOpenChange={setShowEditModal}>
+            <DialogContent className="bg-card p-6 max-w-lg">
+              <DialogTitle className="mb-4">Editar Empleado</DialogTitle>
+
+              <div className="space-y-4">
+                <div>
+                  <label className="block mb-1">DNI</label>
+                  <Input 
+                    value={editFormData.DNI}
+                    onChange={(e) => setEditFormData({ ...editFormData, DNI: e.target.value })}
+                  />
+                </div>
+                <div>
+                  <label className="block mb-1">Nombre</label>
+                  <Input 
+                    value={editFormData.Nombre}
+                    onChange={(e) => setEditFormData({ ...editFormData, Nombre: e.target.value })}
+                  />
+                </div>
+                <div>
+                  <label className="block mb-1">Apellidos</label>
+                  <Input 
+                    value={editFormData.Apellidos}
+                    onChange={(e) => setEditFormData({ ...editFormData, Apellidos: e.target.value })}
+                  />
+                </div>
+                <div>
+                  <label className="block mb-1">Email</label>
+                  <Input 
+                    value={editFormData.Email}
+                    onChange={(e) => setEditFormData({ ...editFormData, Email: e.target.value })}
+                  />
+                </div>
+                <div>
+                  <label className="block mb-1">Teléfono</label>
+                  <Input 
+                    value={editFormData.Telefono}
+                    onChange={(e) => setEditFormData({ ...editFormData, Telefono: e.target.value })}
+                  />
+                </div>
+                <div>
+                  <label className="block mb-1">Día libre</label>
+                  <Select value={editFormData.Dia_Libre} onValueChange={(value) => setEditFormData({ ...editFormData, Dia_Libre: value })}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecciona un Día libre" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Lunes">Lunes</SelectItem>
+                      <SelectItem value="Martes">Martes</SelectItem>
+                      <SelectItem value="Miercoles">Miercoles</SelectItem>
+                      <SelectItem value="Jueves">Jueves</SelectItem>
+                      <SelectItem value="Viernes">Viernes</SelectItem>
+                      <SelectItem value="Sabado">Sabado</SelectItem>
+                      <SelectItem value="Domingo">Domingo</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                  <Button
+                    onClick={handleUpdateEmpleado}
+                    className="mt-4 w-full"
+                    disabled={
+                      !editFormData.DNI ||
+                      !editFormData.Nombre ||
+                      !editFormData.Apellidos ||
+                      !editFormData.Email ||
+                      !editFormData.Telefono ||
+                      !editFormData.Dia_Libre
+                    }
+                  >
+                    Guardar cambios
+                  </Button>
+                </div>
+              </DialogContent>
+            </Dialog>
+
         </div>
         {/* FIN BOTONES */}
 
