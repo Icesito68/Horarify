@@ -9,8 +9,9 @@ import { Checkbox } from '@/components/ui/checkbox';
 const headers = ['Nombre', 'Fecha'];
 
 type Festivo = {
-    nombre: string;
-    fecha: string;
+    id: number;
+    Nombre: string;
+    Fecha: string;
 };
 
 export default function DiasFestivos() {
