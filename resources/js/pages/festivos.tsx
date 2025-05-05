@@ -9,8 +9,9 @@ import { Checkbox } from '@/components/ui/checkbox';
 const headers = ['Nombre', 'Fecha'];
 
 type Festivo = {
-    nombre: string;
-    fecha: string;
+    id: number;
+    Nombre: string;
+    Fecha: string;
 };
 
 export default function DiasFestivos() {
@@ -49,7 +50,25 @@ export default function DiasFestivos() {
         <AppLayout breadcrumbs={[{ title: 'Días Festivos', href: '/dias-festivos' }]}>
             <Head title="Días Festivos" />
             <div className="bg-card text-card-foreground shadow-md rounded-xl overflow-auto p-6">
-                <h1 className="text-2xl font-semibold mb-6 text-primary">Días Festivos Nacionales</h1>
+                {/* Formulario para añadir nuevo festivo */}
+                <div className="">
+                    <h2 className="text-lg font-medium mb-4">Añadir nuevo día festivo</h2>
+                    <div className="grid md:grid-cols-2 gap-4 mb-4">
+                        <Input
+                            placeholder="Nombre del festivo"
+                            value={nuevo.nombre}
+                            onChange={(e) => setNuevo({ ...nuevo, nombre: e.target.value })}
+                        />
+                        <Input
+                            type="date"
+                            value={nuevo.fecha}
+                            onChange={(e) => setNuevo({ ...nuevo, fecha: e.target.value })}
+                        />
+                    </div>
+                    <Button onClick={agregarFestivo}>Añadir día festivo</Button>
+                </div>
+
+                <h1 className="text-2xl font-semibold mt-6 text-primary border-t border-border">Días Festivos Nacionales</h1>
 
                 {/* Tabla de festivos */}
                 <table className="min-w-full border-collapse text-sm">
@@ -95,24 +114,6 @@ export default function DiasFestivos() {
                     >
                         Eliminar seleccionados
                     </Button>
-                </div>
-
-                {/* Formulario para añadir nuevo festivo */}
-                <div className="mt-8 border-t border-border pt-6">
-                    <h2 className="text-lg font-medium mb-4">Añadir nuevo día festivo</h2>
-                    <div className="grid md:grid-cols-2 gap-4 mb-4">
-                        <Input
-                            placeholder="Nombre del festivo"
-                            value={nuevo.nombre}
-                            onChange={(e) => setNuevo({ ...nuevo, nombre: e.target.value })}
-                        />
-                        <Input
-                            type="date"
-                            value={nuevo.fecha}
-                            onChange={(e) => setNuevo({ ...nuevo, fecha: e.target.value })}
-                        />
-                    </div>
-                    <Button onClick={agregarFestivo}>Añadir día festivo</Button>
                 </div>
             </div>
         </AppLayout>
