@@ -1,19 +1,43 @@
-import { createContext, useContext, useState, ReactNode } from 'react';
+import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import axios from 'axios';
 
-export type Centro = 'Suma Playa' | 'Suma Norte' | 'Suma Sur';
+export type Centro = string;
+
+interface Supermercado {
+  Nombre: string;
+  Direccion: string;
+  NIF: string;
+  user_id: number;
+}
 
 interface CentroContextType {
   centro: Centro;
   setCentro: (centro: Centro) => void;
+  centrosDisponibles: Centro[];
 }
 
 const CentroContext = createContext<CentroContextType | undefined>(undefined);
 
 export const CentroProvider = ({ children }: { children: ReactNode }) => {
-  const [centro, setCentro] = useState<Centro>('Suma Norte');
+  const [centro, setCentro] = useState<Centro>(''); // inicialmente vacío
+  const [centrosDisponibles, setCentrosDisponibles] = useState<Centro[]>([]);
+
+  useEffect(() => {
+    axios
+      .get<Supermercado[]>('/api/user/3/supermercados')
+      .then((res) => {
+        const supermercados = res.data;
+        const nombres = supermercados.map((s) => s.Nombre);
+        setCentrosDisponibles(nombres);
+        if (nombres.length > 0) {
+          setCentro(nombres[0]);
+        }
+      })
+      .catch((err) => console.error('Error al cargar supermercados:', err));
+  }, []);
 
   return (
-    <CentroContext.Provider value={{ centro, setCentro }}>
+    <CentroContext.Provider value={{ centro, setCentro, centrosDisponibles }}>
       {children}
     </CentroContext.Provider>
   );
