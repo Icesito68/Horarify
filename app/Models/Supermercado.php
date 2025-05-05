@@ -21,7 +21,6 @@ class Supermercado extends Model
         'Direccion',
         'NIF',
         'user_id',
-        'user_id',
     ];
 
     /**
@@ -33,7 +32,6 @@ class Supermercado extends Model
     {
         return [
             'id' => 'integer',
-            'user_id' => 'integer',
             'user_id' => 'integer',
         ];
     }

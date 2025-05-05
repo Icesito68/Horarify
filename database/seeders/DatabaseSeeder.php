@@ -25,10 +25,10 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $this->call([
+            SupermercadoSeeder::class,
             EmpleadoSeeder::class,
             FestivoSeeder::class,
             HorarioSeeder::class,
-            SupermercadoSeeder::class,
             VacacionesSeeder::class,
         ]);
         

@@ -32,7 +32,7 @@ class EmpleadoFactory extends Factory
             'Rotativo' => fake()->boolean(),
             'Especial' => fake()->boolean(),
             'Email' => fake()->unique()->safeEmail(),
-            'supermercado_id' => Supermercado::factory(),
+            'supermercado_id' => Supermercado::inRandomOrder()->first()->id,
         ];
     }
 }

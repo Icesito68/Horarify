@@ -24,7 +24,7 @@ class FestivoFactory extends Factory
         return [
             'Fecha' => fake()->date(),
             'Nombre' => fake()->name('[A-Za-z]{20}'),
-            'supermercado_id' => Supermercado::factory(),
+            'supermercado_id' => Supermercado::inRandomOrder()->first()->id,
         ];
     }
 }
