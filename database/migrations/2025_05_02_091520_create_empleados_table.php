@@ -26,7 +26,7 @@ return new class extends Migration
             $table->string('Turno_Rotativo', 25)->nullable();
             $table->boolean('Especial');
             $table->string('Email');
-            $table->foreignId('supermercado_id')->constrained();
+            $table->foreignId('supermercado_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
 
