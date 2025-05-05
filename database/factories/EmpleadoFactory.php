@@ -30,6 +30,7 @@ class EmpleadoFactory extends Factory
             'Horas_Semanales' => fake()->numberBetween(20, 40),
             'Dia_Libre' => fake()->randomElement(["Lunes","Martes","Miercoles","Jueves","Viernes","Sabado","Domingo"]),
             'Rotativo' => fake()->boolean(),
+            'Turno_Rotativo' => fake()->randomElement(['07:30 - 15:30','08:00 - 16:00','14:30 - 22:30','15:00 - 23:00']),
             'Especial' => fake()->boolean(),
             'Email' => fake()->unique()->safeEmail(),
             'supermercado_id' => Supermercado::inRandomOrder()->first()->id,

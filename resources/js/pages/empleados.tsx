@@ -21,7 +21,7 @@ import {
 } from '@/components/ui/select';
 import { useCentro } from '@/providers/centroProvider';
 
-const headers = ['DNI', 'Nombre', 'Apellidos', 'Turno'];
+const headers = ['DNI', 'Nombre', 'Apellidos', 'Turno', 'Email', 'Número'];
 
 type Empleado = {
   id: number;
@@ -29,6 +29,8 @@ type Empleado = {
   Nombre: string;
   Apellidos: string;
   Turno: string;
+  Email: string;
+  Telefono: string;
 };
 
 export default function Empleados() {
@@ -38,6 +40,75 @@ export default function Empleados() {
   const [selected, setSelected] = useState<number[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [isRotativo, setIsRotativo] = useState(false);
+  const [horaInicio, setHoraInicio] = useState('');
+  const [minutoInicio, setMinutoInicio] = useState('');
+  const [horaFin, setHoraFin] = useState('');
+  const [minutoFin, setMinutoFin] = useState('');
+  const [horaInicioRot, setHoraInicioRot] = useState('');
+  const [minutoInicioRot, setMinutoInicioRot] = useState('');
+  const [horaFinRot, setHoraFinRot] = useState('');
+  const [minutoFinRot, setMinutoFinRot] = useState('');
+
+
+  useEffect(() => {
+    if (horaInicio && minutoInicio && horaFin && minutoFin) {
+      const inicio = `${horaInicio.padStart(2, '0')}:${minutoInicio.padStart(2, '0')}`;
+      const fin = `${horaFin.padStart(2, '0')}:${minutoFin.padStart(2, '0')}`;
+      setFormData((prev) => ({ ...prev, Turno: `${inicio} - ${fin}` }));
+    }
+  }, [horaInicio, minutoInicio, horaFin, minutoFin]);
+
+  useEffect(() => {
+    if (horaInicioRot && minutoInicioRot && horaFinRot && minutoFinRot) {
+      const inicio = `${horaInicioRot.padStart(2, '0')}:${minutoInicioRot.padStart(2, '0')}`;
+      const fin = `${horaFinRot.padStart(2, '0')}:${minutoFinRot.padStart(2, '0')}`;
+      setFormData((prev) => ({ ...prev, Turno_Rotativo: `${inicio} - ${fin}` }));
+    }
+  }, [horaInicioRot, minutoInicioRot, horaFinRot, minutoFinRot]);
+
+
+  const [formData, setFormData] = useState({
+    DNI: '', 
+    Nombre: '', 
+    Apellidos: '', 
+    Turno: '',
+    Rotativo: true, 
+    Turno_Rotativo: '', 
+    supermercado_id: 1,
+    Telefono: '', 
+    Horas_Semanales: 40,
+    Dia_Libre: '', 
+    Especial: true,
+    Email: '',
+  });
+  
+  const handleCreateEmpleado = async () => {
+    try {
+      const response = await axios.post('/api/empleados', formData);
+      const nuevoEmpleado = response.data.data;
+  
+      setEmpleados((prev) => [...prev, nuevoEmpleado]);
+      setShowModal(false);
+    } catch (error) {
+      console.error('Error creando empleado:', error);
+    }
+  };
+  
+  const handleDeleteEmpleados = async () => {
+    if (selected.length === 0) return;
+  
+    try {
+      await axios.delete('/api/empleados', {
+        data: { ids: selected },
+      });
+  
+      setEmpleados((prev) => prev.filter((emp) => !selected.includes(emp.id)));
+      setSelected([]);
+    } catch (error) {
+      console.error('Error eliminando empleados:', error);
+    }
+  };
+  
 
   const breadcrumbs: BreadcrumbItem[] = [
     { title: centroNombre, href: '/dashboard' },
@@ -61,7 +132,244 @@ export default function Empleados() {
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
       <Head title="Empleados" />
+      
       <div className="bg-background text-foreground p-6">
+
+        {/* BOTONES */}
+        <div className="mb-4 flex justify-between flex-wrap gap-2">
+          <div className="flex gap-2">
+          <Button
+            variant="destructive"
+            disabled={selected.length === 0}
+            onClick={handleDeleteEmpleados}
+          >
+            Borrar empleado
+          </Button>
+
+
+            <Button
+              disabled={selected.length !== 1}
+              onClick={() => alert(`Editar empleado ID: ${selected[0]}`)}
+            >
+              Editar empleado
+            </Button>
+          </div>
+
+          <Dialog open={showModal} onOpenChange={setShowModal}>
+            <DialogTrigger asChild>
+              <Button onClick={() => setShowModal(true)}>Añadir empleado</Button>
+            </DialogTrigger>
+            <DialogContent className="bg-card p-6 max-w-lg">
+              <DialogTitle className="mb-4">Nuevo Empleado</DialogTitle>
+
+              <div className="space-y-4">
+                <div>
+                  <label className="block mb-1">DNI</label>
+                  <Input 
+                  value={formData.DNI}
+                  onChange={(e) => setFormData({ ...formData, DNI: e.target.value })}
+                  placeholder="Ej. 12345678X" />
+                </div>
+
+                <div>
+                  <label className="block mb-1">Nombre</label>
+                  <Input
+                  value={formData.Nombre}
+                  onChange={(e) => setFormData({ ...formData, Nombre: e.target.value })}
+                  placeholder="Ej. Juan" />
+                </div>
+
+                <div>
+                  <label className="block mb-1">Apellidos</label>
+                  <Input 
+                  value={formData.Apellidos}
+                  onChange={(e) => setFormData({ ...formData, Apellidos: e.target.value })}
+                  placeholder="Ej. Pérez Gómez" />
+                </div>
+
+                <div>
+                  <label className="block mb-1">Email</label>
+                  <Input 
+                  value={formData.Email}
+                  onChange={(e) => setFormData({ ...formData, Email: e.target.value })}
+                  placeholder="Ej. Pérez Gómez" />
+                </div>
+
+                <div>
+                  <label className="block mb-1">Telefono</label>
+                  <Input 
+                  value={formData.Telefono}
+                  onChange={(e) => setFormData({ ...formData, Telefono: e.target.value })}
+                  placeholder="Ej. Pérez Gómez" />
+                </div>
+
+                <div>
+                  <label className="block mb-1">Día libre</label>
+                  <Select onValueChange={(value) => setFormData({ ...formData, Dia_Libre: value })}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecciona un Dia libre" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Lunes">Lunes</SelectItem>
+                      <SelectItem value="Martes">Martes</SelectItem>
+                      <SelectItem value="Miercoles">Miercoles</SelectItem>
+                      <SelectItem value="Jueves">Jueves</SelectItem>
+                      <SelectItem value="Viernes">Viernes</SelectItem>
+                      <SelectItem value="Sabado">Sabado</SelectItem>
+                      <SelectItem value="Domingo">Domingo</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div>
+                  <label className="block mb-1">Turno</label>
+                    <div>
+                    <div className="flex gap-2">
+                      {/* Hora Inicio */}
+                      <Input
+                        type="number"
+                        placeholder="HH"
+                        min="0"
+                        max="23"
+                        className="w-16"
+                        value={horaInicio}
+                        onChange={(e) => setHoraInicio(e.target.value)}
+                      />
+                      <Input
+                        type="number"
+                        placeholder="MM"
+                        min="0"
+                        max="59"
+                        className="w-16"
+                        value={minutoInicio}
+                        onChange={(e) => setMinutoInicio(e.target.value)}
+                      />
+                      <span className="self-center">-</span>
+                      {/* Hora Fin */}
+                      <Input
+                        type="number"
+                        placeholder="HH"
+                        min="0"
+                        max="23"
+                        className="w-16"
+                        value={horaFin}
+                        onChange={(e) => setHoraFin(e.target.value)}
+                      />
+                      <Input
+                        type="number"
+                        placeholder="MM"
+                        min="0"
+                        max="59"
+                        className="w-16"
+                        value={minutoFin}
+                        onChange={(e) => setMinutoFin(e.target.value)}
+                      />
+                    </div>
+                  </div>
+                  <p className="text-sm mt-1 text-muted-foreground">Formato: HH:MM - HH:MM</p>
+                </div>
+
+                <div>
+                  <label className="block mb-1">¿Es un empleado especial?</label>
+                  <Select onValueChange={(value) => {
+                    const rotativoValue = value === 'si';
+                    setIsRotativo(rotativoValue);
+                    setFormData((prev) => ({ ...prev, Especial: rotativoValue }));
+                  }}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Sí o No" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="si">Sí</SelectItem>
+                      <SelectItem value="no">No</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div>
+                  <label className="block mb-1">¿Turno rotativo?</label>
+                  <Select onValueChange={(value) => {
+                    const rotativoValue = value === 'si';
+                    setIsRotativo(rotativoValue);
+                    setFormData((prev) => ({ ...prev, Rotativo: rotativoValue }));
+                  }}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Sí o No" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="si">Sí</SelectItem>
+                      <SelectItem value="no">No</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {isRotativo && (
+                  <div>
+                    <label className="block mb-1">Turno rotativo</label>
+                    <div className="flex gap-2">
+                      <Input
+                        type="number"
+                        placeholder="HH"
+                        min="0"
+                        max="23"
+                        className="w-16"
+                        value={horaInicioRot}
+                        onChange={(e) => setHoraInicioRot(e.target.value)}
+                      />
+                      <Input
+                        type="number"
+                        placeholder="MM"
+                        min="0"
+                        max="59"
+                        className="w-16"
+                        value={minutoInicioRot}
+                        onChange={(e) => setMinutoInicioRot(e.target.value)}
+                      />
+                      <span className="self-center">-</span>
+                      <Input
+                        type="number"
+                        placeholder="HH"
+                        min="0"
+                        max="23"
+                        className="w-16"
+                        value={horaFinRot}
+                        onChange={(e) => setHoraFinRot(e.target.value)}
+                      />
+                      <Input
+                        type="number"
+                        placeholder="MM"
+                        min="0"
+                        max="59"
+                        className="w-16"
+                        value={minutoFinRot}
+                        onChange={(e) => setMinutoFinRot(e.target.value)}
+                      />
+                    </div>
+                    <p className="text-sm mt-1 text-muted-foreground">Formato: HH:MM - HH:MM</p>
+                  </div>
+                )}
+              <Button
+                onClick={handleCreateEmpleado}
+                className="mt-4 w-full"
+                disabled={
+                  !formData.DNI ||
+                  !formData.Nombre ||
+                  !formData.Apellidos ||
+                  !formData.Turno ||
+                  !formData.Email ||
+                  !formData.Telefono ||
+                  !formData.Dia_Libre
+                }
+              >
+                Crear empleado
+              </Button>
+              </div>
+            </DialogContent>
+          </Dialog>
+        </div>
+        {/* FIN BOTONES */}
+
+
         <div className="bg-card text-card-foreground shadow-md rounded-xl overflow-auto">
           <table className="min-w-full border-collapse text-sm">
             <thead>
@@ -90,99 +398,12 @@ export default function Empleados() {
                   <td className="px-4 py-2 border border-border bg-background text-foreground">{emp.Nombre}</td>
                   <td className="px-4 py-2 border border-border bg-background text-foreground">{emp.Apellidos}</td>
                   <td className="px-4 py-2 border border-border bg-background text-foreground">{emp.Turno}</td>
+                  <td className="px-4 py-2 border border-border bg-background text-foreground">{emp.Email}</td>
+                  <td className="px-4 py-2 border border-border bg-background text-foreground">{emp.Telefono}</td>
                 </tr>
               ))}
             </tbody>
           </table>
-        </div>
-
-        {/* BOTONES */}
-        <div className="mt-4 flex justify-between flex-wrap gap-2">
-          <div className="flex gap-2">
-            <Button
-              variant="destructive"
-              disabled={selected.length === 0}
-              onClick={() => alert('Eliminar empleados seleccionados')}
-            >
-              Borrar empleado
-            </Button>
-
-            <Button
-              disabled={selected.length !== 1}
-              onClick={() => alert(`Editar empleado ID: ${selected[0]}`)}
-            >
-              Editar empleado
-            </Button>
-          </div>
-
-          <Dialog open={showModal} onOpenChange={setShowModal}>
-            <DialogTrigger asChild>
-              <Button onClick={() => setShowModal(true)}>Añadir empleado</Button>
-            </DialogTrigger>
-            <DialogContent className="bg-card p-6 max-w-lg">
-              <DialogTitle className="mb-4">Nuevo Empleado</DialogTitle>
-
-              <div className="space-y-4">
-                <div>
-                  <label className="block mb-1">DNI</label>
-                  <Input placeholder="Ej. 12345678X" />
-                </div>
-
-                <div>
-                  <label className="block mb-1">Nombre</label>
-                  <Input placeholder="Ej. Juan" />
-                </div>
-
-                <div>
-                  <label className="block mb-1">Apellidos</label>
-                  <Input placeholder="Ej. Pérez Gómez" />
-                </div>
-
-                <div>
-                  <label className="block mb-1">Turno</label>
-                  <Select>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Selecciona un turno" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="mañana">Mañana</SelectItem>
-                      <SelectItem value="tarde">Tarde</SelectItem>
-                      <SelectItem value="noche">Noche</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div>
-                  <label className="block mb-1">¿Turno rotativo?</label>
-                  <Select onValueChange={(value) => setIsRotativo(value === 'si')}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Sí o No" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="si">Sí</SelectItem>
-                      <SelectItem value="no">No</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                {isRotativo && (
-                  <div>
-                    <label className="block mb-1">Turno rotativo</label>
-                    <Select>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Turno de rotación" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="mañana">Mañana</SelectItem>
-                        <SelectItem value="tarde">Tarde</SelectItem>
-                        <SelectItem value="noche">Noche</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                )}
-              </div>
-            </DialogContent>
-          </Dialog>
         </div>
       </div>
     </AppLayout>
