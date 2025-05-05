@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
 import AppLayout from '@/layouts/app-layout';
 import { Head } from '@inertiajs/react';
 import { Button } from '@/components/ui/button';
@@ -7,12 +8,14 @@ import { Checkbox } from '@/components/ui/checkbox';
 
 const headers = ['Nombre', 'Fecha'];
 
-export default function DiasFestivos() {
-    const [festivos, setFestivos] = useState([
-        { nombre: 'Año Nuevo', fecha: '2025-01-01' },
-        { nombre: 'Navidad', fecha: '2025-12-25' },
-    ]);
+type Festivo = {
+    id: number;
+    Nombre: string;
+    Fecha: string;
+};
 
+export default function DiasFestivos() {
+    const [festivos, setFestivos] = useState<Festivo[]>([]);
     const [nuevo, setNuevo] = useState({ nombre: '', fecha: '' });
     const [seleccionados, setSeleccionados] = useState<number[]>([]);
 
@@ -32,6 +35,16 @@ export default function DiasFestivos() {
         setFestivos([...festivos, nuevo]);
         setNuevo({ nombre: '', fecha: '' });
     };
+
+    useEffect(() => {
+        axios.get('/api/festivos')
+            .then(res => {
+                // Verifica si res.data es un array o viene en .data.data
+                const data = Array.isArray(res.data) ? res.data : res.data.data;
+                setFestivos(data);
+            })
+            .catch(err => console.error('Error al cargar festivos:', err));
+    }, []);
 
     return (
         <AppLayout breadcrumbs={[{ title: 'Días Festivos', href: '/dias-festivos' }]}>
@@ -73,19 +86,19 @@ export default function DiasFestivos() {
                         </tr>
                     </thead>
                     <tbody>
-                        {festivos.map((festivo, i) => (
-                            <tr key={i}>
+                        {festivos.map((festivo) => (
+                            <tr key={festivo.id}>
                                 <td className="px-4 py-2 border border-border text-center">
                                     <Checkbox
-                                        checked={seleccionados.includes(i)}
-                                        onCheckedChange={() => toggleSeleccionado(i)}
+                                        checked={seleccionados.includes(festivo.id)}
+                                        onCheckedChange={() => toggleSeleccionado(festivo.id)}
                                     />
                                 </td>
                                 <td className="px-4 py-2 border border-border bg-background text-foreground">
-                                    {festivo.nombre}
+                                    {festivo.Nombre}
                                 </td>
                                 <td className="px-4 py-2 border border-border bg-background text-foreground">
-                                    {festivo.fecha}
+                                    {festivo.Fecha}
                                 </td>
                             </tr>
                         ))}
