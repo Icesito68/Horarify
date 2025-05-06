@@ -1,12 +1,17 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Pencil } from 'lucide-react';
+import { Pencil, Eye, Trash2 } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 
 const headers = [
   // 'DNI', 
   'Nombre', 'Apellidos', 'Lunes', 'Martes', 'Miércoles', 'Jueves',
+  'Viernes', 'Sábado', 'Domingo',
+];
+
+const headersModal = [
+  'Mas', 'Nombre', 'Apellidos', 'Lunes', 'Martes', 'Miércoles', 'Jueves',
   'Viernes', 'Sábado', 'Domingo',
 ];
 
@@ -105,13 +110,13 @@ export default function Table() {
                     className="ml-auto hover:bg-primary/20"
                     onClick={() => setSelectedSemana(inicioSemana)}
                   >
-                    <Pencil className="w-4 h-4" />
+                    <Eye className="w-4 h-4" />
                   </Button>
                 </DialogTrigger>
-                <DialogContent className="max-w-screen max-h-screen">
+                <DialogContent className="!max-w-[90vw] !w-[90vw]">
                   <DialogHeader>
-                    <DialogTitle className="text-lg mb-4">
-                      Horario: {inicio.toLocaleDateString()} - {fin.toLocaleDateString()}
+                    <DialogTitle className="left-1/2 text-center text-lg mb-4">
+                      {inicio.toLocaleDateString()} - {fin.toLocaleDateString()}
                     </DialogTitle>
                   </DialogHeader>
 
@@ -119,7 +124,7 @@ export default function Table() {
                     <table className="min-w-full table-auto border-collapse text-sm">
                       <thead>
                         <tr>
-                          {headers.map((header) => (
+                          {headersModal.map((header) => (
                             <th
                               key={header}
                               className="bg-primary text-primary-foreground px-4 py-2 border border-border text-left"
@@ -132,6 +137,14 @@ export default function Table() {
                       <tbody>
                         {(agrupado.get(selectedSemana || '') || []).map((horario) => (
                           <tr key={horario.id}>
+                            <td className="px-4 py-2 border border-border space-x-2">
+                              <Button variant="outline" size="icon">
+                                <Pencil className="w-4 h-4" />
+                              </Button>
+                              <Button variant="destructive" size="icon">
+                                <Trash2 className="w-4 h-4" />
+                              </Button>
+                            </td>
                             <td className="px-4 py-2 border border-border">{horario.empleado?.Nombre || '-'}</td>
                             <td className="px-4 py-2 border border-border">{horario.empleado?.Apellidos || '-'}</td>
                             <td className="px-4 py-2 border border-border">{horario.Lunes}</td>
