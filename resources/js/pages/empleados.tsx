@@ -20,6 +20,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { useCentro } from '@/providers/centroProvider';
+import { Pencil } from 'lucide-react';
 
 const headers = ['DNI', 'Nombre', 'Apellidos', 'Turno', 'Email', 'Número'];
 
@@ -128,8 +129,8 @@ export default function Empleados() {
     }
   };
 
-  const openEditEmpleado = () => {
-    const empleado = empleados.find((emp) => emp.id === selected[0]);
+  const openEditEmpleado = (empleadoId: number) => {
+    const empleado = empleados.find((emp) => emp.id === empleadoId);
     if (!empleado) return;
   
     setEditFormData({
@@ -184,15 +185,6 @@ export default function Empleados() {
           >
             Borrar empleado
           </Button>
-
-
-          <Button
-            disabled={selected.length !== 1}
-            onClick={openEditEmpleado}
-          >
-            Editar empleado
-          </Button>
-
           </div>
 
           <Dialog open={showModal} onOpenChange={setShowModal}>
@@ -511,6 +503,14 @@ export default function Empleados() {
                       checked={selected.includes(emp.id)}
                       onCheckedChange={() => toggleRow(emp.id)}
                     />
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-6 w-6"
+                        onClick={() => openEditEmpleado(emp.id)}
+                      >
+                        <Pencil className="h-4 w-4" />
+                      </Button>
                   </td>
                   <td className="px-4 py-2 border border-border bg-background text-foreground">{emp.DNI}</td>
                   <td className="px-4 py-2 border border-border bg-background text-foreground">{emp.Nombre}</td>

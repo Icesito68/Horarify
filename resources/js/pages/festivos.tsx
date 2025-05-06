@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useCentro } from '@/providers/centroProvider';
 import { BreadcrumbItem } from '@/types';
+import { Pencil, Save, X } from 'lucide-react';
 
 const headers = ['Nombre', 'Fecha'];
 
@@ -17,11 +18,14 @@ type Festivo = {
 };
 
 export default function DiasFestivos() {
-      const { centro } = useCentro();
-      const centroNombre = centro;
+    const { centro } = useCentro();
+    const centroNombre = centro;
     const [festivos, setFestivos] = useState<Festivo[]>([]);
     const [nuevo, setNuevo] = useState({ nombre: '', fecha: '' });
     const [seleccionados, setSeleccionados] = useState<number[]>([]);
+    const [editandoId, setEditandoId] = useState<number | null>(null);
+    const [editandoDatos, setEditandoDatos] = useState({ nombre: '', fecha: '' });
+
 
     const toggleSeleccionado = (index: number) => {
         setSeleccionados((prev) =>
@@ -42,6 +46,17 @@ export default function DiasFestivos() {
                 alert('No se pudo eliminar. Inténtalo de nuevo.');
             });
     };
+
+    const empezarEdicion = (festivo: Festivo) => {
+        setEditandoId(festivo.id);
+        setEditandoDatos({ nombre: festivo.Nombre, fecha: festivo.Fecha.split('T')[0] }); // solo yyyy-mm-dd
+    };
+    
+    const cancelarEdicion = () => {
+        setEditandoId(null);
+        setEditandoDatos({ nombre: '', fecha: '' });
+    };
+    
     
 
     const agregarFestivo = () => {
@@ -66,6 +81,28 @@ export default function DiasFestivos() {
                 alert('No se pudo agregar el festivo. Inténtalo de nuevo.');
             });
     };
+
+    const guardarEdicion = (id: number) => {
+        const payload = {
+            Nombre: editandoDatos.nombre,
+            Fecha: editandoDatos.fecha,
+            supermercado_id: 1,
+        };
+    
+        axios.put(`http://localhost:8080/api/festivos/${id}`, payload)
+            .then(res => {
+                const actualizado = res.data.data;
+                setFestivos(prev =>
+                    prev.map(f => (f.id === id ? actualizado : f))
+                );
+                cancelarEdicion();
+            })
+            .catch(err => {
+                console.error('Error al actualizar festivo:', err);
+                alert('No se pudo actualizar el festivo. Inténtalo de nuevo.');
+            });
+    };
+    
     
     function formatearFecha(fechaISO: string) {
         const fecha = new Date(fechaISO);
@@ -142,20 +179,57 @@ export default function DiasFestivos() {
                         </tr>
                     </thead>
                     <tbody>
-                        {festivos.map((festivo) => (
-                            <tr key={festivo.id}>
-                                <td className="px-4 py-2 border border-border text-center">
-                                    <Checkbox
-                                        checked={seleccionados.includes(festivo.id)}
-                                        onCheckedChange={() => toggleSeleccionado(festivo.id)}
-                                    />
-                                </td>
-                                <td className="px-4 py-2 border border-border bg-background text-foreground">
-                                    {festivo.Nombre}
-                                </td>
-                                <td className="px-4 py-2 border border-border bg-background text-foreground">
-                                    {formatearFecha(festivo.Fecha)}
-                                </td>
+                    {festivos.map((festivo) => (
+                        <tr key={festivo.id}>
+                            <td className="px-4 py-2 border border-border text-center">
+                                <Checkbox
+                                    checked={seleccionados.includes(festivo.id)}
+                                    onCheckedChange={() => toggleSeleccionado(festivo.id)}
+                                />
+                                <Button size="sm" variant="outline" onClick={() => empezarEdicion(festivo)}>
+                                <Pencil className="h-4 w-4" />
+                                </Button>
+                            </td>
+
+                            {editandoId === festivo.id ? (
+                                <>
+                                    <td className="px-4 py-2 border border-border bg-background text-foreground">
+                                        <Input
+                                            value={editandoDatos.nombre}
+                                            maxLength={75}
+                                            onChange={(e) =>
+                                                setEditandoDatos({ ...editandoDatos, nombre: e.target.value })
+                                            }
+                                        />
+                                    </td>
+                                    <td className="px-4 py-2 border border-border bg-background text-foreground">
+                                        <div className="flex items-center gap-2">
+                                            <Input
+                                                type="date"
+                                                value={editandoDatos.fecha}
+                                                onChange={(e) =>
+                                                    setEditandoDatos({ ...editandoDatos, fecha: e.target.value })
+                                                }
+                                            />
+                                            <Button size="sm" onClick={() => guardarEdicion(festivo.id)}>
+                                            <Save className="h-4 w-4" /></Button>
+                                            <Button size="sm" variant="secondary" onClick={cancelarEdicion}>
+                                            <X className="h-4 w-4" /></Button>
+                                        </div>
+                                    </td>
+                                </>
+                            ) : (
+                                <>
+                                    <td className="px-4 py-2 border border-border bg-background text-foreground">
+                                        {festivo.Nombre}
+                                    </td>
+                                    <td className="px-4 py-2 border border-border bg-background text-foreground">
+                                        <div className="flex items-center gap-2">
+                                            <span>{formatearFecha(festivo.Fecha)}</span>
+                                        </div>
+                                    </td>
+                                </>
+                            )}
                             </tr>
                         ))}
                     </tbody>
