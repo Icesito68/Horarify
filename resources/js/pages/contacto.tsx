@@ -18,16 +18,17 @@ export default function Contacto() {
   return (
     <AppLayout breadcrumbs={Breadcrumbs}>
       <Head title={`Contacto - ${centroNombre}`} />
-      <form action="https://fabform.io/f/xxxxx" method="post" className="pb-10">
-        <section className="py-7">
+      <form action="https://fabform.io/f/xxxxx" method="post">
+        <section className="pt-5">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div className="grid lg:grid-cols-2 grid-cols-1">
+            <div className="grid lg:grid-cols-2 grid-cols-1 gap-y-8">
+
 
               {/* <!-- Imagen + info lateral --> */}
-              <div className="lg:mb-0 mb-10">
-                <div className="relative h-full rounded-2xl overflow-hidden bg-primary">
+              <div className="lg:mb-0 mb-10 max-h-[600px] h-64 sm:h-[400px] lg:h-full">
+                <div className="relative rounded-b-2xl lg:rounded-l-2xl rounded-2xl h-full overflow-hidden bg-primary">
                   <img
-                    src="https://pagedone.io/asset/uploads/1696488602.png"
+                    src="/multimedia/foto-contacto.jpg"
                     alt="Contact section"
                     className="w-full h-full object-cover mix-blend-multiply opacity-90"
                   />
@@ -57,26 +58,26 @@ export default function Contacto() {
               </div>
 
               {/* <!-- Formulario --> */}
-              <div className="bg-card text-card-foreground p-6 lg:p-11 rounded-2xl shadow">
+              <div className="bg-card text-card-foreground p-4 sm:p-6 lg:p-11 rounded-2xl shadow mt-4 lg:mt-0">
                 <h2 className="text-3xl font-semibold text-primary mb-10">Envíanos un mensaje</h2>
 
                 <input
                   type="text"
                   name="name"
                   placeholder="Nombre"
-                  className="w-full h-12 rounded-md px-4 mb-6 bg-background text-foreground border border-border focus:outline-none"
+                  className="w-full h-12 rounded-md px-4 mb-6 bg-background text-foreground border border-border focus:outline-none text-sm"
                 />
                 <input
                   type="email"
                   name="email"
                   placeholder="Email"
-                  className="w-full h-12 rounded-md px-4 mb-6 bg-background text-foreground border border-border focus:outline-none"
+                  className="w-full h-12 rounded-md px-4 mb-6 bg-background text-foreground border border-border focus:outline-none text-sm"
                 />
                 <input
                   type="text"
                   name="phone"
                   placeholder="Teléfono"
-                  className="w-full h-12 rounded-md px-4 mb-6 bg-background text-foreground border border-border focus:outline-none"
+                  className="w-full h-12 rounded-md px-4 mb-6 bg-background text-foreground border border-border focus:outline-none text-sm"
                 />
 
                 <div className="mb-6">
