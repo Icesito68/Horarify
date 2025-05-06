@@ -177,8 +177,8 @@ export default function Empleados() {
   };
 
   useEffect(() => {
-    axios.get('api/empleados')
-      .then(res => setEmpleados(res.data.data))
+    axios.get('api/supermercados/1/empleados')
+      .then(res => setEmpleados(res.data))
       .catch(err => console.error('Error cargando empleados:', err));
   }, []);
 
@@ -403,7 +403,10 @@ export default function Empleados() {
                   !formData.Turno ||
                   !formData.Email ||
                   !formData.Telefono ||
-                  !formData.Dia_Libre
+                  !formData.Dia_Libre ||
+                  !formData.Especial ||
+                  !formData.Rotativo
+
                 }
               >
                 Crear empleado
