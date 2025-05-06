@@ -12,5 +12,12 @@ class SupermercadoController extends Controller
     use DisableAuthorization;
 
     protected $model = Supermercado::class;
+    
+    public function empleados($id)
+    {
+        $supermercado = Supermercado::with('empleados')->findOrFail($id);
+        return response()->json($supermercado->empleados);
+    }
+
 
 }

@@ -40,7 +40,8 @@ type Empleado = {
 
 export default function Empleados() {
   const { centro } = useCentro();
-  const centroNombre = centro;
+  const centroNombre = centro?.Nombre ?? 'Centro';
+  const centroId = Number(centro?.id ?? 1);
   const [empleados, setEmpleados] = useState<Empleado[]>([]);
   const [selected, setSelected] = useState<number[]>([]);
   const [showModal, setShowModal] = useState(false);
@@ -80,7 +81,7 @@ export default function Empleados() {
     Turno: '',
     Rotativo: true, 
     Turno_Rotativo: '', 
-    supermercado_id: 1,
+    supermercado_id: centroId,
     Telefono: '', 
     Horas_Semanales: 40,
     Dia_Libre: '', 
@@ -153,8 +154,8 @@ export default function Empleados() {
       Turno: empleado.Turno,
       Dia_Libre: empleado.Dia_Libre,
       Rotativo: empleado.Rotativo, 
-      // Turno_Rotativo: empleado.Turno_Rotativo, 
-      supermercado_id: 1,
+      Turno_Rotativo: empleado.Turno_Rotativo, 
+      supermercado_id: centroId,
       Horas_Semanales: 40,
       Especial: empleado.Especial,
     });
@@ -177,10 +178,10 @@ export default function Empleados() {
   };
 
   useEffect(() => {
-    axios.get('api/empleados')
-      .then(res => setEmpleados(res.data.data))
+    axios.get(`/api/supermercados/${centroId}/empleados`)
+      .then(res => setEmpleados(res.data))
       .catch(err => console.error('Error cargando empleados:', err));
-  }, []);
+    }, [centroId]);
 
   console.log(empleados)
 
@@ -403,7 +404,10 @@ export default function Empleados() {
                   !formData.Turno ||
                   !formData.Email ||
                   !formData.Telefono ||
-                  !formData.Dia_Libre
+                  !formData.Dia_Libre ||
+                  !formData.Especial ||
+                  !formData.Rotativo
+
                 }
               >
                 Crear empleado
