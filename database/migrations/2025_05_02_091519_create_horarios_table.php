@@ -23,8 +23,8 @@ return new class extends Migration
             $table->string('Sabado', 100);
             $table->string('Domingo', 100);
             $table->date('Inicio_Semana');
-            $table->foreignId('supermercado_id')->constrained();
-            $table->foreignId('empleado_id')->constrained();
+            $table->foreignId('supermercado_id')->constrained()->onDelete('cascade');
+            $table->foreignId('empleado_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
 

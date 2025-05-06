@@ -31,7 +31,7 @@ class HorarioFactory extends Factory
             'Sabado' => fake()->randomElement(['07:30 - 15:30','08:00 - 16:00','14:30 - 22:30','15:00 - 23:00','Libre']),
             'Domingo' => fake()->randomElement(['07:30 - 15:30','08:00 - 16:00','14:30 - 22:30','15:00 - 23:00','Libre']),
             'Inicio_Semana' => fake()->date(),
-            'supermercado_id' => Supermercado::factory(),
+            'supermercado_id' => Supermercado::inRandomOrder()->first()->id,
             'empleado_id' => Empleado::factory(),
         ];
     }

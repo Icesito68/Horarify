@@ -23,3 +23,4 @@ Route::group(['as' => 'api.'], routes: function() {
 });
 
 Route::get('user/{userId}/supermercados', [UserController::class, 'usuarioSupermercados']);
+Route::delete('empleados', [EmpleadoController::class, 'destroyMany']);
