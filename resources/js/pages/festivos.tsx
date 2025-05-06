@@ -36,7 +36,7 @@ export default function DiasFestivos() {
     const eliminarSeleccionados = () => {
         if (seleccionados.length === 0) return;
     
-        axios.delete('http://localhost:8080/api/festivos', { data: { ids: seleccionados } })
+        axios.delete('/api/festivos', { data: { ids: seleccionados } })
             .then(() => {
                 setFestivos((prev) => prev.filter(f => !seleccionados.includes(f.id)));
                 setSeleccionados([]);
@@ -68,7 +68,7 @@ export default function DiasFestivos() {
             supermercado_id: 1,
         };
     
-        axios.post('http://localhost:8080/api/festivos', festivoPayload)
+        axios.post('/api/festivos', festivoPayload)
             .then(res => {
                 const festivoCreado = res.data.data;
     
@@ -89,7 +89,7 @@ export default function DiasFestivos() {
             supermercado_id: 1,
         };
     
-        axios.put(`http://localhost:8080/api/festivos/${id}`, payload)
+        axios.put(`/api/festivos/${id}`, payload)
             .then(res => {
                 const actualizado = res.data.data;
                 setFestivos(prev =>
