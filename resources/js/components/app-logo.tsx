@@ -1,26 +1,31 @@
 import AppLogoIcon from './app-logo-icon';
 import { useCentro } from '../providers/centroProvider';
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select';
 
 export default function AppLogo() {
   const { centro, setCentro, centrosDisponibles } = useCentro();
 
   return (
     <>
-      <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-md">
-        <AppLogoIcon className="fill-current text-white dark:text-black" />
+      <div className="flex items-center gap-2 p-2 rounded-md text-sidebar-primary-foreground shadow-sm">
+        <div className="flex items-center justify-center w-8 h-8 rounded-md text-primary-foreground">
+          <AppLogoIcon className="w-5 h-5" />
+        </div>
+
+        <Select onValueChange={setCentro} defaultValue={centro}>
+          <SelectTrigger className="w-full">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {centrosDisponibles.map((nombre) => (
+              <SelectItem key={nombre} value={nombre}>
+                {nombre}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
 
-      <select
-        value={centro}
-        onChange={(e) => setCentro(e.target.value)}
-        className="ml-1 flex-1 rounded-md border border-border bg-background px-2 py-1 text-sm font-medium text-foreground shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
-      >
-        {centrosDisponibles.map((nombre) => (
-          <option key={nombre} value={nombre}>
-            {nombre}
-          </option>
-        ))}
-      </select>
     </>
   );
 }
