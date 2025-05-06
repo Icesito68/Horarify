@@ -1,17 +1,10 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Pencil, Eye, Trash2 } from 'lucide-react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
+import HorarioDialog from '@/components/dialog/HorarioDialog';
 
 const headers = [
   // 'DNI', 
   'Nombre', 'Apellidos', 'Lunes', 'Martes', 'Miércoles', 'Jueves',
-  'Viernes', 'Sábado', 'Domingo',
-];
-
-const headersModal = [
-  'Mas', 'Nombre', 'Apellidos', 'Lunes', 'Martes', 'Miércoles', 'Jueves',
   'Viernes', 'Sábado', 'Domingo',
 ];
 
@@ -44,7 +37,6 @@ type HorarioConEmpleado = Horario & {
 export default function Table() {
   const [horarios, setHorarios] = useState<HorarioConEmpleado[]>([]);
   const [agrupado, setAgrupado] = useState<Map<string, HorarioConEmpleado[]>>(new Map());
-  const [selectedSemana, setSelectedSemana] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -98,69 +90,17 @@ export default function Table() {
             key={inicioSemana}
             className="bg-card text-card-foreground shadow-md rounded-xl overflow-auto"
           >
-            <div className="relative border-b border-border bg-primary text-primary-foreground px-4 py-3 flex items-center justify-between">
-              <div className="absolute left-1/2 transform -translate-x-1/2 font-semibold text-center">
+            <div className="border-b border-border bg-primary text-primary-foreground px-4 py-3 flex items-center">
+              <div className="flex-1 text-center font-semibold text-sm sm:text-base">
                 {inicio.toLocaleDateString()} - {fin.toLocaleDateString()}
               </div>
-              <Dialog>
-                <DialogTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="ml-auto hover:bg-primary/20"
-                    onClick={() => setSelectedSemana(inicioSemana)}
-                  >
-                    <Eye className="w-4 h-4" />
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="!max-w-[90vw] !w-[90vw]">
-                  <DialogHeader>
-                    <DialogTitle className="left-1/2 text-center text-lg mb-4">
-                      {inicio.toLocaleDateString()} - {fin.toLocaleDateString()}
-                    </DialogTitle>
-                  </DialogHeader>
+              <HorarioDialog
+                semana={inicioSemana}
+                inicio={inicio}
+                fin={fin}
+                datos={agrupado.get(inicioSemana) || []}
+              />
 
-                  <div className="overflow-x-auto rounded-lg">
-                    <table className="min-w-full table-auto border-collapse text-sm">
-                      <thead>
-                        <tr>
-                          {headersModal.map((header) => (
-                            <th
-                              key={header}
-                              className="bg-primary text-primary-foreground px-4 py-2 border border-border text-left"
-                            >
-                              {header}
-                            </th>
-                          ))}
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {(agrupado.get(selectedSemana || '') || []).map((horario) => (
-                          <tr key={horario.id}>
-                            <td className="px-4 py-2 border border-border space-x-2">
-                              <Button variant="outline" size="icon">
-                                <Pencil className="w-4 h-4" />
-                              </Button>
-                              <Button variant="destructive" size="icon">
-                                <Trash2 className="w-4 h-4" />
-                              </Button>
-                            </td>
-                            <td className="px-4 py-2 border border-border">{horario.empleado?.Nombre || '-'}</td>
-                            <td className="px-4 py-2 border border-border">{horario.empleado?.Apellidos || '-'}</td>
-                            <td className="px-4 py-2 border border-border">{horario.Lunes}</td>
-                            <td className="px-4 py-2 border border-border">{horario.Martes}</td>
-                            <td className="px-4 py-2 border border-border">{horario.Miercoles}</td>
-                            <td className="px-4 py-2 border border-border">{horario.Jueves}</td>
-                            <td className="px-4 py-2 border border-border">{horario.Viernes}</td>
-                            <td className="px-4 py-2 border border-border">{horario.Sabado}</td>
-                            <td className="px-4 py-2 border border-border">{horario.Domingo}</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                </DialogContent>
-              </Dialog>
             </div>
 
             <table className="min-w-full border-collapse text-sm">
