@@ -4,8 +4,6 @@ import { Head } from '@inertiajs/react';
 import Table from './calendar/table';
 import { useCentro } from '@/providers/centroProvider';
 
-
-
 export default function Dashboard() {
       const { centro } = useCentro();
       const centroNombre = centro;
@@ -19,6 +17,7 @@ export default function Dashboard() {
             href: '/dashboard',
         },
     ];
+    
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Calendario" />
