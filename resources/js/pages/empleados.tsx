@@ -29,9 +29,13 @@ type Empleado = {
   DNI: string;
   Nombre: string;
   Apellidos: string;
-  Turno: string;
   Email: string;
   Telefono: string;
+  Dia_Libre: string;
+  Turno: string;
+  Especial: boolean;
+  Rotativo: boolean;
+  Turno_Rotativo: string;
 };
 
 export default function Empleados() {
@@ -49,9 +53,8 @@ export default function Empleados() {
   const [minutoInicioRot, setMinutoInicioRot] = useState('');
   const [horaFinRot, setHoraFinRot] = useState('');
   const [minutoFinRot, setMinutoFinRot] = useState('');
+  const [editingEmpleadoId, setEditingEmpleadoId] = useState<number | null>(null);
   const [showEditModal, setShowEditModal] = useState(false);
-
-
 
   useEffect(() => {
     if (horaInicio && minutoInicio && horaFin && minutoFin) {
@@ -98,8 +101,14 @@ export default function Empleados() {
   };
 
   const handleUpdateEmpleado = async () => {
+    if (editingEmpleadoId === null) {
+      console.error('No employee ID specified for update.');
+      return;
+    }
+  
     try {
-      const empleadoId = selected[0];
+      const empleadoId = editingEmpleadoId;
+  
       const response = await axios.put(`/api/empleados/${empleadoId}`, editFormData);
       const updatedEmpleado = response.data.data;
   
@@ -107,7 +116,7 @@ export default function Empleados() {
         prev.map((emp) => (emp.id === empleadoId ? updatedEmpleado : emp))
       );
       setShowEditModal(false);
-      setSelected([]);
+      setEditingEmpleadoId(null); 
     } catch (error) {
       console.error('Error actualizando empleado:', error);
     }
@@ -133,6 +142,7 @@ export default function Empleados() {
     const empleado = empleados.find((emp) => emp.id === empleadoId);
     if (!empleado) return;
   
+    setEditingEmpleadoId(empleadoId);
     setEditFormData({
       ...formData,
       DNI: empleado.DNI,
@@ -141,7 +151,12 @@ export default function Empleados() {
       Email: empleado.Email,
       Telefono: empleado.Telefono,
       Turno: empleado.Turno,
-      // Dia_Libre: empleado.Dia_Libre || '',
+      Dia_Libre: empleado.Dia_Libre,
+      Rotativo: empleado.Rotativo, 
+      // Turno_Rotativo: empleado.Turno_Rotativo, 
+      supermercado_id: 1,
+      Horas_Semanales: 40,
+      Especial: empleado.Especial,
     });
   
     setShowEditModal(true);
@@ -191,7 +206,7 @@ export default function Empleados() {
             <DialogTrigger asChild>
               <Button onClick={() => setShowModal(true)}>Añadir empleado</Button>
             </DialogTrigger>
-            <DialogContent className="bg-card p-6 max-w-lg">
+            <DialogContent className="bg-card p-6 max-w-lg max-h-[80vh] overflow-y-auto">
               <DialogTitle className="mb-4">Nuevo Empleado</DialogTitle>
 
               <div className="space-y-4">
@@ -298,7 +313,6 @@ export default function Empleados() {
                       />
                     </div>
                   </div>
-                  <p className="text-sm mt-1 text-muted-foreground">Formato: HH:MM - HH:MM</p>
                 </div>
 
                 <div>
@@ -377,7 +391,6 @@ export default function Empleados() {
                         onChange={(e) => setMinutoFinRot(e.target.value)}
                       />
                     </div>
-                    <p className="text-sm mt-1 text-muted-foreground">Formato: HH:MM - HH:MM</p>
                   </div>
                 )}
               <Button
@@ -399,9 +412,16 @@ export default function Empleados() {
             </DialogContent>
           </Dialog>
 
-
-          <Dialog open={showEditModal} onOpenChange={setShowEditModal}>
-            <DialogContent className="bg-card p-6 max-w-lg">
+          <Dialog
+            open={showEditModal}
+            onOpenChange={(isOpen) => {
+              setShowEditModal(isOpen);
+              if (!isOpen) {
+                setEditingEmpleadoId(null);
+              }
+            }}
+          >
+            <DialogContent className="bg-card p-6 max-w-lg max-h-[80vh] overflow-y-auto">
               <DialogTitle className="mb-4">Editar Empleado</DialogTitle>
 
               <div className="space-y-4">
@@ -456,6 +476,139 @@ export default function Empleados() {
                       <SelectItem value="Domingo">Domingo</SelectItem>
                     </SelectContent>
                   </Select>
+
+                  <Select onValueChange={(value) => {
+                    const rotativoValue = value === 'si';
+                    setIsRotativo(rotativoValue);
+                    setEditFormData((prev) => ({ ...prev, Rotativo: rotativoValue }));
+                    }}>
+                  </Select>
+
+                  <div>
+                  <label className="block mb-1">Turno</label>
+                    <div>
+                    <div className="flex gap-2">
+                      {/* Hora Inicio */}
+                      <Input
+                        type="number"
+                        placeholder="HH"
+                        min="0"
+                        max="23"
+                        className="w-16"
+                        value={horaInicio}
+                        onChange={(e) => setHoraInicio(e.target.value)}
+                      />
+                      <Input
+                        type="number"
+                        placeholder="MM"
+                        min="0"
+                        max="59"
+                        className="w-16"
+                        value={minutoInicio}
+                        onChange={(e) => setMinutoInicio(e.target.value)}
+                      />
+                      <span className="self-center">-</span>
+                      {/* Hora Fin */}
+                      <Input
+                        type="number"
+                        placeholder="HH"
+                        min="0"
+                        max="23"
+                        className="w-16"
+                        value={horaFin}
+                        onChange={(e) => setHoraFin(e.target.value)}
+                      />
+                      <Input
+                        type="number"
+                        placeholder="MM"
+                        min="0"
+                        max="59"
+                        className="w-16"
+                        value={minutoFin}
+                        onChange={(e) => setMinutoFin(e.target.value)}
+                      />
+                    </div>
+                  </div>
+                  <div>
+                  <label className="block mb-1">¿Es un empleado especial?</label>
+                  <Select onValueChange={(value) => {
+                    const rotativoValue = value === 'si';
+                    setIsRotativo(rotativoValue);
+                    setEditFormData((prev) => ({ ...prev, Especial: rotativoValue }));
+                  }}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Sí o No" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="si">Sí</SelectItem>
+                      <SelectItem value="no">No</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <label className="block mb-1">¿Turno rotativo?</label>
+                  <Select onValueChange={(value) => {
+                    const rotativoValue = value === 'si';
+                    setIsRotativo(rotativoValue);
+                    setEditFormData((prev) => ({ ...prev, Rotativo: rotativoValue }));
+                  }}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Sí o No" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="si">Sí</SelectItem>
+                      <SelectItem value="no">No</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {isRotativo && (
+                  <div>
+                    <label className="block mb-1">Turno rotativo</label>
+                    <div className="flex gap-2">
+                      <Input
+                        type="number"
+                        placeholder="HH"
+                        min="0"
+                        max="23"
+                        className="w-16"
+                        value={horaInicioRot}
+                        onChange={(e) => setHoraInicioRot(e.target.value)}
+                      />
+                      <Input
+                        type="number"
+                        placeholder="MM"
+                        min="0"
+                        max="59"
+                        className="w-16"
+                        value={minutoInicioRot}
+                        onChange={(e) => setMinutoInicioRot(e.target.value)}
+                      />
+                      <span className="self-center">-</span>
+                      <Input
+                        type="number"
+                        placeholder="HH"
+                        min="0"
+                        max="23"
+                        className="w-16"
+                        value={horaFinRot}
+                        onChange={(e) => setHoraFinRot(e.target.value)}
+                      />
+                      <Input
+                        type="number"
+                        placeholder="MM"
+                        min="0"
+                        max="59"
+                        className="w-16"
+                        value={minutoFinRot}
+                        onChange={(e) => setMinutoFinRot(e.target.value)}
+                      />
+                    </div>
+                  </div>
+                )}
+                </div>
+
+
                 </div>
 
                   <Button
