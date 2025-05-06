@@ -26,6 +26,7 @@ class Empleado extends Model
         'Horas_Semanales',
         'Dia_Libre',
         'Rotativo',
+        'Turno_Rotativo',
         'Especial',
         'Email',
         'supermercado_id',
