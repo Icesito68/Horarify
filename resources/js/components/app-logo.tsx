@@ -1,6 +1,5 @@
 import AppLogoIcon from './app-logo-icon';
 import { useCentro } from '../providers/centroProvider';
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select';
 
 export default function AppLogo() {
   const { centro, setCentro, centrosDisponibles } = useCentro();
@@ -26,6 +25,7 @@ export default function AppLogo() {
           </option>
         ))}
       </select>
+      </div>
     </>
   );
 }
