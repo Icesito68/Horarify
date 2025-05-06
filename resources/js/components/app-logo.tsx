@@ -11,16 +11,20 @@ export default function AppLogo() {
       </div>
 
       <select
-        value={centro}
-        onChange={(e) => setCentro(e.target.value)}
+        value={centro?.id ?? ''}
+        onChange={(e) => {
+          const selected = centrosDisponibles.find((s) => s.id === Number(e.target.value));
+          if (selected) setCentro(selected);
+        }}
         className="ml-1 flex-1 rounded-md border border-border bg-background px-2 py-1 text-sm font-medium text-foreground shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
       >
-        {centrosDisponibles.map((nombre) => (
-          <option key={nombre} value={nombre}>
-            {nombre}
+        {centrosDisponibles.map((s) => (
+          <option key={s.id} value={s.id}>
+            {s.Nombre}
           </option>
         ))}
       </select>
+
     </>
   );
 }

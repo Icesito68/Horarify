@@ -19,7 +19,7 @@ type Festivo = {
 
 export default function DiasFestivos() {
     const { centro } = useCentro();
-    const centroNombre = centro;
+    const centroNombre = centro?.Nombre ?? 'Centro';
     const [festivos, setFestivos] = useState<Festivo[]>([]);
     const [nuevo, setNuevo] = useState({ nombre: '', fecha: '' });
     const [seleccionados, setSeleccionados] = useState<number[]>([]);

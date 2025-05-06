@@ -6,7 +6,7 @@ import { useCentro } from '@/providers/centroProvider';
 
 export default function Dashboard() {
       const { centro } = useCentro();
-      const centroNombre = centro;
+      const centroNombre = centro?.Nombre ?? 'Centro';
       const breadcrumbs: BreadcrumbItem[] = [
         {
             title: centroNombre,
