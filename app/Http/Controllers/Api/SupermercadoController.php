@@ -19,5 +19,17 @@ class SupermercadoController extends Controller
         return response()->json($supermercado->empleados);
     }
 
+    public function horarios($id)
+    {
+        $supermercado = Supermercado::with('horarios')->findOrFail($id);
+        return response()->json($supermercado->horarios);
+    }
+
+    public function festivos($id)
+    {
+        $supermercado = Supermercado::with('festivos')->findOrFail($id);
+        return response()->json($supermercado->festivos);
+    }
+
 
 }

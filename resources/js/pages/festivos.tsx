@@ -9,6 +9,7 @@ import { useCentro } from '@/providers/centroProvider';
 import { BreadcrumbItem } from '@/types';
 import { Pencil, Save, X } from 'lucide-react';
 
+
 const headers = ['Nombre', 'Fecha'];
 
 type Festivo = {
@@ -25,6 +26,7 @@ export default function DiasFestivos() {
     const [seleccionados, setSeleccionados] = useState<number[]>([]);
     const [editandoId, setEditandoId] = useState<number | null>(null);
     const [editandoDatos, setEditandoDatos] = useState({ nombre: '', fecha: '' });
+    const centroId = Number(centro?.id ?? 1);
 
 
     const toggleSeleccionado = (index: number) => {
@@ -55,9 +57,7 @@ export default function DiasFestivos() {
     const cancelarEdicion = () => {
         setEditandoId(null);
         setEditandoDatos({ nombre: '', fecha: '' });
-    };
-    
-    
+    };    
 
     const agregarFestivo = () => {
         if (!nuevo.nombre || !nuevo.fecha) return;
@@ -65,7 +65,7 @@ export default function DiasFestivos() {
         const festivoPayload = {
             Nombre: nuevo.nombre,
             Fecha: nuevo.fecha,
-            supermercado_id: 1,
+            supermercado_id: centroId,
         };
     
         axios.post('/api/festivos', festivoPayload)
@@ -120,13 +120,13 @@ export default function DiasFestivos() {
     
 
     useEffect(() => {
-        axios.get('/api/festivos')
+        axios.get(`/api/supermercados/${centroId}/festivos`)
             .then(res => {
                 const data = Array.isArray(res.data) ? res.data : res.data.data;
                 setFestivos(data);
             })
             .catch(err => console.error('Error al cargar festivos:', err));
-    }, []);
+    }, [centroId]);
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
