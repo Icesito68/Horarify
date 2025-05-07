@@ -49,7 +49,9 @@ export default function DialogDeleteEmpleados({
           {selected.length !== 1 ? 's' : ''}. Esta acción no se puede deshacer.
         </p>
         <div className="flex justify-end gap-2">
-          <Button variant="secondary">Cancelar</Button>
+          <Button variant="secondary" onClick={() => setOpen(false)}>
+            Cancelar
+          </Button>
           <Button variant="destructive" onClick={handleDelete}>
             Eliminar
           </Button>
