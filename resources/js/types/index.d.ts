@@ -41,3 +41,18 @@ export interface User {
     updated_at: string;
     [key: string]: unknown; // This allows for additional properties...
 }
+
+export type Empleado = {
+    id: number;
+    DNI: string;
+    Nombre: string;
+    Apellidos: string;
+    Email: string;
+    Telefono: string;
+    Dia_Libre: string;
+    Turno: string;
+    Especial: boolean;
+    Rotativo: boolean;
+    Turno_Rotativo: string;
+  };
+  
