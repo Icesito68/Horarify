@@ -25,6 +25,12 @@ class EmpleadoController extends Controller
         return response()->json(['message' => 'Empleados eliminados correctamente']);
     }
 
+    public function vacacionesEmpleado($userId)
+    {
+        $empleado = Empleado::with('vacaciones')->findOrFail($userId);
+
+        return response()->json($empleado->vacaciones);
+    }
 
     protected $model = Empleado::class;
 }
