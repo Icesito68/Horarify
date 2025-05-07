@@ -60,6 +60,39 @@ export default function Supermercados() {
 
     const [showDeleteModal, setShowDeleteModal] = useState(false);
 
+    const [showEditModal, setShowEditModal] = useState(false);
+    const handleOpenEdit = () => {
+        if (selected) {
+            setEditForm({ ...selected });
+            setShowEditModal(true);
+        }
+    };
+
+    const [editForm, setEditForm] = useState<Supermercado | null>(null);
+    useEffect(() => {
+        if (selected) {
+            setEditForm({ ...selected });
+        }
+    }, [selected]);
+    const handleUpdateSupermercado = async () => {
+        if (!editForm?.id) return;
+
+        try {
+            const response = await axios.put(`/api/supermercados/${editForm.id}`, editForm);
+            const actualizado = response.data.data;
+
+            setSupermercados(prev =>
+                prev.map((s) => (s.id === actualizado.id ? actualizado : s))
+            );
+
+            setEditForm(null);
+            setSelected(null);
+            setShowEditModal(false); // 👈 Esto cierra el diálogo
+        } catch (error) {
+            console.error('Error actualizando supermercado:', error);
+        }
+    };
+
     return (
         <AppLayout breadcrumbs={[{ title: 'Supermercados', href: '/supermercados' }]}>
             <div className="bg-background text-foreground p-6 space-y-6">
@@ -108,15 +141,54 @@ export default function Supermercados() {
                         </DialogContent>
                     </Dialog>
 
-                    <Dialog>
+                    <Dialog open={showEditModal} onOpenChange={setShowEditModal}>
                         <DialogTrigger asChild>
-                            <Button variant="outline" disabled={!selected}>
+                            <Button variant="outline" disabled={!selected} onClick={handleOpenEdit}>
                                 <Pencil className="mr-2 h-4 w-4" /> Editar
                             </Button>
                         </DialogTrigger>
-                        <DialogContent>
+
+                        <DialogContent className="bg-card p-6 max-w-md">
                             <DialogTitle>Editar supermercado</DialogTitle>
-                            {/* Aquí formulario de edición */}
+
+                            {editForm && (
+                                <div className="space-y-4 mt-4">
+                                    <Input
+                                        placeholder="Nombre"
+                                        value={editForm.Nombre}
+                                        onChange={(e) => setEditForm({ ...editForm, Nombre: e.target.value })}
+                                    />
+                                    <Input
+                                        placeholder="Dirección"
+                                        value={editForm.Direccion}
+                                        onChange={(e) => setEditForm({ ...editForm, Direccion: e.target.value })}
+                                    />
+                                    <Input
+                                        placeholder="NIF"
+                                        value={editForm.NIF}
+                                        maxLength={9}
+                                        onChange={(e) => setEditForm({ ...editForm, NIF: e.target.value })}
+                                    />
+                                    <Input
+                                        placeholder="Icono"
+                                        value={editForm.Icon}
+                                        onChange={(e) => setEditForm({ ...editForm, Icon: e.target.value })}
+                                    />
+
+                                    <Button
+                                        className="w-full"
+                                        disabled={
+                                            !editForm.Nombre ||
+                                            !editForm.Direccion ||
+                                            !editForm.NIF ||
+                                            !editForm.Icon
+                                        }
+                                        onClick={handleUpdateSupermercado}
+                                    >
+                                        Guardar cambios
+                                    </Button>
+                                </div>
+                            )}
                         </DialogContent>
                     </Dialog>
 
