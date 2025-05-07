@@ -39,7 +39,7 @@ export default function Supermercados() {
             setSupermercados((prev) => [...prev, nuevoSupermercado]);
 
             // Resetear formulario y cerrar modal
-            setForm({ Nombre: '', Direccion: '', NIF: '', Icon: 'pencil', user_id: 1});
+            setForm({ Nombre: '', Direccion: '', NIF: '', Icon: 'pencil', user_id: 1 });
             setShowCreateModal(false);
         } catch (error) {
             console.error('Error al crear supermercado:', error);
@@ -58,10 +58,11 @@ export default function Supermercados() {
             .catch(err => console.error(err));
     }, []);
 
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+
     return (
         <AppLayout breadcrumbs={[{ title: 'Supermercados', href: '/supermercados' }]}>
             <div className="bg-background text-foreground p-6 space-y-6">
-                <h1 className="text-2xl font-semibold">Gestión de Supermercados</h1>
 
                 {/* Botones */}
                 <div className="flex gap-4">
@@ -119,15 +120,39 @@ export default function Supermercados() {
                         </DialogContent>
                     </Dialog>
 
-                    <Dialog>
+                    <Dialog open={showDeleteModal} onOpenChange={setShowDeleteModal}>
                         <DialogTrigger asChild>
                             <Button variant="destructive" disabled={!selected}>
                                 <Trash2 className="mr-2 h-4 w-4" /> Eliminar
                             </Button>
                         </DialogTrigger>
+
                         <DialogContent>
                             <DialogTitle>¿Estás seguro?</DialogTitle>
-                            {/* Aquí confirmación eliminación */}
+                            <p className="text-sm text-muted-foreground mb-4">
+                                Vas a eliminar <strong>{selected?.Nombre}</strong>. Esta acción no se puede deshacer.
+                            </p>
+                            <div className="flex justify-end gap-2">
+                                <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>
+                                    Cancelar
+                                </Button>
+                                <Button
+                                    variant="destructive"
+                                    onClick={async () => {
+                                        if (!selected?.id) return;
+                                        try {
+                                            await axios.delete(`/api/supermercados/${selected.id}`);
+                                            setSupermercados((prev) => prev.filter((s) => s.id !== selected.id));
+                                            setSelected(null);
+                                            setShowDeleteModal(false);
+                                        } catch (error) {
+                                            console.error('Error eliminando supermercado:', error);
+                                        }
+                                    }}
+                                >
+                                    Eliminar
+                                </Button>
+                            </div>
                         </DialogContent>
                     </Dialog>
                 </div>
