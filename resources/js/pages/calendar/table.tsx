@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import HorarioDialog from '@/components/dialog/HorarioDialog';
+import { useCentro } from '@/providers/centroProvider';
 
 const headers = [
   // 'DNI', 
@@ -35,22 +36,27 @@ type HorarioConEmpleado = Horario & {
 };
 
 export default function Table() {
+  const { centro } = useCentro();
+
   const [horarios, setHorarios] = useState<HorarioConEmpleado[]>([]);
   const [agrupado, setAgrupado] = useState<Map<string, HorarioConEmpleado[]>>(new Map());
+  const centroId = Number(centro?.id ?? 1);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const [horariosRes, empleadosRes] = await Promise.all([
-          axios.get('api/horarios'),
+          axios.get(`api/supermercados/${centroId}/horarios`),
           axios.get('api/empleados'),
         ]);
+
+        console.log(centroId)
 
         const empleadosMap = new Map<number, Empleado>(
           empleadosRes.data.data.map((emp: Empleado) => [emp.id, emp])
         );
 
-        const enriched: HorarioConEmpleado[] = horariosRes.data.data.map((horario: Horario) => ({
+        const enriched: HorarioConEmpleado[] = horariosRes.data.map((horario: Horario) => ({
           ...horario,
           empleado: empleadosMap.get(horario.empleado_id),
         }));
@@ -76,7 +82,7 @@ export default function Table() {
     };
 
     fetchData();
-  }, []);
+  }, [centroId]);
 
   return (
     <div className="space-y-10">
