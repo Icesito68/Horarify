@@ -28,7 +28,6 @@ class SupermercadoFactory extends Factory
             'Icon' => fake()->randomElement(['pencil']),
             // 'user_id' => User::factory(),
             'user_id' => 1,
-
         ];
     }
 }

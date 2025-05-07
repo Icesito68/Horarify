@@ -14,6 +14,7 @@ type Supermercado = {
     Direccion: string;
     NIF: string;
     Icon: string;
+    user_id: number,
 };
 
 export default function Supermercados() {
@@ -27,17 +28,18 @@ export default function Supermercados() {
         Direccion: '',
         NIF: '',
         Icon: 'pencil',
+        user_id: 1,
     });
 
     const handleCreateSupermercado = async () => {
         try {
-            const response = await axios.post('/api/supermercados', form);
+            const response = await axios.post('api/supermercados', form);
             const nuevoSupermercado = response.data.data;
 
             setSupermercados((prev) => [...prev, nuevoSupermercado]);
 
             // Resetear formulario y cerrar modal
-            setForm({ Nombre: '', Direccion: '', NIF: '', Icon: 'pencil' });
+            setForm({ Nombre: '', Direccion: '', NIF: '', Icon: 'pencil', user_id: 1});
             setShowCreateModal(false);
         } catch (error) {
             console.error('Error al crear supermercado:', error);
@@ -89,7 +91,7 @@ export default function Supermercados() {
                                     onChange={(e) => setForm({ ...form, NIF: e.target.value })}
                                 />
                                 <Input
-                                    placeholder="Icono (nombre de icono Lucide)"
+                                    placeholder="Icono"
                                     value={form.Icon}
                                     onChange={(e) => setForm({ ...form, Icon: e.target.value })}
                                 />
