@@ -12,13 +12,16 @@ export async function generarHorario(centroId: number) {
         const festivosResponse = await axios.get(`/api/supermercados/${centroId}/festivos`);
         const festivos = festivosResponse.data;
         console.log('Festivos:', festivos);
-        obtenerFecha();
 
-        return { empleados, festivos };
+        const fechaLunes = obtenerFecha();
+
+        crearHorario(centroId, fechaLunes)
+
     } catch (err) {
         console.error('Error generando horario:', err);
         throw err;
     }
+
 }
 
 const obtenerFecha = () => {
@@ -35,6 +38,28 @@ const obtenerFecha = () => {
   
     console.log(`Hoy es: ${dayName} (${dayNumber})`);
     console.log(`Lunes de esta semana: ${monday.toLocaleDateString()}`);
+
+    return monday.toLocaleDateString();
   };
   
-    
+  const crearHorario = async (centroId: number, fechaLunes: string) => {
+    const datosHorario = {
+        Lunes: '9:00-18:00',
+        Martes: '9:00-18:00',
+        Miercoles: '9:00-18:00',
+        Jueves: '9:00-18:00',
+        Viernes: '9:00-18:00',
+        Sabado: '9:00-18:00',
+        Domingo: '9:00-18:00',
+        Inicio_Semana: fechaLunes,
+        supermercado_id: centroId,
+        empleado_id: 30,
+    };
+
+    try {
+        const response = await axios.post(`/api/horarios`, datosHorario);
+        console.log('Horario creado correctamente:', response.data);
+    } catch (err) {
+        console.error('Error creando horario:', err);
+    }
+};
