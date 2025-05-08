@@ -98,13 +98,13 @@ export default function Supermercados() {
             <div className="bg-background text-foreground p-6 space-y-6">
 
                 {/* Botones */}
-                <div className="flex gap-4">
+                <div className="flex flex-row flex-wrap gap-2 sm:gap-4 items-center justify-start">
                     <Dialog open={showCreateModal} onOpenChange={setShowCreateModal}>
                         <DialogTrigger asChild>
                             <Button onClick={() => setShowCreateModal(true)}>Crear supermercado</Button>
                         </DialogTrigger>
 
-                        <DialogContent className="bg-card p-6 max-w-md">
+                        <DialogContent className="bg-card p-4 sm:p-6 w-[90vw] max-w-md">
                             <DialogTitle className="mb-4">Nuevo Supermercado</DialogTitle>
 
                             <div className="space-y-4">
@@ -148,7 +148,7 @@ export default function Supermercados() {
                             </Button>
                         </DialogTrigger>
 
-                        <DialogContent className="bg-card p-6 max-w-md">
+                        <DialogContent className="bg-card p-4 sm:p-6 w-[90vw] max-w-md">
                             <DialogTitle>Editar supermercado</DialogTitle>
 
                             {editForm && (
@@ -199,7 +199,7 @@ export default function Supermercados() {
                             </Button>
                         </DialogTrigger>
 
-                        <DialogContent>
+                        <DialogContent className="bg-card p-4 sm:p-6 w-[90vw] max-w-md">
                             <DialogTitle>¿Estás seguro?</DialogTitle>
                             <p className="text-sm text-muted-foreground mb-4">
                                 Vas a eliminar <strong>{selected?.Nombre}</strong>. Esta acción no se puede deshacer.
