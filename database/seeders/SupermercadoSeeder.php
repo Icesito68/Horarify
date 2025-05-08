@@ -15,11 +15,12 @@ class SupermercadoSeeder extends Seeder
     {
         // Supermercado::factory()->count(1)->create();
         // $user = User::factory()->create();  // Crear un usuario (o usar uno existente)
-        
+
         Supermercado::create([
             'Nombre' => 'Suma Playa La Arena',
             'Direccion' => 'Av. Marítima Puerto de Santiago',
             'NIF' => '12345678A',
+            'Icon' => 'Pencil',
             'user_id' => "1",
         ]);
 
@@ -27,6 +28,7 @@ class SupermercadoSeeder extends Seeder
             'Nombre' => 'Suma Ravelo',
             'Direccion' => 'C. Real Orotava',
             'NIF' => '87654321B',
+            'Icon' => 'Pencil',
             'user_id' => "1",
         ]);
 
@@ -34,8 +36,9 @@ class SupermercadoSeeder extends Seeder
             'Nombre' => 'Suma La Quinta',
             'Direccion' => 'C. Bicacarera',
             'NIF' => '11223344C',
+            'Icon' => 'Pencil',
             'user_id' => "1",
         ]);
-    
+
     }
 }

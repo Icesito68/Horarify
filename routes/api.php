@@ -23,6 +23,8 @@ Route::group(['as' => 'api.'], routes: function() {
 });
 
 Route::get('user/{userId}/supermercados', [UserController::class, 'usuarioSupermercados']);
+Route::get('empleado/{userId}/vacaciones', [EmpleadoController::class, 'vacacionesEmpleado']);
+
 Route::get('supermercados/{id}/empleados', action: [SupermercadoController::class, 'empleados']);
 Route::get('supermercados/{id}/horarios', action: [SupermercadoController::class, 'horarios']);
 Route::get('supermercados/{id}/festivos', action: [SupermercadoController::class, 'festivos']);
