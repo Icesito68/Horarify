@@ -15,6 +15,7 @@ interface CentroContextType {
   centro: Centro | null;
   setCentro: (centro: Centro) => void;
   centrosDisponibles: Centro[];
+  setCentrosDisponibles: (centros: Centro[]) => void;
 }
 
 const CentroContext = createContext<CentroContextType | undefined>(undefined);
@@ -37,7 +38,7 @@ export const CentroProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   return (
-    <CentroContext.Provider value={{ centro, setCentro, centrosDisponibles }}>
+    <CentroContext.Provider value={{ centro, setCentro, centrosDisponibles, setCentrosDisponibles }}>
       {children}
     </CentroContext.Provider>
   );

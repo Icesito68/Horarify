@@ -2,6 +2,9 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import HorarioDialog from '@/components/dialog/HorarioDialog';
 import { useCentro } from '@/providers/centroProvider';
+import { generarHorario } from '@/components/GenerarHorario';
+import { Button } from '@/components/ui/button';
+import { CalendarClock } from 'lucide-react';
 
 const headers = [
   // 'DNI', 
@@ -84,8 +87,23 @@ export default function Table() {
     fetchData();
   }, [centroId]);
 
+  const handleAddHorario = async () => {
+    try {
+      await generarHorario(centroId);
+    } catch (err) {
+      console.log(err)
+    }
+  };
+
   return (
     <div className="space-y-10">
+      <div className="mb-6 flex items-center justify-start">
+        <Button onClick={handleAddHorario} className="font-semibold">
+          <CalendarClock className="mr-2 h-4 w-4" />
+          Generar horario
+        </Button>
+      </div>
+
       {[...agrupado.entries()].map(([inicioSemana, horarios]) => {
         const inicio = new Date(inicioSemana);
         const fin = new Date(inicio);
