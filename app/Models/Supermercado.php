@@ -20,6 +20,7 @@ class Supermercado extends Model
         'Nombre',
         'Direccion',
         'NIF',
+        'Icon',
         'user_id',
     ];
 

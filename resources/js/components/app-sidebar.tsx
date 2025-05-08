@@ -23,6 +23,11 @@ const mainNavItems: NavItem[] = [
         title: 'Dias Festivos',
         href: '/festivos',
         icon: User,
+    },
+    {
+        title: 'Empresas',
+        href: '/empresas',
+        icon: User,
     }
 ];
 
