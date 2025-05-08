@@ -137,7 +137,9 @@ export default function Empleados() {
       <Head title="Empleados" />
 
       <div className="bg-background text-foreground p-6">
-        <div className="mb-4 flex justify-between flex-wrap gap-2">
+        <div className="mb-4 flex flex-wrap gap-2 items-center justify-start">
+          <Button onClick={() => setShowAddModal(true)}>Añadir empleado</Button>
+
           <DialogDeleteEmpleados
             selected={selected}
             setSelected={setSelected}
@@ -170,8 +172,6 @@ export default function Empleados() {
             setHoraFinRot={setHoraFinRot}
             setMinutoFinRot={setMinutoFinRot}
           />
-
-          <Button onClick={() => setShowAddModal(true)}>Añadir empleado</Button>
         </div>
 
         <DialogEditEmpleado

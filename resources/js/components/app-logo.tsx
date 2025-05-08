@@ -1,8 +1,11 @@
 import AppLogoIcon from './app-logo-icon';
 import { useCentro } from '../providers/centroProvider';
+import { useSidebar } from "@/components/ui/sidebar";
 
 export default function AppLogo() {
   const { centro, setCentro, centrosDisponibles } = useCentro();
+
+  const { state } = useSidebar();
 
   return (
     <>
@@ -11,20 +14,22 @@ export default function AppLogo() {
           <AppLogoIcon className="w-5 h-5" />
         </div>
 
-      <select
-        value={centro?.id ?? ''}
-        onChange={(e) => {
-          const selected = centrosDisponibles.find((s) => s.id === Number(e.target.value));
-          if (selected) setCentro(selected);
-        }}
-        className="ml-1 flex-1 rounded-md border border-border bg-background px-2 py-1 text-sm font-medium text-foreground shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
-      >
-        {centrosDisponibles.map((s) => (
-          <option key={s.id} value={s.id}>
-            {s.Nombre}
-          </option>
-        ))}
-      </select>
+        {state !== "collapsed" && (
+          <select
+            value={centro?.id ?? ''}
+            onChange={(e) => {
+              const selected = centrosDisponibles.find((s) => s.id === Number(e.target.value));
+              if (selected) setCentro(selected);
+            }}
+            className="ml-1 flex-1 rounded-md border border-border bg-background px-2 py-1 text-sm font-medium text-foreground shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
+          >
+            {centrosDisponibles.map((s) => (
+              <option key={s.id} value={s.id}>
+                {s.Nombre}
+              </option>
+            ))}
+          </select>
+        )}
       </div>
     </>
   );
