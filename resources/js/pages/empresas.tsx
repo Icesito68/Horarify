@@ -3,8 +3,7 @@ import axios from 'axios';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Dialog, DialogTrigger, DialogContent, DialogTitle } from '@/components/ui/dialog';
-import { Plus, Pencil, Trash2 } from 'lucide-react';
-import * as LucideIcons from 'lucide-react';
+import {Pencil, Trash2 } from 'lucide-react';
 import { useCentro } from '@/providers/centroProvider';
 import AppLayout from '@/layouts/app-layout';
 
@@ -18,9 +17,8 @@ type Supermercado = {
 };
 
 export default function Supermercados() {
-    const [supermercados, setSupermercados] = useState<Supermercado[]>([]);
     const [selected, setSelected] = useState<Supermercado | null>(null);
-    const { centro } = useCentro();
+    const { centrosDisponibles, setCentrosDisponibles } = useCentro();
 
     const [showCreateModal, setShowCreateModal] = useState(false);
     const [form, setForm] = useState({
@@ -36,7 +34,7 @@ export default function Supermercados() {
             const response = await axios.post('api/supermercados', form);
             const nuevoSupermercado = response.data.data;
 
-            setSupermercados((prev) => [...prev, nuevoSupermercado]);
+            setCentrosDisponibles([...centrosDisponibles, nuevoSupermercado]);
 
             // Resetear formulario y cerrar modal
             setForm({ Nombre: '', Direccion: '', NIF: '', Icon: 'pencil', user_id: 1 });
@@ -45,18 +43,6 @@ export default function Supermercados() {
             console.error('Error al crear supermercado:', error);
         }
     };
-
-    useEffect(() => {
-        axios.get('/api/supermercados')
-            .then(res => {
-                if (Array.isArray(res.data.data)) {
-                    setSupermercados(res.data.data);
-                } else {
-                    console.error('La respuesta no es un array:', res.data);
-                }
-            })
-            .catch(err => console.error(err));
-    }, []);
 
     const [showDeleteModal, setShowDeleteModal] = useState(false);
 
@@ -74,24 +60,24 @@ export default function Supermercados() {
             setEditForm({ ...selected });
         }
     }, [selected]);
+
     const handleUpdateSupermercado = async () => {
-        if (!editForm?.id) return;
+      if (!editForm?.id) return;
 
-        try {
-            const response = await axios.put(`/api/supermercados/${editForm.id}`, editForm);
-            const actualizado = response.data.data;
+      try {
+        const response = await axios.put(`/api/supermercados/${editForm.id}`, editForm);
+        const actualizado = response.data.data;
 
-            setSupermercados(prev =>
-                prev.map((s) => (s.id === actualizado.id ? actualizado : s))
-            );
+        setCentrosDisponibles(prev => prev.map((s) => (s.id === actualizado.id ? actualizado : s)));
 
-            setEditForm(null);
-            setSelected(null);
-            setShowEditModal(false); // 👈 Esto cierra el diálogo
-        } catch (error) {
-            console.error('Error actualizando supermercado:', error);
-        }
+        setEditForm(null);
+        setSelected(null);
+        setShowEditModal(false);
+      } catch (error) {
+        console.error('Error actualizando supermercado:', error);
+      }
     };
+
 
     return (
         <AppLayout breadcrumbs={[{ title: 'Supermercados', href: '/supermercados' }]}>
@@ -214,7 +200,7 @@ export default function Supermercados() {
                                         if (!selected?.id) return;
                                         try {
                                             await axios.delete(`/api/supermercados/${selected.id}`);
-                                            setSupermercados((prev) => prev.filter((s) => s.id !== selected.id));
+                                            setCentrosDisponibles((prev) => prev.filter((s) => s.id !== selected.id));
                                             setSelected(null);
                                             setShowDeleteModal(false);
                                         } catch (error) {
@@ -231,7 +217,8 @@ export default function Supermercados() {
 
                 {/* Lista de supermercados */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {supermercados.map((supermercado) => {
+                    {centrosDisponibles.map((supermercado) => {
+
                         // const IconComponent = LucideIcons[supermercado.Icon];
 
                         return (

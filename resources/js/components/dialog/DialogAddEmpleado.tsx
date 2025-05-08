@@ -119,10 +119,9 @@ export default function DialogAddEmpleado({
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent className="bg-card p-6 max-w-lg max-h-[80vh] overflow-y-auto">
-                <DialogTitle className="mb-4">Nuevo Empleado</DialogTitle>
-
-                <div className="space-y-4">
+            <DialogContent className="bg-transparent p-0 max-w-lg max-h-[80vh] overflow-hidden rounded-lg">
+                <div className="bg-card p-6 overflow-y-auto max-h-[80vh] rounded-lg">
+                    <DialogTitle className="mb-4">Nuevo Empleado</DialogTitle>
                     <InputField label="DNI" value={formData.DNI} onChange={val => setFormData({ ...formData, DNI: val })} />
                     <InputField label="Nombre" value={formData.Nombre} onChange={val => setFormData({ ...formData, Nombre: val })} />
                     <InputField label="Apellidos" value={formData.Apellidos} onChange={val => setFormData({ ...formData, Apellidos: val })} />

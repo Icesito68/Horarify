@@ -31,5 +31,17 @@ class SupermercadoController extends Controller
         return response()->json($supermercado->festivos);
     }
 
+    public function ultimoHorario($id)
+    {
+        $horario = \App\Models\Horario::where('supermercado_id', $id)
+            ->orderByDesc('inicio_semana')
+            ->first();
+    
+        if (!$horario) {
+            return response()->json(['message' => 'No se encontró ningún horario.'], 404);
+        }
+    
+        return response()->json(['inicio_semana' => $horario->Inicio_Semana]);
+    }
 
 }

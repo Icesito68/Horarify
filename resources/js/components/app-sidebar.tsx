@@ -3,16 +3,15 @@ import { NavMain } from '@/components/nav-main';
 import { NavUser } from '@/components/nav-user';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
-import { Phone, Calendar, User } from 'lucide-react';
+import { Phone, CalendarDays, User, ShoppingCart, Calendar1 } from 'lucide-react';
 import AppLogo from './app-logo';
 import AppearanceTabs from '@/components/appearance-tabs';
 
-
 const mainNavItems: NavItem[] = [
     {
-        title: 'Calendario',
+        title: 'Horarios',
         href: '/dashboard',
-        icon: Calendar,
+        icon: CalendarDays,
     },
     {
         title: 'Empleados',
@@ -22,12 +21,12 @@ const mainNavItems: NavItem[] = [
     {
         title: 'Dias Festivos',
         href: '/festivos',
-        icon: User,
+        icon: Calendar1,
     },
     {
-        title: 'Empresas',
+        title: 'Supermercados',
         href: '/empresas',
-        icon: User,
+        icon: ShoppingCart,
     }
 ];
 
