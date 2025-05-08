@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Eye, Pencil, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -27,6 +28,29 @@ type HorarioDialogProps = {
 };
 
 export default function HorarioDialog({ semana, inicio, fin, datos }: HorarioDialogProps) {
+    const [horarios, setHorarios] = useState(datos);
+
+    async function handleDeleteHorario(id: number) {
+
+        try {
+            const response = await fetch(`/api/horarios/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error('Error al eliminar el horario');
+            }
+
+            setHorarios(prev => prev.filter(horario => horario.id !== id));
+        } catch (error) {
+            console.error(error);
+            alert('Hubo un error al eliminar el horario');
+        }
+    }
+
     return (
         <Dialog>
             <DialogTrigger asChild>
@@ -61,13 +85,17 @@ export default function HorarioDialog({ semana, inicio, fin, datos }: HorarioDia
                             </tr>
                         </thead>
                         <tbody>
-                            {datos.map((horario) => (
+                            {horarios.map((horario) => (
                                 <tr key={horario.id}>
                                     <td className="px-4 py-2 border border-border space-x-2">
                                         <Button variant="outline" size="icon">
                                             <Pencil className="w-4 h-4" />
                                         </Button>
-                                        <Button variant="destructive" size="icon">
+                                        <Button
+                                            variant="destructive"
+                                            size="icon"
+                                            onClick={() => handleDeleteHorario(horario.id)}
+                                        >
                                             <Trash2 className="w-4 h-4" />
                                         </Button>
                                     </td>
