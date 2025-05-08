@@ -18,7 +18,9 @@ export async function generarHorario(centroId: number) {
 
         // Generar los horarios para los empleados
         for (const empleado of empleados) {
-            crearHorario(centroId, fechaLunes, empleado.id, empleado.Dia_Libre, empleado.Especial);
+            crearHorario(
+                centroId, fechaLunes, empleado.id, empleado.Dia_Libre, empleado.Especial, 
+                empleado.Rotativo, empleado.Turno, empleado.Turno_Rotativo);
         }
 
     } catch (err) {
@@ -75,10 +77,7 @@ const obtenerFecha = async (centroId: number): Promise<string> => {
         monday.setDate(monday.getDate() + 1);
     
         return monday.toISOString().split('T')[0];
-    }
-    
-    
-    
+    }    
 };
 
 
@@ -87,7 +86,10 @@ const crearHorario = async (
     fechaLunes: string,
     empleadoId: number,
     diaLibre: string,
-    especial: boolean
+    especial: boolean,
+    Rotativo: boolean,
+    Turno: string,
+    Turno_Rotativo: string
 ) => {
     const dias = ['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado', 'Domingo'];
     const horario: Record<string, string> = {};
@@ -99,7 +101,7 @@ const crearHorario = async (
         if (index === indexLibre || index === indexLibreSiguiente) {
             horario[dia] = 'Libre';
         } else {
-            horario[dia] = '9:00-18:00';
+            horario[dia] = Turno;
         }
     });
 
@@ -115,6 +117,14 @@ const crearHorario = async (
         console.log('Horario creado correctamente:', response.data);
 
         await actualizarDiaLibre(empleadoId, diaLibre, especial);
+
+        if (Rotativo) {
+            await axios.put(`/api/empleados/${empleadoId}`, {
+                Turno: Turno_Rotativo,
+                Turno_Rotativo: Turno,
+            });
+            console.log(`Turnos intercambiados para empleado ${empleadoId}`);
+        }
 
     } catch (err) {
         console.error('Error creando horario o actualizando empleado:', err);
