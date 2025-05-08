@@ -15,7 +15,9 @@ export async function generarHorario(centroId: number) {
 
         const fechaLunes = obtenerFecha();
 
-        crearHorario(centroId, fechaLunes)
+        for (const empleado of empleados) {
+            crearHorario(centroId, fechaLunes, empleado.id, empleado.Dia_Libre, empleado.Especial);
+        }
 
     } catch (err) {
         console.error('Error generando horario:', err);
@@ -41,25 +43,67 @@ const obtenerFecha = () => {
 
     return monday.toLocaleDateString();
   };
+
+
   
-  const crearHorario = async (centroId: number, fechaLunes: string) => {
+  const crearHorario = async (
+    centroId: number,
+    fechaLunes: string,
+    empleadoId: number,
+    diaLibre: string,
+    especial: boolean
+) => {
+    const dias = ['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado', 'Domingo'];
+    const horario: Record<string, string> = {};
+
+    const indexLibre = dias.indexOf(diaLibre);
+    const indexLibreSiguiente = (indexLibre + 1) % 7;
+
+    dias.forEach((dia, index) => {
+        if (index === indexLibre || index === indexLibreSiguiente) {
+            horario[dia] = 'Libre';
+        } else {
+            horario[dia] = '9:00-18:00';
+        }
+    });
+
     const datosHorario = {
-        Lunes: '9:00-18:00',
-        Martes: '9:00-18:00',
-        Miercoles: '9:00-18:00',
-        Jueves: '9:00-18:00',
-        Viernes: '9:00-18:00',
-        Sabado: '9:00-18:00',
-        Domingo: '9:00-18:00',
+        ...horario,
         Inicio_Semana: fechaLunes,
         supermercado_id: centroId,
-        empleado_id: 30,
+        empleado_id: empleadoId,
     };
 
     try {
         const response = await axios.post(`/api/horarios`, datosHorario);
         console.log('Horario creado correctamente:', response.data);
+
+        await actualizarDiaLibre(empleadoId, diaLibre, especial);
+
     } catch (err) {
-        console.error('Error creando horario:', err);
+        console.error('Error creando horario o actualizando empleado:', err);
+    }
+};
+
+
+const actualizarDiaLibre = async (
+    empleadoId: number,
+    diaLibreActual: string,
+    especial: boolean
+) => {
+    if (especial) return;
+
+    const dias = ['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado', 'Domingo'];
+    const indexActual = dias.indexOf(diaLibreActual);
+    const indexNuevo = (indexActual + 1) % 7;
+    const nuevoDiaLibre = dias[indexNuevo];
+
+    try {
+        await axios.put(`/api/empleados/${empleadoId}`, {
+            Dia_Libre: nuevoDiaLibre,
+        });
+        console.log(`Día libre actualizado a ${nuevoDiaLibre} para empleado ${empleadoId}`);
+    } catch (err) {
+        console.error(`Error actualizando día libre para empleado ${empleadoId}:`, err);
     }
 };
