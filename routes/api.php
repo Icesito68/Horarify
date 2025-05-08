@@ -27,6 +27,7 @@ Route::get('empleado/{userId}/vacaciones', [EmpleadoController::class, 'vacacion
 
 Route::get('supermercados/{id}/empleados', action: [SupermercadoController::class, 'empleados']);
 Route::get('supermercados/{id}/horarios', action: [SupermercadoController::class, 'horarios']);
+Route::get('supermercados/{id}/ultimoHorario', [SupermercadoController::class, 'ultimoHorario']);
 Route::get('supermercados/{id}/festivos', action: [SupermercadoController::class, 'festivos']);
 
 Route::delete('empleados', [EmpleadoController::class, 'destroyMany']);
