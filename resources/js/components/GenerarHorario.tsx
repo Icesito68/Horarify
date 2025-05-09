@@ -97,8 +97,23 @@ const crearHorario = async (
     const indexLibre = dias.indexOf(diaLibre);
     const indexLibreSiguiente = (indexLibre + 1) % 7;
 
+    const fechaLunesObj = new Date(fechaLunes);
+    const fechasSemana: string[] = [];
+
+    for (let i = 0; i < 7; i++) {
+        const fecha = new Date(fechaLunesObj);
+        fecha.setDate(fecha.getDate() + i);
+        fechasSemana.push(fecha.toISOString().split('T')[0]);
+    }
+
+    const vacaciones = await obtenerVacaciones(empleadoId);
+
     dias.forEach((dia, index) => {
-        if (index === indexLibre || index === indexLibreSiguiente) {
+        const fechaDia = fechasSemana[index];
+
+        if (vacaciones.includes(fechaDia)) {
+            horario[dia] = 'Vacaciones';
+        } else if (index === indexLibre || index === indexLibreSiguiente) {
             horario[dia] = 'Libre';
         } else {
             horario[dia] = Turno;
@@ -131,6 +146,7 @@ const crearHorario = async (
     }
 };
 
+
 const actualizarDiaLibre = async (
     empleadoId: number,
     diaLibreActual: string,
@@ -150,5 +166,27 @@ const actualizarDiaLibre = async (
         console.log(`Día libre actualizado a ${nuevoDiaLibre} para empleado ${empleadoId}`);
     } catch (err) {
         console.error(`Error actualizando día libre para empleado ${empleadoId}:`, err);
+    }
+};
+
+const obtenerVacaciones = async (empleadoId: number): Promise<string[]> => {
+    try {
+        const response = await axios.get(`/api/empleado/${empleadoId}/vacaciones`);
+        const { Fecha_inicio, Fecha_fin } = response.data;
+
+        const fechaInicio = new Date(Fecha_inicio);
+        const fechaFin = new Date(Fecha_fin);
+        const diasVacaciones: string[] = [];
+
+        const currentDate = new Date(fechaInicio);
+        while (currentDate <= fechaFin) {
+            diasVacaciones.push(currentDate.toISOString().split('T')[0]);
+            currentDate.setDate(currentDate.getDate() + 1);
+        }
+
+        return diasVacaciones;
+    } catch (err) {
+        console.warn(`No se pudieron obtener las vacaciones del empleado ${empleadoId}`, err);
+        return [];
     }
 };
