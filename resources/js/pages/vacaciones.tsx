@@ -69,10 +69,10 @@ export default function Vacaciones() {
     if (!nuevo.empleado_id || !nuevo.Fecha_inicio || !nuevo.Fecha_fin) return;
 
     axios.post('/api/vacaciones', {
-        empleado_id: Number(nuevo.empleado_id),
-        Fecha_inicio: nuevo.Fecha_inicio,
-        Fecha_fin: nuevo.Fecha_fin,
-      })
+      empleado_id: Number(nuevo.empleado_id),
+      Fecha_inicio: nuevo.Fecha_inicio,
+      Fecha_fin: nuevo.Fecha_fin,
+    })
       .then((res) => {
         setVacaciones((prev) => [...prev, res.data.data]);
         setNuevo({ empleado_id: '', Fecha_inicio: '', Fecha_fin: '' });
@@ -96,17 +96,17 @@ export default function Vacaciones() {
       Fecha_fin: vacacion.Fecha_fin?.slice(0, 10) || '',
     });
   };
-  
+
 
   const guardarEdicion = (id: number) => {
-    axios
-      .put(`/api/vacaciones/${id}`, {
-        empleado_id: Number(editando.empleado_id),
-        fecha_inicio: editando.Fecha_inicio,
-        fecha_fin: editando.Fecha_fin,
-      })
+    axios.put(`/api/vacaciones/${id}`, {
+      Fecha_inicio: editando.Fecha_inicio,
+      Fecha_fin: editando.Fecha_fin,
+    })
       .then((res) => {
-        setVacaciones((prev) => prev.map((v) => (v.id === id ? res.data.data : v)));
+        setVacaciones((prev) =>
+          prev.map((v) => (v.id === id ? res.data.data : v))
+        );
         setEditandoId(null);
       });
   };
@@ -200,68 +200,55 @@ export default function Vacaciones() {
                   </td>
                   {editandoId === v.id ? (
                     <>
-                      <td className="px-4 py-2 border border-border" colSpan={2}>
-                        <select
-                          value={editando.empleado_id}
-                          onChange={(e) =>
-                            setEditando({ ...editando, empleado_id: e.target.value })
-                          }
-                          className="w-full rounded-md border border-border p-1 text-sm"
-                        >
-                          {empleados.map((emp) => (
-                            <option key={emp.id} value={emp.id}>
-                              {emp.Nombre} {emp.Apellidos}
-                            </option>
-                          ))}
-                        </select>
-                      </td>
-                      <td className="px-4 py-2 border border-border">
-                        <Input
-                          type="date"
-                          value={editando.Fecha_inicio}
-                          onChange={(e) =>
-                            setEditando({ ...editando, Fecha_inicio: e.target.value })
-                          }
-                        />
-                      </td>
-                      <td className="px-4 py-2 border border-border flex gap-2 items-center">
-                        <Input
-                          type="date"
-                          value={editando.Fecha_fin}
-                          onChange={(e) =>
-                            setEditando({ ...editando, Fecha_fin: e.target.value })
-                          }
-                        />
-                        <Button size="icon" onClick={() => guardarEdicion(v.id)}>
-                          <Save className="h-4 w-4" />
-                        </Button>
-                        <Button
-                          size="icon"
-                          variant="secondary"
-                          onClick={() => setEditandoId(null)}
-                        >
-                          <X className="h-4 w-4" />
-                        </Button>
-                      </td>
-                    </>
-                  ) : (
-                    <>
                       <td className="px-4 py-2 border border-border">{empleado.Nombre}</td>
                       <td className="px-4 py-2 border border-border">{empleado.Apellidos}</td>
-                      <td className="px-4 py-2 border border-border">
-                        {formatearFecha(v.Fecha_inicio)}
-                      </td>
-                      <td className="px-4 py-2 border border-border">
-                        {formatearFecha(v.Fecha_fin)}
-                      </td>
-                    </>
+                  <td className="px-4 py-2 border border-border">
+                    <Input
+                      type="date"
+                      value={editando.Fecha_inicio}
+                      onChange={(e) =>
+                        setEditando({ ...editando, Fecha_inicio: e.target.value })
+                      }
+                    />
+                  </td>
+                  <td className="px-4 py-2 border border-border flex gap-2 items-center">
+                    <Input
+                      type="date"
+                      value={editando.Fecha_fin}
+                      onChange={(e) =>
+                        setEditando({ ...editando, Fecha_fin: e.target.value })
+                      }
+                    />
+                    <Button size="icon" onClick={() => guardarEdicion(v.id)}>
+                      <Save className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      size="icon"
+                      variant="secondary"
+                      onClick={() => setEditandoId(null)}
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
+                  </td>
+                </>
+              ) : (
+            <>
+              <td className="px-4 py-2 border border-border">{empleado.Nombre}</td>
+              <td className="px-4 py-2 border border-border">{empleado.Apellidos}</td>
+              <td className="px-4 py-2 border border-border">
+                {formatearFecha(v.Fecha_inicio)}
+              </td>
+              <td className="px-4 py-2 border border-border">
+                {formatearFecha(v.Fecha_fin)}
+              </td>
+            </>
                   )}
-                </tr>
-              );
+          </tr>
+          );
             })}
-          </tbody>
-        </table>
-      </div>
-    </AppLayout>
+        </tbody>
+      </table>
+    </div>
+    </AppLayout >
   );
 }
