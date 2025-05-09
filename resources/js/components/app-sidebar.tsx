@@ -24,6 +24,11 @@ const mainNavItems: NavItem[] = [
         icon: Calendar1,
     },
     {
+        title: 'Vacaciones',
+        href: '/vacaciones',
+        icon: Calendar1,
+    },
+    {
         title: 'Supermercados',
         href: '/empresas',
         icon: ShoppingCart,
