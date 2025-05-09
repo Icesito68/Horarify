@@ -22,8 +22,8 @@ class VacacionesFactory extends Factory
     public function definition(): array
     {
         return [
-            'Fecha_inicio' => fake()->date(),
-            'Fecha_fin' => fake()->date(),
+            'Fecha_inicio' => fake()->dateTimeBetween('-3 months', '+3 months')->format('Y-m-d'),
+            'Fecha_fin' => fake()->dateTimeBetween('-3 months', '+3 months')->format('Y-m-d'),
             'empleado_id' => Empleado::factory(),
         ];
     }
