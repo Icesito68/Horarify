@@ -9,18 +9,15 @@ export async function generarHorario(centroId: number) {
         const empleados = empleadosResponse.data;
         console.log('Empleados:', empleados);
 
-        const festivosResponse = await axios.get(`/api/supermercados/${centroId}/festivos`);
-        const festivos = festivosResponse.data;
-        console.log('Festivos:', festivos);
-
         // Obtener el lunes correcto para la generación de horarios
         const fechaLunes = await obtenerFecha(centroId);
+        const festivos = await obtenerFestivos(centroId);
 
         // Generar los horarios para los empleados
         for (const empleado of empleados) {
             crearHorario(
                 centroId, fechaLunes, empleado.id, empleado.Dia_Libre, empleado.Especial, 
-                empleado.Rotativo, empleado.Turno, empleado.Turno_Rotativo);
+                empleado.Rotativo, empleado.Turno, empleado.Turno_Rotativo, festivos);
         }
 
     } catch (err) {
@@ -89,7 +86,8 @@ const crearHorario = async (
     especial: boolean,
     Rotativo: boolean,
     Turno: string,
-    Turno_Rotativo: string
+    Turno_Rotativo: string,
+    festivos: { fecha: string; nombre: string }[]
 ) => {
     const dias = ['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado', 'Domingo'];
     const horario: Record<string, string> = {};
@@ -97,8 +95,26 @@ const crearHorario = async (
     const indexLibre = dias.indexOf(diaLibre);
     const indexLibreSiguiente = (indexLibre + 1) % 7;
 
+    const fechaLunesObj = new Date(fechaLunes);
+    const fechasSemana: string[] = [];
+
+    for (let i = 0; i < 7; i++) {
+        const fecha = new Date(fechaLunesObj);
+        fecha.setDate(fecha.getDate() + i);
+        fechasSemana.push(fecha.toISOString().split('T')[0]);
+    }
+
+    const vacaciones = await obtenerVacaciones(empleadoId);
+
     dias.forEach((dia, index) => {
-        if (index === indexLibre || index === indexLibreSiguiente) {
+        const fechaDia = fechasSemana[index];
+
+        const festivo = festivos.find(f => f.fecha === fechaDia);
+        if (festivo) {
+            horario[dia] = festivo.nombre;
+        } else if (vacaciones.includes(fechaDia)) {
+            horario[dia] = 'Vacaciones';
+        } else if (index === indexLibre || index === indexLibreSiguiente) {
             horario[dia] = 'Libre';
         } else {
             horario[dia] = Turno;
@@ -131,6 +147,7 @@ const crearHorario = async (
     }
 };
 
+
 const actualizarDiaLibre = async (
     empleadoId: number,
     diaLibreActual: string,
@@ -150,5 +167,43 @@ const actualizarDiaLibre = async (
         console.log(`Día libre actualizado a ${nuevoDiaLibre} para empleado ${empleadoId}`);
     } catch (err) {
         console.error(`Error actualizando día libre para empleado ${empleadoId}:`, err);
+    }
+};
+
+const obtenerVacaciones = async (empleadoId: number): Promise<string[]> => {
+    try {
+        const response = await axios.get(`/api/empleado/${empleadoId}/vacaciones`);
+        const { Fecha_inicio, Fecha_fin } = response.data;
+
+        const fechaInicio = new Date(Fecha_inicio);
+        const fechaFin = new Date(Fecha_fin);
+        const diasVacaciones: string[] = [];
+
+        const currentDate = new Date(fechaInicio);
+        while (currentDate <= fechaFin) {
+            diasVacaciones.push(currentDate.toISOString().split('T')[0]);
+            currentDate.setDate(currentDate.getDate() + 1);
+        }
+
+        return diasVacaciones;
+    } catch (err) {
+        console.warn(`No se pudieron obtener las vacaciones del empleado ${empleadoId}`, err);
+        return [];
+    }
+};
+
+
+const obtenerFestivos = async (centroId: number): Promise<{ fecha: string; nombre: string }[]> => {
+    try {
+        const response = await axios.get(`/api/supermercados/${centroId}/festivos`);
+        const festivos = response.data;
+
+        return festivos.map((f: { Fecha: string; Nombre: string }) => ({
+            fecha: f.Fecha.split('T')[0],
+            nombre: f.Nombre,
+        }));
+    } catch (err) {
+        console.warn(`No se pudieron obtener los festivos del supermercado ${centroId}`, err);
+        return [];
     }
 };

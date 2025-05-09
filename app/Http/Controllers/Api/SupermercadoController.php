@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Models\Horario;
 use Orion\Http\Requests\Request as OrionRequest;
 use Orion\Concerns\DisableAuthorization;
 use Orion\Http\Controllers\Controller;
@@ -33,7 +34,7 @@ class SupermercadoController extends Controller
 
     public function ultimoHorario($id)
     {
-        $horario = \App\Models\Horario::where('supermercado_id', $id)
+        $horario = Horario::where('supermercado_id', $id)
             ->orderByDesc('inicio_semana')
             ->first();
     
