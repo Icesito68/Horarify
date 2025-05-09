@@ -82,7 +82,11 @@ export default function Vacaciones() {
   const eliminarSeleccionados = () => {
     if (seleccionados.length === 0) return;
 
-    axios.delete('/api/vacaciones', { data: { ids: seleccionados } }).then(() => {
+    axios.delete('/api/vacaciones', 
+      { data: { ids: seleccionados },
+     headers: { 'Content-Type': 'application/json' },
+     })
+      .then(() => {
       setVacaciones((prev) => prev.filter((v) => !seleccionados.includes(v.id)));
       setSeleccionados([]);
     });

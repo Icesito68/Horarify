@@ -32,3 +32,4 @@ Route::get('supermercados/{id}/festivos', action: [SupermercadoController::class
 
 Route::delete('empleados', [EmpleadoController::class, 'destroyMany']);
 Route::delete('festivos', [FestivoController::class, 'destroyMany']);
+Route::delete('vacaciones', [VacacionController::class, 'destroyMany']);
