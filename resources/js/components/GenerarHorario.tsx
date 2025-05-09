@@ -9,18 +9,15 @@ export async function generarHorario(centroId: number) {
         const empleados = empleadosResponse.data;
         console.log('Empleados:', empleados);
 
-        const festivosResponse = await axios.get(`/api/supermercados/${centroId}/festivos`);
-        const festivos = festivosResponse.data;
-        console.log('Festivos:', festivos);
-
         // Obtener el lunes correcto para la generación de horarios
         const fechaLunes = await obtenerFecha(centroId);
+        const festivos = await obtenerFestivos(centroId);
 
         // Generar los horarios para los empleados
         for (const empleado of empleados) {
             crearHorario(
                 centroId, fechaLunes, empleado.id, empleado.Dia_Libre, empleado.Especial, 
-                empleado.Rotativo, empleado.Turno, empleado.Turno_Rotativo);
+                empleado.Rotativo, empleado.Turno, empleado.Turno_Rotativo, festivos);
         }
 
     } catch (err) {
@@ -89,7 +86,8 @@ const crearHorario = async (
     especial: boolean,
     Rotativo: boolean,
     Turno: string,
-    Turno_Rotativo: string
+    Turno_Rotativo: string,
+    festivos: { fecha: string; nombre: string }[]
 ) => {
     const dias = ['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado', 'Domingo'];
     const horario: Record<string, string> = {};
@@ -111,7 +109,10 @@ const crearHorario = async (
     dias.forEach((dia, index) => {
         const fechaDia = fechasSemana[index];
 
-        if (vacaciones.includes(fechaDia)) {
+        const festivo = festivos.find(f => f.fecha === fechaDia);
+        if (festivo) {
+            horario[dia] = festivo.nombre;
+        } else if (vacaciones.includes(fechaDia)) {
             horario[dia] = 'Vacaciones';
         } else if (index === indexLibre || index === indexLibreSiguiente) {
             horario[dia] = 'Libre';
@@ -187,6 +188,22 @@ const obtenerVacaciones = async (empleadoId: number): Promise<string[]> => {
         return diasVacaciones;
     } catch (err) {
         console.warn(`No se pudieron obtener las vacaciones del empleado ${empleadoId}`, err);
+        return [];
+    }
+};
+
+
+const obtenerFestivos = async (centroId: number): Promise<{ fecha: string; nombre: string }[]> => {
+    try {
+        const response = await axios.get(`/api/supermercados/${centroId}/festivos`);
+        const festivos = response.data;
+
+        return festivos.map((f: { Fecha: string; Nombre: string }) => ({
+            fecha: f.Fecha.split('T')[0],
+            nombre: f.Nombre,
+        }));
+    } catch (err) {
+        console.warn(`No se pudieron obtener los festivos del supermercado ${centroId}`, err);
         return [];
     }
 };
