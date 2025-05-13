@@ -1,12 +1,9 @@
 import AppLayout from "@/layouts/app-layout";
 import { BreadcrumbItem } from "@/types";
 import { Head } from '@inertiajs/react';
-import { useCentro } from "@/providers/centroProvider";
 
 
 export default function Contacto() {
-  const { centro } = useCentro();
-  const centroNombre = centro;
 
   const Breadcrumbs: BreadcrumbItem[] = [
     {
@@ -17,7 +14,7 @@ export default function Contacto() {
 
   return (
     <AppLayout breadcrumbs={Breadcrumbs}>
-      <Head title={`Contacto - ${centroNombre}`} />
+      <Head title={`Contacto`} />
       <form action="https://fabform.io/f/xxxxx" method="post">
         <section className="pt-5">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
