@@ -21,7 +21,7 @@ class SupermercadoPolicy
      */
     public function view(User $user, Supermercado $supermercado): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -29,7 +29,7 @@ class SupermercadoPolicy
      */
     public function create(User $user): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -37,7 +37,7 @@ class SupermercadoPolicy
      */
     public function update(User $user, Supermercado $supermercado): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -45,7 +45,7 @@ class SupermercadoPolicy
      */
     public function delete(User $user, Supermercado $supermercado): bool
     {
-        return false;
+        return true;
     }
 
     /**

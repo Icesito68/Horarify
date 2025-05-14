@@ -5,25 +5,28 @@ import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { createRoot } from 'react-dom/client';
 import { initializeTheme } from './hooks/use-appearance';
 import { CentroProvider } from './providers/centroProvider';
+import { initAuth } from '@/lib/initAuth';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
-createInertiaApp({
+initAuth().then(() => {
+  createInertiaApp({
     title: (title) => `${title} - ${appName}`,
-    resolve: (name) => resolvePageComponent(`./pages/${name}.tsx`, import.meta.glob('./pages/**/*.tsx')),
+    resolve: (name) =>
+      resolvePageComponent(`./pages/${name}.tsx`, import.meta.glob('./pages/**/*.tsx')),
     setup({ el, App, props }) {
-        const root = createRoot(el);
-        root.render(
-            <CentroProvider>
-                <App {...props} />
-            </CentroProvider>
-        );
+      const root = createRoot(el);
+      root.render(
+        <CentroProvider>
+          <App {...props} />
+        </CentroProvider>
+      );
     },
-    
     progress: {
-        color: '#4B5563',
+      color: '#4B5563',
     },
-});
+  });
 
-// This will set light / dark mode on load...
-initializeTheme();
+  // Set light / dark mode on load
+  initializeTheme();
+});

@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
-import axios from 'axios';
+import axios from '@/lib/axios'; // ← asegúrate que `@` esté configurado en tsconfig
 import HorarioDialog from '@/components/dialog/HorarioDialog';
 import { useCentro } from '@/providers/centroProvider';
 import { generarHorario } from '@/components/GenerarHorario';
 import { Button } from '@/components/ui/button';
 import { CalendarClock } from 'lucide-react';
+import { usePage } from '@inertiajs/react';
 
 const headers = [
   // 'DNI', 
@@ -44,6 +45,9 @@ export default function Table() {
   const [horarios, setHorarios] = useState<HorarioConEmpleado[]>([]);
   const [agrupado, setAgrupado] = useState<Map<string, HorarioConEmpleado[]>>(new Map());
   const centroId = Number(centro?.id ?? 1);
+    const { auth } = usePage<any>().props;
+    const userId = auth.user.id;
+    console.log(userId);
 
   useEffect(() => {
     const fetchData = async () => {
