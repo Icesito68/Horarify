@@ -1,11 +1,6 @@
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useState,
-  ReactNode
-} from 'react';
+import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import axios from 'axios';
+import { useAuth } from './AuthContext';
 
 export interface Supermercado {
   id: number;
@@ -26,29 +21,23 @@ interface CentroContextType {
 
 const CentroContext = createContext<CentroContextType | undefined>(undefined);
 
-export const CentroProvider = ({
-  children,
-  userId,
-}: {
-  children: ReactNode;
-  userId: number;
-}) => {
+export const CentroProvider = ({ children }: { children: ReactNode }) => {
+  const { userId } = useAuth(); // 👈
   const [centro, setCentro] = useState<Centro | null>(null);
   const [centrosDisponibles, setCentrosDisponibles] = useState<Centro[]>([]);
 
-  useEffect(() => {
-    console.log("Id de usuario en el provider:", userId)
-    axios
-      .get<Supermercado[]>(`/api/user/${userId}/supermercados`)
-      .then((res) => {
-        const supermercados = res.data;
-        setCentrosDisponibles(supermercados);
-        if (supermercados.length > 0) {
-          setCentro(supermercados[0]);
-        }
-      })
-      .catch((err) => console.error('Error al cargar supermercados:', err));
-  }, [userId]);
+useEffect(() => {
+  if (!userId) return;
+
+  axios.get(`/api/user/${userId}/supermercados`)
+    .then((res) => {
+      const supermercados = res.data;
+      setCentrosDisponibles(supermercados);
+      if (supermercados.length > 0) {
+        setCentro(supermercados[0]);
+      }
+    });
+}, [userId]);
 
   return (
     <CentroContext.Provider
@@ -61,8 +50,6 @@ export const CentroProvider = ({
 
 export const useCentro = () => {
   const context = useContext(CentroContext);
-  if (!context) {
-    throw new Error('useCentro debe usarse dentro de un CentroProvider');
-  }
+  if (!context) throw new Error('useCentro debe usarse dentro de CentroProvider');
   return context;
 };
