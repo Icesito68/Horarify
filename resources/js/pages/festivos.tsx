@@ -115,7 +115,7 @@ export default function DiasFestivos() {
 
     const breadcrumbs: BreadcrumbItem[] = [
         { title: centroNombre, href: '/dashboard' },
-        { title: 'Empleados', href: '/empleados' },
+        { title: 'Festivos', href: '/empleados' },
     ];
 
 

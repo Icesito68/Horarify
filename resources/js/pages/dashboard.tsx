@@ -7,7 +7,6 @@ import { useCentro } from '@/providers/centroProvider';
 export default function Dashboard() {
     const { centro } = useCentro();
     const centroNombre = centro?.Nombre ?? 'Centro';
-    const centroId = Number(centro?.id ?? 1);
 
     const breadcrumbs: BreadcrumbItem[] = [
         {
@@ -15,14 +14,14 @@ export default function Dashboard() {
             href: '/dashboard',
         },
         {
-            title: 'Calendario',
+            title: 'Horarios',
             href: '/dashboard',
         },
     ];
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Calendario" />
+            <Head title="Horarios" />
             <div className="bg-card text-card-foreground shadow-md rounded-xl p-6">
                 <Table />
             </div>
