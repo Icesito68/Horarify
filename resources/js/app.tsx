@@ -5,11 +5,9 @@ import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { createRoot } from 'react-dom/client';
 import { initializeTheme } from './hooks/use-appearance';
 import { CentroProvider } from './providers/centroProvider';
-import { initAuth } from '@/lib/initAuth';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
-initAuth().then(() => {
   createInertiaApp({
     title: (title) => `${title} - ${appName}`,
     resolve: (name) =>
@@ -29,4 +27,3 @@ initAuth().then(() => {
 
   // Set light / dark mode on load
   initializeTheme();
-});
