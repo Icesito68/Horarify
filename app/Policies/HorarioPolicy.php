@@ -29,7 +29,7 @@ class HorarioPolicy
      */
     public function create(User $user): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -37,7 +37,7 @@ class HorarioPolicy
      */
     public function update(User $user, Horario $horario): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -45,7 +45,7 @@ class HorarioPolicy
      */
     public function delete(User $user, Horario $horario): bool
     {
-        return false;
+        return true;
     }
 
     /**
