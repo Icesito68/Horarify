@@ -68,6 +68,11 @@ export default function Vacaciones() {
   const agregarVacacion = () => {
     if (!nuevo.empleado_id || !nuevo.Fecha_inicio || !nuevo.Fecha_fin) return;
 
+    if (new Date(nuevo.Fecha_inicio) > new Date(nuevo.Fecha_fin)) {
+      alert('La fecha de inicio no puede ser posterior a la fecha de fin.');
+      return;
+    }
+
     axios.post('/api/vacaciones', {
       empleado_id: Number(nuevo.empleado_id),
       Fecha_inicio: nuevo.Fecha_inicio,
@@ -78,6 +83,7 @@ export default function Vacaciones() {
         setNuevo({ empleado_id: '', Fecha_inicio: '', Fecha_fin: '' });
       });
   };
+
 
   const eliminarSeleccionados = () => {
     if (seleccionados.length === 0) return;
@@ -103,6 +109,11 @@ export default function Vacaciones() {
 
 
   const guardarEdicion = (id: number) => {
+    if (new Date(editando.Fecha_inicio) > new Date(editando.Fecha_fin)) {
+      alert('La fecha de inicio no puede ser posterior a la fecha de fin.');
+      return;
+    }
+  
     axios.put(`/api/vacaciones/${id}`, {
       Fecha_inicio: editando.Fecha_inicio,
       Fecha_fin: editando.Fecha_fin,
@@ -114,6 +125,7 @@ export default function Vacaciones() {
         setEditandoId(null);
       });
   };
+
 
   return (
     <AppLayout
