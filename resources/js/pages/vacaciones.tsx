@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Pencil, Save, X } from 'lucide-react';
 import { useCentro } from '@/providers/centroProvider';
+import Swal from 'sweetalert2';
 
 type Empleado = {
   id: number;
@@ -20,6 +21,7 @@ type Vacacion = {
   Fecha_inicio: string;
   Fecha_fin: string;
 };
+
 
 export default function Vacaciones() {
   const { centro } = useCentro();
@@ -69,7 +71,11 @@ export default function Vacaciones() {
     if (!nuevo.empleado_id || !nuevo.Fecha_inicio || !nuevo.Fecha_fin) return;
 
     if (new Date(nuevo.Fecha_inicio) > new Date(nuevo.Fecha_fin)) {
-      alert('La fecha de inicio no puede ser posterior a la fecha de fin.');
+      Swal.fire({
+        icon: 'error',
+        title: 'Fechas inválidas',
+        text: 'La fecha de inicio no puede ser posterior a la fecha de fin.',
+      });
       return;
     }
 
@@ -87,16 +93,32 @@ export default function Vacaciones() {
 
   const eliminarSeleccionados = () => {
     if (seleccionados.length === 0) return;
-
-    axios.delete('/api/vacaciones', 
-      { data: { ids: seleccionados },
-     headers: { 'Content-Type': 'application/json' },
-     })
-      .then(() => {
-      setVacaciones((prev) => prev.filter((v) => !seleccionados.includes(v.id)));
-      setSeleccionados([]);
+  
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: 'Se eliminarán las vacaciones seleccionadas. Esta acción no se puede deshacer.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axios.delete('/api/vacaciones', {
+          data: { ids: seleccionados },
+          headers: { 'Content-Type': 'application/json' },
+        })
+        .then(() => {
+          setVacaciones((prev) => prev.filter((v) => !seleccionados.includes(v.id)));
+          setSeleccionados([]);
+          Swal.fire('Eliminado', 'Las vacaciones han sido eliminadas.', 'success');
+        })
+        .catch(() => {
+          Swal.fire('Error', 'No se pudieron eliminar las vacaciones.', 'error');
+        });
+      }
     });
   };
+
 
   const iniciarEdicion = (vacacion: Vacacion) => {
     setEditandoId(vacacion.id);
@@ -110,10 +132,14 @@ export default function Vacaciones() {
 
   const guardarEdicion = (id: number) => {
     if (new Date(editando.Fecha_inicio) > new Date(editando.Fecha_fin)) {
-      alert('La fecha de inicio no puede ser posterior a la fecha de fin.');
+      Swal.fire({
+        icon: 'error',
+        title: 'Fechas inválidas',
+        text: 'La fecha de inicio no puede ser posterior a la fecha de fin.',
+      });
       return;
     }
-  
+
     axios.put(`/api/vacaciones/${id}`, {
       Fecha_inicio: editando.Fecha_inicio,
       Fecha_fin: editando.Fecha_fin,
