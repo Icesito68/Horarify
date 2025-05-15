@@ -10,7 +10,7 @@ use Orion\Concerns\DisablePagination;
 
 class EmpleadoController extends Controller
 {
-    use DisablePagination;
+    use DisablePagination, DisableAuthorization;
 
     public function destroyMany(Request $request)
     {

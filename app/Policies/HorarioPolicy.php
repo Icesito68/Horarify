@@ -13,7 +13,7 @@ class HorarioPolicy
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -21,7 +21,7 @@ class HorarioPolicy
      */
     public function view(User $user, Horario $horario): bool
     {
-        return false;
+        return true;
     }
 
     /**

@@ -13,12 +13,22 @@ export async function generarHorario(centroId: number) {
         const fechaLunes = await obtenerFecha(centroId);
         const festivos = await obtenerFestivos(centroId);
 
-        // Generar los horarios para los empleados
-        for (const empleado of empleados) {
-            crearHorario(
-                centroId, fechaLunes, empleado.id, empleado.Dia_Libre, empleado.Especial, 
-                empleado.Rotativo, empleado.Turno, empleado.Turno_Rotativo, festivos);
-        }
+        // ✅ Esperar a que todas las promesas terminen
+        await Promise.all(
+            empleados.map((empleado: any) =>
+                crearHorario(
+                    centroId,
+                    fechaLunes,
+                    empleado.id,
+                    empleado.Dia_Libre,
+                    empleado.Especial,
+                    empleado.Rotativo,
+                    empleado.Turno,
+                    empleado.Turno_Rotativo,
+                    festivos
+                )
+            )
+        );
 
     } catch (err) {
         console.error('Error generando horario:', err);
@@ -100,7 +110,7 @@ const obtenerFecha = async (centroId: number): Promise<string> => {
         // Consultar el último horario
         const response = await axios.get(`/api/supermercados/${centroId}/ultimoHorario`);
         const lastStart = new Date(response.data.inicio_semana);
-        
+
         // Forzar que lastStart sea lunes
         const lastDay = lastStart.getDay(); // 0 = domingo, 1 = lunes, ..., 6 = sábado
         const diffToMonday = lastDay === 0 ? 1 : (1 - lastDay); // Si es domingo (0), suma 1. Si es otro, ajusta al lunes.
@@ -131,19 +141,19 @@ const obtenerFecha = async (centroId: number): Promise<string> => {
 
     } catch (err) {
         console.warn('No se encontró horario anterior. Se usará lunes de esta semana.', err);
-    
+
         const today = new Date();
         const dayNumber = today.getDay(); // 0 (domingo) a 6 (sábado)
         const diffToMonday = dayNumber === 0 ? 1 : 1 - dayNumber;
-    
+
         const monday = new Date(today);
         monday.setDate(today.getDate() + diffToMonday);
         monday.setHours(0, 0, 0, 0); // Medianoche
-    
+
         monday.setDate(monday.getDate() + 1);
-    
+
         return monday.toISOString().split('T')[0];
-    }    
+    }
 };
 
 const actualizarDiaLibre = async (

@@ -1,16 +1,16 @@
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
-import { Head } from '@inertiajs/react';
+import { Head, usePage } from '@inertiajs/react';
 import Table from './calendar/table';
-import { useCentro } from '@/providers/centroProvider';
+import { CentroProvider } from '@/providers/centroProvider'; // Asegúrate de exportarlo
 
 export default function Dashboard() {
-    const { centro } = useCentro();
-    const centroNombre = centro?.Nombre ?? 'Centro';
+    const { props } = usePage();
+    const userId = props.auth?.user?.id;
 
     const breadcrumbs: BreadcrumbItem[] = [
         {
-            title: centroNombre,
+            title: props.auth?.user?.name ?? 'Usuario',
             href: '/dashboard',
         },
         {
@@ -20,11 +20,13 @@ export default function Dashboard() {
     ];
 
     return (
-        <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Horarios" />
-            <div className="bg-card text-card-foreground shadow-md rounded-xl p-6">
-                <Table />
-            </div>
-        </AppLayout>
+        <CentroProvider userId={userId}> {/* ✅ pasar el ID aquí */}
+            <AppLayout breadcrumbs={breadcrumbs}>
+                <Head title="Horarios" />
+                <div className="bg-card text-card-foreground shadow-md rounded-xl p-6">
+                    <Table />
+                </div>
+            </AppLayout>
+        </CentroProvider>
     );
 }
