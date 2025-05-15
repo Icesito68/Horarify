@@ -1,6 +1,5 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import axios from 'axios';
-import { usePage } from '@inertiajs/react';
 
 export interface Supermercado {
   id: number;
