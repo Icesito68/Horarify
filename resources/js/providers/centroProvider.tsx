@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import axios from 'axios';
-import { useAuth } from './AuthContext';
+import { usePage } from '@inertiajs/react';
 
 export interface Supermercado {
   id: number;
@@ -21,23 +21,27 @@ interface CentroContextType {
 
 const CentroContext = createContext<CentroContextType | undefined>(undefined);
 
-export const CentroProvider = ({ children }: { children: ReactNode }) => {
-  const { userId } = useAuth(); // 👈
+interface CentroProviderProps {
+  children: ReactNode;
+  userId: number | null;
+}
+
+export const CentroProvider = ({ children, userId }: CentroProviderProps) => {
   const [centro, setCentro] = useState<Centro | null>(null);
   const [centrosDisponibles, setCentrosDisponibles] = useState<Centro[]>([]);
 
-useEffect(() => {
-  if (!userId) return;
+  useEffect(() => {
+    if (!userId) return;
 
-  axios.get(`/api/user/${userId}/supermercados`)
-    .then((res) => {
-      const supermercados = res.data;
-      setCentrosDisponibles(supermercados);
-      if (supermercados.length > 0) {
-        setCentro(supermercados[0]);
-      }
-    });
-}, [userId]);
+    axios.get(`/api/user/${userId}/supermercados`)
+      .then((res) => {
+        const supermercados = res.data;
+        setCentrosDisponibles(supermercados);
+        if (supermercados.length > 0) {
+          setCentro(supermercados[0]);
+        }
+      });
+  }, [userId]);
 
   return (
     <CentroContext.Provider
@@ -47,6 +51,7 @@ useEffect(() => {
     </CentroContext.Provider>
   );
 };
+
 
 export const useCentro = () => {
   const context = useContext(CentroContext);

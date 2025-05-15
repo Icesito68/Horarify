@@ -9,7 +9,6 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import AuthLayout from '@/layouts/auth-layout';
-import { useAuth } from '@/providers/AuthContext';
 
 type LoginForm = {
     email: string;
@@ -23,8 +22,6 @@ interface LoginProps {
 }
 
 export default function Login({ status, canResetPassword }: LoginProps) {
-    const { setUserId } = useAuth(); // 👈 Usa el contexto
-
     const { data, setData, post, processing, errors, reset } = useForm<Required<LoginForm>>({
         email: '',
         password: '',
@@ -34,13 +31,6 @@ export default function Login({ status, canResetPassword }: LoginProps) {
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
         post(route('login'), {
-            onSuccess: (page) => {
-                // 👇 Aquí obtenemos el ID del usuario después del login
-                const user = page.props.auth?.user;
-                if (user?.id) {
-                    setUserId(user.id);
-                }
-            },
             onFinish: () => reset('password'),
         });
     };

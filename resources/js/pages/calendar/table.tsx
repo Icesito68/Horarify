@@ -44,55 +44,56 @@ export default function Table() {
   const [agrupado, setAgrupado] = useState<Map<string, HorarioConEmpleado[]>>(new Map());
   const centroId = Number(centro?.id ?? 1);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [horariosRes, empleadosRes] = await Promise.all([
-          axios.get(`api/supermercados/${centroId}/horarios`),
-          axios.get('api/empleados'),
-        ]);
+  const fetchData = async () => {
+    try {
+      const [horariosRes, empleadosRes] = await Promise.all([
+        axios.get(`api/supermercados/${centroId}/horarios`),
+        axios.get('api/empleados'),
+      ]);
 
-        console.log(centroId)
+      const empleadosMap = new Map<number, Empleado>(
+        empleadosRes.data.data.map((emp: Empleado) => [emp.id, emp])
+      );
 
-        const empleadosMap = new Map<number, Empleado>(
-          empleadosRes.data.data.map((emp: Empleado) => [emp.id, emp])
-        );
+      const enriched: HorarioConEmpleado[] = horariosRes.data.map((horario: Horario) => ({
+        ...horario,
+        empleado: empleadosMap.get(horario.empleado_id),
+      }));
 
-        const enriched: HorarioConEmpleado[] = horariosRes.data.map((horario: Horario) => ({
-          ...horario,
-          empleado: empleadosMap.get(horario.empleado_id),
-        }));
+      setHorarios(enriched);
 
-        setHorarios(enriched);
+      const grouped = new Map<string, HorarioConEmpleado[]>();
+      enriched.forEach((h) => {
+        if (!grouped.has(h.Inicio_Semana)) grouped.set(h.Inicio_Semana, []);
+        grouped.get(h.Inicio_Semana)!.push(h);
+      });
 
-        const grouped = new Map<string, HorarioConEmpleado[]>();
-        enriched.forEach((h) => {
-          if (!grouped.has(h.Inicio_Semana)) grouped.set(h.Inicio_Semana, []);
-          grouped.get(h.Inicio_Semana)!.push(h);
-        });
-
-        setAgrupado(
-          new Map(
-            [...grouped.entries()].sort(
-              ([a], [b]) => new Date(a).getTime() - new Date(b).getTime()
-            )
+      setAgrupado(
+        new Map(
+          [...grouped.entries()].sort(
+            ([a], [b]) => new Date(a).getTime() - new Date(b).getTime()
           )
-        );
-      } catch (error) {
-        console.error('Error cargando datos:', error);
-      }
-    };
+        )
+      );
+    } catch (error) {
+      console.error('Error cargando datos:', error);
+    }
+  };
 
+  // Mantener la llamada inicial
+  useEffect(() => {
     fetchData();
   }, [centroId]);
 
   const handleAddHorario = async () => {
     try {
       await generarHorario(centroId);
+      await fetchData(); 
     } catch (err) {
-      console.log(err)
+      console.error(err);
     }
   };
+
 
   return (
     <div className="space-y-10">
