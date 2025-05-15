@@ -6,6 +6,7 @@ import { Dialog, DialogTrigger, DialogContent, DialogTitle } from '@/components/
 import {Pencil, Trash2 } from 'lucide-react';
 import { useCentro } from '@/providers/centroProvider';
 import AppLayout from '@/layouts/app-layout';
+import Swal from 'sweetalert2';
 
 type Supermercado = {
     id?: number;
@@ -30,19 +31,33 @@ export default function Supermercados() {
     });
 
     const handleCreateSupermercado = async () => {
-        try {
-            const response = await axios.post('api/supermercados', form);
-            const nuevoSupermercado = response.data.data;
+      try {
+        const response = await axios.post('api/supermercados', form);
+        const nuevoSupermercado = response.data.data;
 
-            setCentrosDisponibles([...centrosDisponibles, nuevoSupermercado]);
+        setCentrosDisponibles([...centrosDisponibles, nuevoSupermercado]);
 
-            // Resetear formulario y cerrar modal
-            setForm({ Nombre: '', Direccion: '', NIF: '', Icon: 'pencil', user_id: 1 });
-            setShowCreateModal(false);
-        } catch (error) {
-            console.error('Error al crear supermercado:', error);
+        // Resetear formulario y cerrar modal
+        setForm({ Nombre: '', Direccion: '', NIF: '', Icon: 'pencil', user_id: 1 });
+        setShowCreateModal(false);
+
+        // Mostrar notificación de éxito
+        Swal.fire({
+          icon: 'success',
+          title: 'Supermercado creado',
+          text: `El supermercado "${nuevoSupermercado.Nombre}" se ha creado exitosamente.`,
+        });
+      } catch (error) {
+          console.error('Error al crear supermercado:', error);
+          setShowCreateModal(false);
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'No se pudo crear el supermercado. Intenta nuevamente.',
+          });
         }
     };
+
 
     const [showDeleteModal, setShowDeleteModal] = useState(false);
 
@@ -68,15 +83,33 @@ export default function Supermercados() {
         const response = await axios.put(`/api/supermercados/${editForm.id}`, editForm);
         const actualizado = response.data.data;
 
-        setCentrosDisponibles(prev => prev.map((s) => (s.id === actualizado.id ? actualizado : s)));
+        setCentrosDisponibles(prev =>
+          prev.map((s) => (s.id === actualizado.id ? actualizado : s))
+        );
 
         setEditForm(null);
         setSelected(null);
         setShowEditModal(false);
+
+        
+        Swal.fire({
+          icon: 'success',
+          title: 'Supermercado actualizado',
+          text: `Se actualizó correctamente "${actualizado.Nombre}".`,
+        });
       } catch (error) {
         console.error('Error actualizando supermercado:', error);
+        setShowEditModal(false)
+
+        
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'No se pudo actualizar el supermercado. Intenta nuevamente.',
+        });
       }
     };
+
 
 
     return (
@@ -203,8 +236,18 @@ export default function Supermercados() {
                                             setCentrosDisponibles((prev) => prev.filter((s) => s.id !== selected.id));
                                             setSelected(null);
                                             setShowDeleteModal(false);
+                                                Swal.fire({
+                                                    icon: 'success',
+                                                    title: 'Supermercado eliminado',
+                                                    text: `Se eliminó correctamente "${selected?.Nombre}".`,
+                                                });
                                         } catch (error) {
                                             console.error('Error eliminando supermercado:', error);
+                                            Swal.fire({
+                                                icon: 'error',
+                                                title: 'Error',
+                                                text: 'No se pudo eliminar el supermercado. Intenta nuevamente.',
+                                            });
                                         }
                                     }}
                                 >

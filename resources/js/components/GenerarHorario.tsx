@@ -26,58 +26,6 @@ export async function generarHorario(centroId: number) {
     }
 }
 
-const obtenerFecha = async (centroId: number): Promise<string> => {
-    try {
-        // Consultar el último horario
-        const response = await axios.get(`/api/supermercados/${centroId}/ultimoHorario`);
-        const lastStart = new Date(response.data.inicio_semana);
-        
-        // Forzar que lastStart sea lunes
-        const lastDay = lastStart.getDay(); // 0 = domingo, 1 = lunes, ..., 6 = sábado
-        const diffToMonday = lastDay === 0 ? 1 : (1 - lastDay); // Si es domingo (0), suma 1. Si es otro, ajusta al lunes.
-        lastStart.setDate(lastStart.getDate() + diffToMonday);
-        lastStart.setHours(0, 0, 0, 0);
-
-        // Obtener el lunes de esta semana
-        const today = new Date();
-        const todayDay = today.getDay();
-        const diffTodayToMonday = todayDay === 0 ? -6 : 1 - todayDay;
-        const mondayThisWeek = new Date(today);
-        mondayThisWeek.setDate(today.getDate() + diffTodayToMonday);
-        mondayThisWeek.setHours(0, 0, 0, 0);
-
-        console.log(`Último horario ajustado: ${lastStart.toISOString().split('T')[0]}`);
-        console.log(`Lunes actual: ${mondayThisWeek.toISOString().split('T')[0]}`);
-
-        let resultDate: Date;
-        if (lastStart.getTime() < mondayThisWeek.getTime()) {
-            resultDate = mondayThisWeek;
-        } else {
-            resultDate = new Date(lastStart);
-            resultDate.setDate(resultDate.getDate() + 8); // siguiente lunes
-        }
-
-        console.log(`Nuevo lunes a usar: ${resultDate.toISOString().split('T')[0]}`);
-        return resultDate.toISOString().split('T')[0];
-
-    } catch (err) {
-        console.warn('No se encontró horario anterior. Se usará lunes de esta semana.', err);
-    
-        const today = new Date();
-        const dayNumber = today.getDay(); // 0 (domingo) a 6 (sábado)
-        const diffToMonday = dayNumber === 0 ? 1 : 1 - dayNumber;
-    
-        const monday = new Date(today);
-        monday.setDate(today.getDate() + diffToMonday);
-        monday.setHours(0, 0, 0, 0); // Medianoche
-    
-        monday.setDate(monday.getDate() + 1);
-    
-        return monday.toISOString().split('T')[0];
-    }    
-};
-
-
 const crearHorario = async (
     centroId: number,
     fechaLunes: string,
@@ -147,6 +95,56 @@ const crearHorario = async (
     }
 };
 
+const obtenerFecha = async (centroId: number): Promise<string> => {
+    try {
+        // Consultar el último horario
+        const response = await axios.get(`/api/supermercados/${centroId}/ultimoHorario`);
+        const lastStart = new Date(response.data.inicio_semana);
+        
+        // Forzar que lastStart sea lunes
+        const lastDay = lastStart.getDay(); // 0 = domingo, 1 = lunes, ..., 6 = sábado
+        const diffToMonday = lastDay === 0 ? 1 : (1 - lastDay); // Si es domingo (0), suma 1. Si es otro, ajusta al lunes.
+        lastStart.setDate(lastStart.getDate() + diffToMonday);
+        lastStart.setHours(0, 0, 0, 0);
+
+        // Obtener el lunes de esta semana
+        const today = new Date();
+        const todayDay = today.getDay();
+        const diffTodayToMonday = todayDay === 0 ? -6 : 1 - todayDay;
+        const mondayThisWeek = new Date(today);
+        mondayThisWeek.setDate(today.getDate() + diffTodayToMonday);
+        mondayThisWeek.setHours(0, 0, 0, 0);
+
+        console.log(`Último horario ajustado: ${lastStart.toISOString().split('T')[0]}`);
+        console.log(`Lunes actual: ${mondayThisWeek.toISOString().split('T')[0]}`);
+
+        let resultDate: Date;
+        if (lastStart.getTime() < mondayThisWeek.getTime()) {
+            resultDate = mondayThisWeek;
+        } else {
+            resultDate = new Date(lastStart);
+            resultDate.setDate(resultDate.getDate() + 8); // siguiente lunes
+        }
+
+        console.log(`Nuevo lunes a usar: ${resultDate.toISOString().split('T')[0]}`);
+        return resultDate.toISOString().split('T')[0];
+
+    } catch (err) {
+        console.warn('No se encontró horario anterior. Se usará lunes de esta semana.', err);
+    
+        const today = new Date();
+        const dayNumber = today.getDay(); // 0 (domingo) a 6 (sábado)
+        const diffToMonday = dayNumber === 0 ? 1 : 1 - dayNumber;
+    
+        const monday = new Date(today);
+        monday.setDate(today.getDate() + diffToMonday);
+        monday.setHours(0, 0, 0, 0); // Medianoche
+    
+        monday.setDate(monday.getDate() + 1);
+    
+        return monday.toISOString().split('T')[0];
+    }    
+};
 
 const actualizarDiaLibre = async (
     empleadoId: number,
