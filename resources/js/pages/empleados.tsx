@@ -30,7 +30,6 @@ type Empleado = {
 export default function Empleados() {
   const { centro } = useCentro();
   const centroNombre = centro?.Nombre ?? 'Centro';
-  const centroId = Number(centro?.id ?? 1);
   const [empleados, setEmpleados] = useState<Empleado[]>([]);
   const [selected, setSelected] = useState<number[]>([]);
   const [showAddModal, setShowAddModal] = useState(false);
@@ -38,11 +37,14 @@ export default function Empleados() {
   const [editingEmpleadoId, setEditingEmpleadoId] = useState<number | null>(null);
 
   useEffect(() => {
+    if (!centro?.id) return;
+
     axios
-      .get(`/api/supermercados/${centroId}/empleados`)
+      .get(`/api/supermercados/${centro.id}/empleados`)
       .then((res) => setEmpleados(res.data))
       .catch((err) => console.error('Error cargando empleados:', err));
-  }, [centroId]);
+  }, [centro]);
+
 
   const toggleRow = (index: number) => {
     setSelected((prev) =>
@@ -101,13 +103,14 @@ export default function Empleados() {
     Turno: '',
     Rotativo: false,
     Turno_Rotativo: '',
-    supermercado_id: centroId,
+    supermercado_id: centro?.id ?? 1,
     Telefono: '',
     Horas_Semanales: 40,
     Dia_Libre: '',
     Especial: false,
     Email: '',
   });
+
 
   const [isRotativo, setIsRotativo] = useState(false);
 
