@@ -1,10 +1,10 @@
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
-import { Head, usePage } from '@inertiajs/react';
+import { Head } from '@inertiajs/react';
 import Table from './calendar/table';
-import { CentroProvider, useCentro } from '@/providers/centroProvider';
+import { useCentro } from '@/providers/centroProvider';
 
-function DashboardContent() {
+export default function Dashboard() {
   const { centro } = useCentro();
   const centroNombre = centro?.Nombre ?? 'Centro';
 
@@ -26,16 +26,5 @@ function DashboardContent() {
         <Table />
       </div>
     </AppLayout>
-  );
-}
-
-export default function Dashboard() {
-  const { props } = usePage();
-  const userId = props.auth?.user?.id;
-
-  return (
-    <CentroProvider userId={userId}>
-      <DashboardContent />
-    </CentroProvider>
   );
 }
