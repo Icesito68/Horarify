@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import axios from 'axios';
 import AppLayout from '@/layouts/app-layout';
 import { Head } from '@inertiajs/react';
 import { Button } from '@/components/ui/button';
@@ -8,7 +7,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Pencil, Save, X } from 'lucide-react';
 import { useCentro } from '@/providers/centroProvider';
 import Swal from 'sweetalert2';
-import { axiosGet, axiosPost } from '@/lib/axios';
+import { axiosDelete, axiosGet, axiosPost, axiosPut } from '@/lib/axios';
 
 type Empleado = {
   id: number;
@@ -104,7 +103,7 @@ export default function Vacaciones() {
       cancelButtonText: 'Cancelar',
     }).then((result) => {
       if (result.isConfirmed) {
-        axios.delete('/api/vacaciones', {
+        axiosDelete('/api/vacaciones', {
           data: { ids: seleccionados },
           headers: { 'Content-Type': 'application/json' },
         })
@@ -141,7 +140,7 @@ export default function Vacaciones() {
       return;
     }
 
-    axios.put(`/api/vacaciones/${id}`, {
+    axiosPut(`/api/vacaciones/${id}`, {
       Fecha_inicio: editando.Fecha_inicio,
       Fecha_fin: editando.Fecha_fin,
     })

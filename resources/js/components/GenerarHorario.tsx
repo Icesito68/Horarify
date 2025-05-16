@@ -1,5 +1,4 @@
-import { axiosGet, axiosPost } from '@/lib/axios';
-import axios from 'axios';
+import { axiosGet, axiosPost, axiosPut } from '@/lib/axios';
 
 export async function generarHorario(centroId: number) {
     console.log('Parece que quieres crear un horario');
@@ -94,7 +93,7 @@ const crearHorario = async (
         await actualizarDiaLibre(empleadoId, diaLibre, especial);
 
         if (Rotativo) {
-            await axios.put(`/api/empleados/${empleadoId}`, {
+            await axiosPut(`/api/empleados/${empleadoId}`, {
                 Turno: Turno_Rotativo,
                 Turno_Rotativo: Turno,
             });
@@ -170,7 +169,7 @@ const actualizarDiaLibre = async (
     const nuevoDiaLibre = dias[indexNuevo];
 
     try {
-        await axios.put(`/api/empleados/${empleadoId}`, {
+        await axiosPut(`/api/empleados/${empleadoId}`, {
             Dia_Libre: nuevoDiaLibre,
         });
         console.log(`Día libre actualizado a ${nuevoDiaLibre} para empleado ${empleadoId}`);
