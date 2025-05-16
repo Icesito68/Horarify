@@ -22,8 +22,15 @@ class FestivoFactory extends Factory
     public function definition(): array
     {
         return [
-            'Fecha' => fake()->date(),
-            'Nombre' => fake()->name('[A-Za-z]{20}'),
+            'Fecha' => fake()->dateTimeBetween('2025-01-01', '2025-12-31')->format('Y-m-d'),
+            'Nombre' => fake()->randomElement([
+                'Carnaval Local',
+                'Festividad Patronal',
+                'Fiesta de Barrio',
+                'San Isidro',
+                'Fiesta Regional',
+                'Día de la Comunidad'
+            ]),
             'supermercado_id' => Supermercado::inRandomOrder()->first()->id,
         ];
     }
