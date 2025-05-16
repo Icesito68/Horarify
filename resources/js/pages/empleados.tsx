@@ -10,6 +10,7 @@ import { Pencil } from 'lucide-react';
 import DialogAddEmpleado from '@/components/dialog/DialogAddEmpleado';
 import DialogEditEmpleado from '@/components/dialog/DialogEditEmpleado';
 import DialogDeleteEmpleados from '@/components/dialog/DialogDeleteEmpleado';
+import { axiosPost } from '@/lib/axios';
 
 const headers = ['DNI', 'Nombre', 'Apellidos', 'Turno', 'Email', 'Número'];
 
@@ -126,7 +127,7 @@ export default function Empleados() {
 
   const handleCreateEmpleado = async () => {
     try {
-      const response = await axios.post('/api/empleados', formData);
+      const response = await axiosPost('/api/empleados', formData);
       const nuevoEmpleado = response.data.data;
       setEmpleados((prev) => [...prev, nuevoEmpleado]);
       setShowAddModal(false);

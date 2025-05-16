@@ -8,7 +8,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Pencil, Save, X } from 'lucide-react';
 import { useCentro } from '@/providers/centroProvider';
 import Swal from 'sweetalert2';
-import { axiosGet } from '@/lib/axios';
+import { axiosGet, axiosPost } from '@/lib/axios';
 
 type Empleado = {
   id: number;
@@ -80,7 +80,7 @@ export default function Vacaciones() {
       return;
     }
 
-    axios.post('/api/vacaciones', {
+    axiosPost('/api/vacaciones', {
       empleado_id: Number(nuevo.empleado_id),
       Fecha_inicio: nuevo.Fecha_inicio,
       Fecha_fin: nuevo.Fecha_fin,

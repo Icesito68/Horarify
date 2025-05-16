@@ -8,7 +8,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { useCentro } from '@/providers/centroProvider';
 import { BreadcrumbItem } from '@/types';
 import { Pencil, Save, X } from 'lucide-react';
-import { axiosGet } from '@/lib/axios';
+import { axiosGet, axiosPost } from '@/lib/axios';
 
 
 const headers = ['Nombre', 'Fecha'];
@@ -69,7 +69,7 @@ export default function DiasFestivos() {
             supermercado_id: centroId,
         };
 
-        axios.post('/api/festivos', festivoPayload)
+        axiosPost('/api/festivos', festivoPayload)
             .then(res => {
                 const festivoCreado = res.data.data;
 

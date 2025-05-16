@@ -1,4 +1,4 @@
-import { axiosGet } from '@/lib/axios';
+import { axiosGet, axiosPost } from '@/lib/axios';
 import axios from 'axios';
 
 export async function generarHorario(centroId: number) {
@@ -88,7 +88,7 @@ const crearHorario = async (
     };
 
     try {
-        const response = await axios.post(`/api/horarios`, datosHorario);
+        const response = await axiosPost(`/api/horarios`, datosHorario);
         console.log('Horario creado correctamente:', response.data);
 
         await actualizarDiaLibre(empleadoId, diaLibre, especial);
