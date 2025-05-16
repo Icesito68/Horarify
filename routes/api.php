@@ -20,7 +20,7 @@ Route::group(['as' => 'api.'], routes: function() {
     Orion::resource("empleados", EmpleadoController::class);
     Orion::resource("festivos", FestivoController::class);
     Orion::resource("vacaciones", VacacionController::class);
-});
+})->middleware('auth:sanctum');
 
 Route::get('user/{userId}/supermercados', [UserController::class, 'usuarioSupermercados']);
 Route::get('empleado/{userId}/vacaciones', [EmpleadoController::class, 'vacacionesEmpleado']);

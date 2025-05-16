@@ -29,11 +29,18 @@ export const CentroProvider = ({ userId, children }: CentroProviderProps) => {
   const [centro, setCentroState] = useState<Centro | null>(null);
   const [centrosDisponibles, setCentrosDisponibles] = useState<Centro[]>([]);
   const [loading, setLoading] = useState(true);
+  const token = localStorage.getItem('token');
+
 
   useEffect(() => {
     const fetchCentros = async () => {
       try {
-        const res = await axios.get(`/api/user/${userId}/supermercados`);
+        const res = await axios.get(`/api/user/${userId}/supermercados`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: 'application/json',
+          },
+        });
         const supermercados = res.data;
         setCentrosDisponibles(supermercados);
 
