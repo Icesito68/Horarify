@@ -1,3 +1,4 @@
+import { axiosGet, axiosPost } from '@/lib/axios';
 import axios from 'axios';
 
 export async function generarHorario(centroId: number) {
@@ -5,7 +6,7 @@ export async function generarHorario(centroId: number) {
     console.log('Id del supermercado actual:', centroId);
 
     try {
-        const empleadosResponse = await axios.get(`/api/supermercados/${centroId}/empleados`);
+        const empleadosResponse = await axiosGet(`/api/supermercados/${centroId}/empleados`);
         const empleados = empleadosResponse.data;
         console.log('Empleados:', empleados);
 
@@ -87,7 +88,7 @@ const crearHorario = async (
     };
 
     try {
-        const response = await axios.post(`/api/horarios`, datosHorario);
+        const response = await axiosPost(`/api/horarios`, datosHorario);
         console.log('Horario creado correctamente:', response.data);
 
         await actualizarDiaLibre(empleadoId, diaLibre, especial);
@@ -108,7 +109,7 @@ const crearHorario = async (
 const obtenerFecha = async (centroId: number): Promise<string> => {
     try {
         // Consultar el último horario
-        const response = await axios.get(`/api/supermercados/${centroId}/ultimoHorario`);
+        const response = await axiosGet(`/api/supermercados/${centroId}/ultimoHorario`);
         const lastStart = new Date(response.data.inicio_semana);
 
         // Forzar que lastStart sea lunes
@@ -180,7 +181,7 @@ const actualizarDiaLibre = async (
 
 const obtenerVacaciones = async (empleadoId: number): Promise<string[]> => {
     try {
-        const response = await axios.get(`/api/empleado/${empleadoId}/vacaciones`);
+        const response = await axiosGet(`/api/empleado/${empleadoId}/vacaciones`);
         const { Fecha_inicio, Fecha_fin } = response.data;
 
         const fechaInicio = new Date(Fecha_inicio);
@@ -203,7 +204,7 @@ const obtenerVacaciones = async (empleadoId: number): Promise<string[]> => {
 
 const obtenerFestivos = async (centroId: number): Promise<{ fecha: string; nombre: string }[]> => {
     try {
-        const response = await axios.get(`/api/supermercados/${centroId}/festivos`);
+        const response = await axiosGet(`/api/supermercados/${centroId}/festivos`);
         const festivos = response.data;
 
         return festivos.map((f: { Fecha: string; Nombre: string }) => ({

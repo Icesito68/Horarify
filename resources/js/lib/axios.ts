@@ -1,14 +1,35 @@
 import axios from 'axios';
 
-// axios.defaults.withCredentials = true;
+export async function axiosGet(url: string) {
+  const token = localStorage.getItem('token');
 
-const csrfToken = document.cookie
-  .split('; ')
-  .find(row => row.startsWith('XSRF-TOKEN='))
-  ?.split('=')[1];
+  if (!token) {
+    throw new Error('No token found in localStorage');
+  }
 
-if (csrfToken) {
-  axios.defaults.headers.common['X-CSRF-TOKEN'] = decodeURIComponent(csrfToken);
+  const response = await axios.get(url, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      Accept: 'application/json',
+    },
+  });
+
+  return response;
 }
 
-export default axios;
+export async function axiosPost(url: string, data: any) {
+  const token = localStorage.getItem('token');
+
+  if (!token) {
+    throw new Error('No token found in localStorage');
+  }
+
+  const response = await axios.post(url, data, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      Accept: 'application/json',
+    },
+  });
+
+  return response;
+}

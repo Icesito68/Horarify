@@ -7,6 +7,7 @@ import {Pencil, Trash2 } from 'lucide-react';
 import { useCentro } from '@/providers/centroProvider';
 import AppLayout from '@/layouts/app-layout';
 import Swal from 'sweetalert2';
+import { axiosPost } from '@/lib/axios';
 
 type Supermercado = {
     id?: number;
@@ -32,7 +33,7 @@ export default function Supermercados() {
 
     const handleCreateSupermercado = async () => {
       try {
-        const response = await axios.post('api/supermercados', form);
+        const response = await axiosPost('api/supermercados', form);
         const nuevoSupermercado = response.data.data;
 
         setCentrosDisponibles([...centrosDisponibles, nuevoSupermercado]);

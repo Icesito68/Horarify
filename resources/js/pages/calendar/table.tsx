@@ -5,6 +5,7 @@ import { useCentro } from '@/providers/centroProvider';
 import { generarHorario } from '@/components/GenerarHorario';
 import { Button } from '@/components/ui/button';
 import { CalendarClock } from 'lucide-react';
+import { axiosGet } from '@/lib/axios';
 
 const headers = [
   // 'DNI', 
@@ -47,8 +48,8 @@ export default function Table() {
   const fetchData = async () => {
     try {
       const [horariosRes, empleadosRes] = await Promise.all([
-        axios.get(`api/supermercados/${centroId}/horarios`),
-        axios.get('api/empleados'),
+        axiosGet(`api/supermercados/${centroId}/horarios`),
+        axiosGet('api/empleados'),
       ]);
 
       const empleadosMap = new Map<number, Empleado>(
