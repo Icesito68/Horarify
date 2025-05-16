@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import axios from 'axios';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Dialog, DialogTrigger, DialogContent, DialogTitle } from '@/components/ui/dialog';
@@ -7,7 +6,7 @@ import {Pencil, Trash2 } from 'lucide-react';
 import { useCentro } from '@/providers/centroProvider';
 import AppLayout from '@/layouts/app-layout';
 import Swal from 'sweetalert2';
-import { axiosPost } from '@/lib/axios';
+import { axiosDelete, axiosPost, axiosPut } from '@/lib/axios';
 
 type Supermercado = {
     id?: number;
@@ -81,7 +80,7 @@ export default function Supermercados() {
       if (!editForm?.id) return;
 
       try {
-        const response = await axios.put(`/api/supermercados/${editForm.id}`, editForm);
+        const response = await axiosPut(`/api/supermercados/${editForm.id}`, editForm);
         const actualizado = response.data.data;
 
         setCentrosDisponibles(prev =>
@@ -233,7 +232,7 @@ export default function Supermercados() {
                                     onClick={async () => {
                                         if (!selected?.id) return;
                                         try {
-                                            await axios.delete(`/api/supermercados/${selected.id}`);
+                                            await axiosDelete(`/api/supermercados/${selected.id}`);
                                             setCentrosDisponibles((prev) => prev.filter((s) => s.id !== selected.id));
                                             setSelected(null);
                                             setShowDeleteModal(false);

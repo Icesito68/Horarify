@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import axios from 'axios';
 import {
   Dialog,
   DialogContent,
@@ -9,6 +8,7 @@ import {
 } from '@/components/ui/dialog';
 import { Eye, Pencil, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { axiosDelete } from '@/lib/axios';
 
 const headersModal = [
   'Acciones', 'Nombre', 'Apellidos', 'Lunes', 'Martes', 'Miércoles',
@@ -41,7 +41,7 @@ export default function HorarioDialog({ semana, inicio, fin, datos }: HorarioDia
 
   async function handleDeleteHorario(id: number) {
     try {
-      await axios.delete(`/api/horarios/${id}`);
+      await axiosDelete(`/api/horarios/${id}`);
       const nuevosHorarios = horarios.filter(h => h.id !== id);
       setHorarios(nuevosHorarios);
 

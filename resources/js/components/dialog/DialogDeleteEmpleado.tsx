@@ -2,7 +2,7 @@ import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '@/components/
 import { Button } from '@/components/ui/button';
 import { Empleado } from '@/types';
 import { useState } from 'react';
-import axios from 'axios';
+import { axiosDelete } from '@/lib/axios';
 
 interface Props {
   selected: number[];
@@ -22,7 +22,7 @@ export default function DialogDeleteEmpleados({
 
   const handleDelete = async () => {
     try {
-      await axios.delete('/api/empleados', {
+      await axiosDelete('/api/empleados', {
         data: { ids: selected },
         headers: { 'Content-Type': 'application/json' },
       });

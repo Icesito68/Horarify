@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import axios from 'axios';
 import AppLayout from '@/layouts/app-layout';
 import { Head } from '@inertiajs/react';
 import { Button } from '@/components/ui/button';
@@ -8,7 +7,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { useCentro } from '@/providers/centroProvider';
 import { BreadcrumbItem } from '@/types';
 import { Pencil, Save, X } from 'lucide-react';
-import { axiosGet, axiosPost } from '@/lib/axios';
+import { axiosDelete, axiosGet, axiosPost, axiosPut } from '@/lib/axios';
 
 
 const headers = ['Nombre', 'Fecha'];
@@ -39,7 +38,7 @@ export default function DiasFestivos() {
     const eliminarSeleccionados = () => {
         if (seleccionados.length === 0) return;
 
-        axios.delete('/api/festivos', { data: { ids: seleccionados } })
+        axiosDelete('/api/festivos', { data: { ids: seleccionados } })
             .then(() => {
                 setFestivos((prev) => prev.filter(f => !seleccionados.includes(f.id)));
                 setSeleccionados([]);
@@ -90,7 +89,7 @@ export default function DiasFestivos() {
             supermercado_id: 1,
         };
 
-        axios.put(`/api/festivos/${id}`, payload)
+        axiosPut(`/api/festivos/${id}`, payload)
             .then(res => {
                 const actualizado = res.data.data;
                 setFestivos(prev =>

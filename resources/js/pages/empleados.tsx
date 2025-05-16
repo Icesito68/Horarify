@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import axios from 'axios';
 import AppLayout from '@/layouts/app-layout';
 import { Head } from '@inertiajs/react';
 import { useCentro } from '@/providers/centroProvider';
@@ -10,7 +9,7 @@ import { Pencil } from 'lucide-react';
 import DialogAddEmpleado from '@/components/dialog/DialogAddEmpleado';
 import DialogEditEmpleado from '@/components/dialog/DialogEditEmpleado';
 import DialogDeleteEmpleados from '@/components/dialog/DialogDeleteEmpleado';
-import { axiosPost } from '@/lib/axios';
+import { axiosGet, axiosPost, axiosPut } from '@/lib/axios';
 
 const headers = ['DNI', 'Nombre', 'Apellidos', 'Turno', 'Email', 'Número'];
 
@@ -40,8 +39,7 @@ export default function Empleados() {
   useEffect(() => {
     if (!centro?.id) return;
 
-    axios
-      .get(`/api/supermercados/${centro.id}/empleados`)
+    axiosGet(`/api/supermercados/${centro.id}/empleados`)
       .then((res) => setEmpleados(res.data))
       .catch((err) => console.error('Error cargando empleados:', err));
   }, [centro]);
@@ -85,7 +83,7 @@ export default function Empleados() {
 
   const handleUpdateEmpleado = async () => {
     try {
-      const response = await axios.put(`/api/empleados/${editFormData.id}`, editFormData);
+      const response = await axiosPut(`/api/empleados/${editFormData.id}`, editFormData);
       const updatedEmpleado = response.data.data;
 
       setEmpleados((prev) =>

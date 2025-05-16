@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import axios from 'axios';
 import HorarioDialog from '@/components/dialog/HorarioDialog';
 import { useCentro } from '@/providers/centroProvider';
 import { generarHorario } from '@/components/GenerarHorario';
