@@ -8,6 +8,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Pencil, Save, X } from 'lucide-react';
 import { useCentro } from '@/providers/centroProvider';
 import Swal from 'sweetalert2';
+import { axiosGet } from '@/lib/axios';
 
 type Empleado = {
   id: number;
@@ -35,12 +36,12 @@ export default function Vacaciones() {
   const [editando, setEditando] = useState({ empleado_id: '', Fecha_inicio: '', Fecha_fin: '' });
 
   useEffect(() => {
-    axios.get(`/api/supermercados/${centroId}/empleados`).then(res => {
+    axiosGet(`/api/supermercados/${centroId}/empleados`).then(res => {
       const data = Array.isArray(res.data) ? res.data : res.data.data;
       setEmpleados(data);
     });
 
-    axios.get('/api/vacaciones').then(res => {
+    axiosGet('/api/vacaciones').then(res => {
       const data = Array.isArray(res.data) ? res.data : res.data.data;
       setVacaciones(data);
     });

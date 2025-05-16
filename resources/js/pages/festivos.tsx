@@ -8,6 +8,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { useCentro } from '@/providers/centroProvider';
 import { BreadcrumbItem } from '@/types';
 import { Pencil, Save, X } from 'lucide-react';
+import { axiosGet } from '@/lib/axios';
 
 
 const headers = ['Nombre', 'Fecha'];
@@ -120,7 +121,7 @@ export default function DiasFestivos() {
 
 
     useEffect(() => {
-        axios.get(`/api/supermercados/${centroId}/festivos`)
+        axiosGet(`/api/supermercados/${centroId}/festivos`)
             .then(res => {
                 const data = Array.isArray(res.data) ? res.data : res.data.data;
                 setFestivos(data);
