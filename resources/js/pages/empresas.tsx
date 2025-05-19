@@ -6,7 +6,8 @@ import {Pencil, Trash2 } from 'lucide-react';
 import { useCentro } from '@/providers/centroProvider';
 import AppLayout from '@/layouts/app-layout';
 import Swal from 'sweetalert2';
-import { axiosDelete, axiosPost, axiosPut } from '@/lib/axios';
+import {axiosPost, axiosPut } from '@/lib/axios';
+import axios from 'axios';
 
 type Supermercado = {
     id?: number;
@@ -60,6 +61,8 @@ export default function Supermercados() {
 
 
     const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const token = localStorage.getItem('token');
+
 
     const [showEditModal, setShowEditModal] = useState(false);
     const handleOpenEdit = () => {
@@ -232,7 +235,12 @@ export default function Supermercados() {
                                     onClick={async () => {
                                         if (!selected?.id) return;
                                         try {
-                                            await axiosDelete(`/api/supermercados/${selected.id}`);
+                                            await axios.delete(`/api/supermercados/${selected.id}`, {
+                                              headers: {
+                                                Authorization: `Bearer ${token}`,
+                                                'Content-Type': 'application/json',
+                                              },
+                                            });
                                             setCentrosDisponibles((prev) => prev.filter((s) => s.id !== selected.id));
                                             setSelected(null);
                                             setShowDeleteModal(false);
