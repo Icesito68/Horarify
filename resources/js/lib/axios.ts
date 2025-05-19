@@ -2,6 +2,7 @@ import axios from 'axios';
 
 export async function axiosGet(url: string) {
   const token = localStorage.getItem('token');
+  console.log("Este es el token: ", token)
 
   if (!token) {
     throw new Error('No token found in localStorage');
