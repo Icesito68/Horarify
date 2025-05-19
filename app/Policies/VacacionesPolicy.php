@@ -3,25 +3,25 @@
 namespace App\Policies;
 
 use App\Models\User;
-use App\Models\Vacacion;
+use App\Models\Vacaciones;
 use Illuminate\Auth\Access\Response;
 
-class VacacionPolicy
+class VacacionesPolicy
 {
     /**
      * Determine whether the user can view any models.
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        return true;
     }
 
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, Vacacion $vacacion): bool
+    public function view(User $user, Vacaciones $vacaciones): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -29,29 +29,29 @@ class VacacionPolicy
      */
     public function create(User $user): bool
     {
-        return false;
+        return true;
     }
 
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, Vacacion $vacacion): bool
+    public function update(User $user, Vacaciones $vacaciones): bool
     {
-        return false;
+        return true;
     }
 
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, Vacacion $vacacion): bool
+    public function delete(User $user, Vacaciones $vacaciones): bool
     {
-        return false;
+        return true;
     }
 
     /**
      * Determine whether the user can restore the model.
      */
-    public function restore(User $user, Vacacion $vacacion): bool
+    public function restore(User $user, Vacaciones $vacaciones): bool
     {
         return false;
     }
@@ -59,7 +59,7 @@ class VacacionPolicy
     /**
      * Determine whether the user can permanently delete the model.
      */
-    public function forceDelete(User $user, Vacacion $vacacion): bool
+    public function forceDelete(User $user, Vacaciones $vacaciones): bool
     {
         return false;
     }

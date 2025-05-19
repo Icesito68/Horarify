@@ -21,7 +21,7 @@ class FestivoPolicy
      */
     public function view(User $user, Festivo $festivo): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -29,7 +29,7 @@ class FestivoPolicy
      */
     public function create(User $user): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -37,7 +37,7 @@ class FestivoPolicy
      */
     public function update(User $user, Festivo $festivo): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -45,7 +45,7 @@ class FestivoPolicy
      */
     public function delete(User $user, Festivo $festivo): bool
     {
-        return false;
+        return true;
     }
 
     /**

@@ -13,7 +13,7 @@ class EmpleadoPolicy
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -21,7 +21,7 @@ class EmpleadoPolicy
      */
     public function view(User $user, Empleado $empleado): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -29,7 +29,7 @@ class EmpleadoPolicy
      */
     public function create(User $user): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -37,7 +37,7 @@ class EmpleadoPolicy
      */
     public function update(User $user, Empleado $empleado): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -45,7 +45,7 @@ class EmpleadoPolicy
      */
     public function delete(User $user, Empleado $empleado): bool
     {
-        return false;
+        return true;
     }
 
     /**
