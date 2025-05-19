@@ -2,6 +2,8 @@ import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '@/components/
 import { Button } from '@/components/ui/button';
 import { Empleado } from '@/types';
 import { useState } from 'react';
+import axios from 'axios';
+
 
 interface Props {
   selected: number[];
@@ -18,22 +20,22 @@ export default function DialogDeleteEmpleados({
 }: Props) {
 
   const [open, setOpen] = useState(false);
+  const token = localStorage.getItem('token');
 
   const handleDelete = async () => {
     try {
-      await fetch('/api/empleados', {
-        method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ids: selected }),
+      await axios.delete('/api/empleados', {
+        data: { ids: selected },
+        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
       });
-  
+    
       setEmpleados(empleados.filter(emp => !selected.includes(emp.id)));
       setSelected([]);
       setOpen(false); // ✅ Cierra el diálogo
     } catch (err) {
       console.error('Error eliminando empleados:', err);
     }
-  };  
+  };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>

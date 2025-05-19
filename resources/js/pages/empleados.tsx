@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import axios from 'axios';
 import AppLayout from '@/layouts/app-layout';
 import { Head } from '@inertiajs/react';
 import { useCentro } from '@/providers/centroProvider';
@@ -10,6 +9,7 @@ import { Pencil } from 'lucide-react';
 import DialogAddEmpleado from '@/components/dialog/DialogAddEmpleado';
 import DialogEditEmpleado from '@/components/dialog/DialogEditEmpleado';
 import DialogDeleteEmpleados from '@/components/dialog/DialogDeleteEmpleado';
+import { axiosGet, axiosPost, axiosPut } from '@/lib/axios';
 
 const headers = ['DNI', 'Nombre', 'Apellidos', 'Turno', 'Email', 'Número'];
 
@@ -30,7 +30,6 @@ type Empleado = {
 export default function Empleados() {
   const { centro } = useCentro();
   const centroNombre = centro?.Nombre ?? 'Centro';
-  const centroId = Number(centro?.id ?? 1);
   const [empleados, setEmpleados] = useState<Empleado[]>([]);
   const [selected, setSelected] = useState<number[]>([]);
   const [showAddModal, setShowAddModal] = useState(false);
@@ -38,11 +37,13 @@ export default function Empleados() {
   const [editingEmpleadoId, setEditingEmpleadoId] = useState<number | null>(null);
 
   useEffect(() => {
-    axios
-      .get(`/api/supermercados/${centroId}/empleados`)
+    if (!centro?.id) return;
+
+    axiosGet(`/api/supermercados/${centro.id}/empleados`)
       .then((res) => setEmpleados(res.data))
       .catch((err) => console.error('Error cargando empleados:', err));
-  }, [centroId]);
+  }, [centro]);
+
 
   const toggleRow = (index: number) => {
     setSelected((prev) =>
@@ -82,7 +83,7 @@ export default function Empleados() {
 
   const handleUpdateEmpleado = async () => {
     try {
-      const response = await axios.put(`/api/empleados/${editFormData.id}`, editFormData);
+      const response = await axiosPut(`/api/empleados/${editFormData.id}`, editFormData);
       const updatedEmpleado = response.data.data;
 
       setEmpleados((prev) =>
@@ -101,13 +102,14 @@ export default function Empleados() {
     Turno: '',
     Rotativo: false,
     Turno_Rotativo: '',
-    supermercado_id: centroId,
+    supermercado_id: centro?.id ?? 1,
     Telefono: '',
     Horas_Semanales: 40,
     Dia_Libre: '',
     Especial: false,
     Email: '',
   });
+
 
   const [isRotativo, setIsRotativo] = useState(false);
 
@@ -123,7 +125,7 @@ export default function Empleados() {
 
   const handleCreateEmpleado = async () => {
     try {
-      const response = await axios.post('/api/empleados', formData);
+      const response = await axiosPost('/api/empleados', formData);
       const nuevoEmpleado = response.data.data;
       setEmpleados((prev) => [...prev, nuevoEmpleado]);
       setShowAddModal(false);

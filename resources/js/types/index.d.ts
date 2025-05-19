@@ -42,6 +42,12 @@ export interface User {
     [key: string]: unknown; // This allows for additional properties...
 }
 
+export interface PageProps extends InertiaPageProps {
+  auth: {
+    user: User;
+  };
+}
+
 export type Empleado = {
     id: number;
     DNI: string;
@@ -54,5 +60,5 @@ export type Empleado = {
     Especial: boolean;
     Rotativo: boolean;
     Turno_Rotativo: string;
-  };
-  
+};
+

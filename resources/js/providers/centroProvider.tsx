@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
-import axios from 'axios';
+import { axiosGet } from '@/lib/axios';
 
 export interface Supermercado {
   id: number;
@@ -20,22 +20,46 @@ interface CentroContextType {
 
 const CentroContext = createContext<CentroContextType | undefined>(undefined);
 
-export const CentroProvider = ({ children }: { children: ReactNode }) => {
-  const [centro, setCentro] = useState<Centro | null>(null);
+interface CentroProviderProps {
+  userId: number;
+  children: ReactNode;
+}
+
+export const CentroProvider = ({ userId, children }: CentroProviderProps) => {
+  const [centro, setCentroState] = useState<Centro | null>(null);
   const [centrosDisponibles, setCentrosDisponibles] = useState<Centro[]>([]);
+  const [loading, setLoading] = useState(true);
+  // const token = localStorage.getItem('token');
+
 
   useEffect(() => {
-    axios
-      .get<Supermercado[]>('/api/user/1/supermercados')
-      .then((res) => {
+    const fetchCentros = async () => {
+      try {
+        const res = await axiosGet(`/api/user/${userId}/supermercados`);
         const supermercados = res.data;
         setCentrosDisponibles(supermercados);
-        if (supermercados.length > 0) {
-          setCentro(supermercados[0]);
-        }
-      })
-      .catch((err) => console.error('Error al cargar supermercados:', err));
-  }, []);
+
+        const savedId = localStorage.getItem('centroId');
+        const defaultCentro =
+          supermercados.find((c: Centro) => c.id === Number(savedId)) || supermercados[0];
+
+        setCentroState(defaultCentro);
+      } catch (err) {
+        console.error('Error cargando supermercados:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCentros();
+  }, [userId]);
+
+  const setCentro = (centro: Centro) => {
+    setCentroState(centro);
+    localStorage.setItem('centroId', centro.id.toString());
+  };
+
+  if (loading) return null;
 
   return (
     <CentroContext.Provider value={{ centro, setCentro, centrosDisponibles, setCentrosDisponibles }}>
@@ -46,8 +70,6 @@ export const CentroProvider = ({ children }: { children: ReactNode }) => {
 
 export const useCentro = () => {
   const context = useContext(CentroContext);
-  if (!context) {
-    throw new Error('useCentro debe usarse dentro de un CentroProvider');
-  }
+  if (!context) throw new Error('useCentro debe usarse dentro de CentroProvider');
   return context;
 };

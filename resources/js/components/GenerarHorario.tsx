@@ -1,11 +1,11 @@
-import axios from 'axios';
+import { axiosGet, axiosPost, axiosPut } from '@/lib/axios';
 
 export async function generarHorario(centroId: number) {
     console.log('Parece que quieres crear un horario');
     console.log('Id del supermercado actual:', centroId);
 
     try {
-        const empleadosResponse = await axios.get(`/api/supermercados/${centroId}/empleados`);
+        const empleadosResponse = await axiosGet(`/api/supermercados/${centroId}/empleados`);
         const empleados = empleadosResponse.data;
         console.log('Empleados:', empleados);
 
@@ -13,70 +13,28 @@ export async function generarHorario(centroId: number) {
         const fechaLunes = await obtenerFecha(centroId);
         const festivos = await obtenerFestivos(centroId);
 
-        // Generar los horarios para los empleados
-        for (const empleado of empleados) {
-            crearHorario(
-                centroId, fechaLunes, empleado.id, empleado.Dia_Libre, empleado.Especial, 
-                empleado.Rotativo, empleado.Turno, empleado.Turno_Rotativo, festivos);
-        }
+        // ✅ Esperar a que todas las promesas terminen
+        await Promise.all(
+            empleados.map((empleado: any) =>
+                crearHorario(
+                    centroId,
+                    fechaLunes,
+                    empleado.id,
+                    empleado.Dia_Libre,
+                    empleado.Especial,
+                    empleado.Rotativo,
+                    empleado.Turno,
+                    empleado.Turno_Rotativo,
+                    festivos
+                )
+            )
+        );
 
     } catch (err) {
         console.error('Error generando horario:', err);
         throw err;
     }
 }
-
-const obtenerFecha = async (centroId: number): Promise<string> => {
-    try {
-        // Consultar el último horario
-        const response = await axios.get(`/api/supermercados/${centroId}/ultimoHorario`);
-        const lastStart = new Date(response.data.inicio_semana);
-        
-        // Forzar que lastStart sea lunes
-        const lastDay = lastStart.getDay(); // 0 = domingo, 1 = lunes, ..., 6 = sábado
-        const diffToMonday = lastDay === 0 ? 1 : (1 - lastDay); // Si es domingo (0), suma 1. Si es otro, ajusta al lunes.
-        lastStart.setDate(lastStart.getDate() + diffToMonday);
-        lastStart.setHours(0, 0, 0, 0);
-
-        // Obtener el lunes de esta semana
-        const today = new Date();
-        const todayDay = today.getDay();
-        const diffTodayToMonday = todayDay === 0 ? -6 : 1 - todayDay;
-        const mondayThisWeek = new Date(today);
-        mondayThisWeek.setDate(today.getDate() + diffTodayToMonday);
-        mondayThisWeek.setHours(0, 0, 0, 0);
-
-        console.log(`Último horario ajustado: ${lastStart.toISOString().split('T')[0]}`);
-        console.log(`Lunes actual: ${mondayThisWeek.toISOString().split('T')[0]}`);
-
-        let resultDate: Date;
-        if (lastStart.getTime() < mondayThisWeek.getTime()) {
-            resultDate = mondayThisWeek;
-        } else {
-            resultDate = new Date(lastStart);
-            resultDate.setDate(resultDate.getDate() + 8); // siguiente lunes
-        }
-
-        console.log(`Nuevo lunes a usar: ${resultDate.toISOString().split('T')[0]}`);
-        return resultDate.toISOString().split('T')[0];
-
-    } catch (err) {
-        console.warn('No se encontró horario anterior. Se usará lunes de esta semana.', err);
-    
-        const today = new Date();
-        const dayNumber = today.getDay(); // 0 (domingo) a 6 (sábado)
-        const diffToMonday = dayNumber === 0 ? 1 : 1 - dayNumber;
-    
-        const monday = new Date(today);
-        monday.setDate(today.getDate() + diffToMonday);
-        monday.setHours(0, 0, 0, 0); // Medianoche
-    
-        monday.setDate(monday.getDate() + 1);
-    
-        return monday.toISOString().split('T')[0];
-    }    
-};
-
 
 const crearHorario = async (
     centroId: number,
@@ -129,13 +87,13 @@ const crearHorario = async (
     };
 
     try {
-        const response = await axios.post(`/api/horarios`, datosHorario);
+        const response = await axiosPost(`/api/horarios`, datosHorario);
         console.log('Horario creado correctamente:', response.data);
 
         await actualizarDiaLibre(empleadoId, diaLibre, especial);
 
         if (Rotativo) {
-            await axios.put(`/api/empleados/${empleadoId}`, {
+            await axiosPut(`/api/empleados/${empleadoId}`, {
                 Turno: Turno_Rotativo,
                 Turno_Rotativo: Turno,
             });
@@ -147,6 +105,56 @@ const crearHorario = async (
     }
 };
 
+const obtenerFecha = async (centroId: number): Promise<string> => {
+    try {
+        // Consultar el último horario
+        const response = await axiosGet(`/api/supermercados/${centroId}/ultimoHorario`);
+        const lastStart = new Date(response.data.inicio_semana);
+
+        // Forzar que lastStart sea lunes
+        const lastDay = lastStart.getDay(); // 0 = domingo, 1 = lunes, ..., 6 = sábado
+        const diffToMonday = lastDay === 0 ? 1 : (1 - lastDay); // Si es domingo (0), suma 1. Si es otro, ajusta al lunes.
+        lastStart.setDate(lastStart.getDate() + diffToMonday);
+        lastStart.setHours(0, 0, 0, 0);
+
+        // Obtener el lunes de esta semana
+        const today = new Date();
+        const todayDay = today.getDay();
+        const diffTodayToMonday = todayDay === 0 ? -6 : 1 - todayDay;
+        const mondayThisWeek = new Date(today);
+        mondayThisWeek.setDate(today.getDate() + diffTodayToMonday);
+        mondayThisWeek.setHours(0, 0, 0, 0);
+
+        console.log(`Último horario ajustado: ${lastStart.toISOString().split('T')[0]}`);
+        console.log(`Lunes actual: ${mondayThisWeek.toISOString().split('T')[0]}`);
+
+        let resultDate: Date;
+        if (lastStart.getTime() < mondayThisWeek.getTime()) {
+            resultDate = mondayThisWeek;
+        } else {
+            resultDate = new Date(lastStart);
+            resultDate.setDate(resultDate.getDate() + 8); // siguiente lunes
+        }
+
+        console.log(`Nuevo lunes a usar: ${resultDate.toISOString().split('T')[0]}`);
+        return resultDate.toISOString().split('T')[0];
+
+    } catch (err) {
+        console.warn('No se encontró horario anterior. Se usará lunes de esta semana.', err);
+
+        const today = new Date();
+        const dayNumber = today.getDay(); // 0 (domingo) a 6 (sábado)
+        const diffToMonday = dayNumber === 0 ? 1 : 1 - dayNumber;
+
+        const monday = new Date(today);
+        monday.setDate(today.getDate() + diffToMonday);
+        monday.setHours(0, 0, 0, 0); // Medianoche
+
+        monday.setDate(monday.getDate() + 1);
+
+        return monday.toISOString().split('T')[0];
+    }
+};
 
 const actualizarDiaLibre = async (
     empleadoId: number,
@@ -161,7 +169,7 @@ const actualizarDiaLibre = async (
     const nuevoDiaLibre = dias[indexNuevo];
 
     try {
-        await axios.put(`/api/empleados/${empleadoId}`, {
+        await axiosPut(`/api/empleados/${empleadoId}`, {
             Dia_Libre: nuevoDiaLibre,
         });
         console.log(`Día libre actualizado a ${nuevoDiaLibre} para empleado ${empleadoId}`);
@@ -172,7 +180,7 @@ const actualizarDiaLibre = async (
 
 const obtenerVacaciones = async (empleadoId: number): Promise<string[]> => {
     try {
-        const response = await axios.get(`/api/empleado/${empleadoId}/vacaciones`);
+        const response = await axiosGet(`/api/empleado/${empleadoId}/vacaciones`);
         const { Fecha_inicio, Fecha_fin } = response.data;
 
         const fechaInicio = new Date(Fecha_inicio);
@@ -195,7 +203,7 @@ const obtenerVacaciones = async (empleadoId: number): Promise<string[]> => {
 
 const obtenerFestivos = async (centroId: number): Promise<{ fecha: string; nombre: string }[]> => {
     try {
-        const response = await axios.get(`/api/supermercados/${centroId}/festivos`);
+        const response = await axiosGet(`/api/supermercados/${centroId}/festivos`);
         const festivos = response.data;
 
         return festivos.map((f: { Fecha: string; Nombre: string }) => ({
