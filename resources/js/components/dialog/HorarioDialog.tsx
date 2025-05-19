@@ -8,12 +8,14 @@ import {
 } from '@/components/ui/dialog';
 import { Eye, Pencil, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { axiosDelete } from '@/lib/axios';
+import axios from 'axios';
 
 const headersModal = [
   'Acciones', 'Nombre', 'Apellidos', 'Lunes', 'Martes', 'Miércoles',
   'Jueves', 'Viernes', 'Sábado', 'Domingo',
 ];
+
+const token = localStorage.getItem('token');
 
 type HorarioDialogProps = {
   semana: string;
@@ -41,7 +43,12 @@ export default function HorarioDialog({ semana, inicio, fin, datos }: HorarioDia
 
   async function handleDeleteHorario(id: number) {
     try {
-      await axiosDelete(`/api/horarios/${id}`);
+      await axios.delete(`/api/horarios/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
       const nuevosHorarios = horarios.filter(h => h.id !== id);
       setHorarios(nuevosHorarios);
 

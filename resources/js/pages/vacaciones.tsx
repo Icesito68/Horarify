@@ -7,7 +7,8 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Pencil, Save, X } from 'lucide-react';
 import { useCentro } from '@/providers/centroProvider';
 import Swal from 'sweetalert2';
-import { axiosDelete, axiosGet, axiosPost, axiosPut } from '@/lib/axios';
+import { axiosGet, axiosPost, axiosPut } from '@/lib/axios';
+import axios from 'axios';
 
 type Empleado = {
   id: number;
@@ -48,6 +49,7 @@ export default function Vacaciones() {
 
   const empleadosIds = empleados.map(e => e.id);
   const vacacionesFiltradas = vacaciones.filter(v => empleadosIds.includes(v.empleado_id));
+  const token = localStorage.getItem('token');
 
   const getEmpleado = (id: number) =>
     empleados.find((e) => e.id === id) || { Nombre: '—', Apellidos: '' };
@@ -103,9 +105,9 @@ export default function Vacaciones() {
       cancelButtonText: 'Cancelar',
     }).then((result) => {
       if (result.isConfirmed) {
-        axiosDelete('/api/vacaciones', {
+        axios.delete('/api/vacaciones', {
           data: { ids: seleccionados },
-          headers: { 'Content-Type': 'application/json' },
+          headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
         })
         .then(() => {
           setVacaciones((prev) => prev.filter((v) => !seleccionados.includes(v.id)));

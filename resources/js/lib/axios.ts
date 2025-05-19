@@ -39,26 +39,6 @@ type DeleteOptions = {
   headers?: Record<string, string>;
 };
 
-export async function axiosDelete(url: string, options: DeleteOptions = {}) {
-  const token = localStorage.getItem('token');
-
-  if (!token) {
-    throw new Error('No token found in localStorage');
-  }
-
-  const response = await axiosDelete(url, {
-    ...options,
-    headers: {
-      Authorization: `Bearer ${token}`,
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-      ...options.headers,
-    },
-  });
-
-  return response;
-}
-
 export async function axiosPut(url: string, data: any) {
   const token = localStorage.getItem('token');
 

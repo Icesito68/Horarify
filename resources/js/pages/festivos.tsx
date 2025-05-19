@@ -7,7 +7,8 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { useCentro } from '@/providers/centroProvider';
 import { BreadcrumbItem } from '@/types';
 import { Pencil, Save, X } from 'lucide-react';
-import { axiosDelete, axiosGet, axiosPost, axiosPut } from '@/lib/axios';
+import {axiosGet, axiosPost, axiosPut } from '@/lib/axios';
+import axios from 'axios';
 
 
 const headers = ['Nombre', 'Fecha'];
@@ -27,6 +28,7 @@ export default function DiasFestivos() {
     const [editandoId, setEditandoId] = useState<number | null>(null);
     const [editandoDatos, setEditandoDatos] = useState({ nombre: '', fecha: '' });
     const centroId = Number(centro?.id ?? 1);
+    const token = localStorage.getItem('token');
 
 
     const toggleSeleccionado = (index: number) => {
@@ -37,8 +39,13 @@ export default function DiasFestivos() {
 
     const eliminarSeleccionados = () => {
         if (seleccionados.length === 0) return;
-
-        axiosDelete('/api/festivos', { data: { ids: seleccionados } })
+            axios.delete('/api/festivos', {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                },
+                data: { ids: seleccionados },
+            })
             .then(() => {
                 setFestivos((prev) => prev.filter(f => !seleccionados.includes(f.id)));
                 setSeleccionados([]);
