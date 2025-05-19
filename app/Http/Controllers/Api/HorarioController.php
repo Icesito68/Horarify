@@ -10,7 +10,7 @@ use Orion\Concerns\DisablePagination;
 
 class HorarioController extends Controller
 {
-    use DisableAuthorization, DisablePagination;
+    use DisablePagination;
 
     protected $model = Horario::class;
 }

@@ -1,27 +1,34 @@
-import axios from 'axios';
+import { axiosGet, axiosPost, axiosPut } from '@/lib/axios';
 
 export async function generarHorario(centroId: number) {
     console.log('Parece que quieres crear un horario');
     console.log('Id del supermercado actual:', centroId);
 
     try {
-        const empleadosResponse = await axios.get(`/api/supermercados/${centroId}/empleados`);
+        const empleadosResponse = await axiosGet(`/api/supermercados/${centroId}/empleados`);
         const empleados = empleadosResponse.data;
         console.log('Empleados:', empleados);
 
-        const festivosResponse = await axios.get(`/api/supermercados/${centroId}/festivos`);
-        const festivos = festivosResponse.data;
-        console.log('Festivos:', festivos);
-
         // Obtener el lunes correcto para la generación de horarios
         const fechaLunes = await obtenerFecha(centroId);
+        const festivos = await obtenerFestivos(centroId);
 
-        // Generar los horarios para los empleados
-        for (const empleado of empleados) {
-            crearHorario(
-                centroId, fechaLunes, empleado.id, empleado.Dia_Libre, empleado.Especial, 
-                empleado.Rotativo, empleado.Turno, empleado.Turno_Rotativo);
-        }
+        // ✅ Esperar a que todas las promesas terminen
+        await Promise.all(
+            empleados.map((empleado: any) =>
+                crearHorario(
+                    centroId,
+                    fechaLunes,
+                    empleado.id,
+                    empleado.Dia_Libre,
+                    empleado.Especial,
+                    empleado.Rotativo,
+                    empleado.Turno,
+                    empleado.Turno_Rotativo,
+                    festivos
+                )
+            )
+        );
 
     } catch (err) {
         console.error('Error generando horario:', err);
@@ -29,12 +36,81 @@ export async function generarHorario(centroId: number) {
     }
 }
 
+const crearHorario = async (
+    centroId: number,
+    fechaLunes: string,
+    empleadoId: number,
+    diaLibre: string,
+    especial: boolean,
+    Rotativo: boolean,
+    Turno: string,
+    Turno_Rotativo: string,
+    festivos: { fecha: string; nombre: string }[]
+) => {
+    const dias = ['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado', 'Domingo'];
+    const horario: Record<string, string> = {};
+
+    const indexLibre = dias.indexOf(diaLibre);
+    const indexLibreSiguiente = (indexLibre + 1) % 7;
+
+    const fechaLunesObj = new Date(fechaLunes);
+    const fechasSemana: string[] = [];
+
+    for (let i = 0; i < 7; i++) {
+        const fecha = new Date(fechaLunesObj);
+        fecha.setDate(fecha.getDate() + i);
+        fechasSemana.push(fecha.toISOString().split('T')[0]);
+    }
+
+    const vacaciones = await obtenerVacaciones(empleadoId);
+
+    dias.forEach((dia, index) => {
+        const fechaDia = fechasSemana[index];
+
+        const festivo = festivos.find(f => f.fecha === fechaDia);
+        if (festivo) {
+            horario[dia] = festivo.nombre;
+        } else if (vacaciones.includes(fechaDia)) {
+            horario[dia] = 'Vacaciones';
+        } else if (index === indexLibre || index === indexLibreSiguiente) {
+            horario[dia] = 'Libre';
+        } else {
+            horario[dia] = Turno;
+        }
+    });
+
+    const datosHorario = {
+        ...horario,
+        Inicio_Semana: fechaLunes,
+        supermercado_id: centroId,
+        empleado_id: empleadoId,
+    };
+
+    try {
+        const response = await axiosPost(`/api/horarios`, datosHorario);
+        console.log('Horario creado correctamente:', response.data);
+
+        await actualizarDiaLibre(empleadoId, diaLibre, especial);
+
+        if (Rotativo) {
+            await axiosPut(`/api/empleados/${empleadoId}`, {
+                Turno: Turno_Rotativo,
+                Turno_Rotativo: Turno,
+            });
+            console.log(`Turnos intercambiados para empleado ${empleadoId}`);
+        }
+
+    } catch (err) {
+        console.error('Error creando horario o actualizando empleado:', err);
+    }
+};
+
 const obtenerFecha = async (centroId: number): Promise<string> => {
     try {
         // Consultar el último horario
-        const response = await axios.get(`/api/supermercados/${centroId}/ultimoHorario`);
+        const response = await axiosGet(`/api/supermercados/${centroId}/ultimoHorario`);
         const lastStart = new Date(response.data.inicio_semana);
-        
+
         // Forzar que lastStart sea lunes
         const lastDay = lastStart.getDay(); // 0 = domingo, 1 = lunes, ..., 6 = sábado
         const diffToMonday = lastDay === 0 ? 1 : (1 - lastDay); // Si es domingo (0), suma 1. Si es otro, ajusta al lunes.
@@ -65,69 +141,18 @@ const obtenerFecha = async (centroId: number): Promise<string> => {
 
     } catch (err) {
         console.warn('No se encontró horario anterior. Se usará lunes de esta semana.', err);
-    
+
         const today = new Date();
         const dayNumber = today.getDay(); // 0 (domingo) a 6 (sábado)
         const diffToMonday = dayNumber === 0 ? 1 : 1 - dayNumber;
-    
+
         const monday = new Date(today);
         monday.setDate(today.getDate() + diffToMonday);
         monday.setHours(0, 0, 0, 0); // Medianoche
-    
+
         monday.setDate(monday.getDate() + 1);
-    
+
         return monday.toISOString().split('T')[0];
-    }    
-};
-
-
-const crearHorario = async (
-    centroId: number,
-    fechaLunes: string,
-    empleadoId: number,
-    diaLibre: string,
-    especial: boolean,
-    Rotativo: boolean,
-    Turno: string,
-    Turno_Rotativo: string
-) => {
-    const dias = ['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado', 'Domingo'];
-    const horario: Record<string, string> = {};
-
-    const indexLibre = dias.indexOf(diaLibre);
-    const indexLibreSiguiente = (indexLibre + 1) % 7;
-
-    dias.forEach((dia, index) => {
-        if (index === indexLibre || index === indexLibreSiguiente) {
-            horario[dia] = 'Libre';
-        } else {
-            horario[dia] = Turno;
-        }
-    });
-
-    const datosHorario = {
-        ...horario,
-        Inicio_Semana: fechaLunes,
-        supermercado_id: centroId,
-        empleado_id: empleadoId,
-    };
-
-    try {
-        const response = await axios.post(`/api/horarios`, datosHorario);
-        console.log('Horario creado correctamente:', response.data);
-
-        await actualizarDiaLibre(empleadoId, diaLibre, especial);
-
-        if (Rotativo) {
-            await axios.put(`/api/empleados/${empleadoId}`, {
-                Turno: Turno_Rotativo,
-                Turno_Rotativo: Turno,
-            });
-            console.log(`Turnos intercambiados para empleado ${empleadoId}`);
-        }
-
-    } catch (err) {
-        console.error('Error creando horario o actualizando empleado:', err);
     }
 };
 
@@ -144,11 +169,49 @@ const actualizarDiaLibre = async (
     const nuevoDiaLibre = dias[indexNuevo];
 
     try {
-        await axios.put(`/api/empleados/${empleadoId}`, {
+        await axiosPut(`/api/empleados/${empleadoId}`, {
             Dia_Libre: nuevoDiaLibre,
         });
         console.log(`Día libre actualizado a ${nuevoDiaLibre} para empleado ${empleadoId}`);
     } catch (err) {
         console.error(`Error actualizando día libre para empleado ${empleadoId}:`, err);
+    }
+};
+
+const obtenerVacaciones = async (empleadoId: number): Promise<string[]> => {
+    try {
+        const response = await axiosGet(`/api/empleado/${empleadoId}/vacaciones`);
+        const { Fecha_inicio, Fecha_fin } = response.data;
+
+        const fechaInicio = new Date(Fecha_inicio);
+        const fechaFin = new Date(Fecha_fin);
+        const diasVacaciones: string[] = [];
+
+        const currentDate = new Date(fechaInicio);
+        while (currentDate <= fechaFin) {
+            diasVacaciones.push(currentDate.toISOString().split('T')[0]);
+            currentDate.setDate(currentDate.getDate() + 1);
+        }
+
+        return diasVacaciones;
+    } catch (err) {
+        console.warn(`No se pudieron obtener las vacaciones del empleado ${empleadoId}`, err);
+        return [];
+    }
+};
+
+
+const obtenerFestivos = async (centroId: number): Promise<{ fecha: string; nombre: string }[]> => {
+    try {
+        const response = await axiosGet(`/api/supermercados/${centroId}/festivos`);
+        const festivos = response.data;
+
+        return festivos.map((f: { Fecha: string; Nombre: string }) => ({
+            fecha: f.Fecha.split('T')[0],
+            nombre: f.Nombre,
+        }));
+    } catch (err) {
+        console.warn(`No se pudieron obtener los festivos del supermercado ${centroId}`, err);
+        return [];
     }
 };

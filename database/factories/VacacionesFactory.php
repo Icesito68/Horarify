@@ -21,10 +21,13 @@ class VacacionesFactory extends Factory
      */
     public function definition(): array
     {
+        $start = $this->faker->dateTimeBetween('-1 months', '+2 months');
+        $end = (clone $start)->modify('+10 days');
+
         return [
-            'Fecha_inicio' => fake()->date(),
-            'Fecha_fin' => fake()->date(),
-            'empleado_id' => Empleado::factory(),
+            'Fecha_inicio' => $start->format('Y-m-d'),
+            'Fecha_fin' => $end->format('Y-m-d'),
+            'empleado_id' => \App\Models\Empleado::inRandomOrder()->first()->id,
         ];
     }
 }

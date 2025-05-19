@@ -1,0 +1,72 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "API de Horarify",
+        "description": "Documentación de la API REST para el sistema de Horarify.",
+        "contact": {
+            "email": "soporte@tudominio.com"
+        },
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/api/users/{userId}/supermercados": {
+            "get": {
+                "tags": [
+                    "Usuarios"
+                ],
+                "summary": "Obtener supermercados del usuario",
+                "description": "Devuelve la lista de supermercados asociados a un usuario.",
+                "operationId": "f744481b92351e5463181895cd099b7c",
+                "parameters": [
+                    {
+                        "name": "userId",
+                        "in": "path",
+                        "description": "ID del usuario",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Lista de supermercados",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "id": {
+                                                "type": "integer",
+                                                "example": 1
+                                            },
+                                            "nombre": {
+                                                "type": "string",
+                                                "example": "Supermercado El Ahorro"
+                                            },
+                                            "direccion": {
+                                                "type": "string",
+                                                "example": "Calle 123"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Usuario no encontrado"
+                    }
+                }
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Usuarios",
+            "description": "Usuarios"
+        }
+    ]
+}
