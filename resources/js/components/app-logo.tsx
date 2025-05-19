@@ -1,11 +1,19 @@
+import { useEffect } from 'react';
 import AppLogoIcon from './app-logo-icon';
 import { useCentro } from '../providers/centroProvider';
 import { useSidebar } from "@/components/ui/sidebar";
 
 export default function AppLogo() {
   const { centro, setCentro, centrosDisponibles } = useCentro();
-
   const { state } = useSidebar();
+
+  // Efecto para verificar si no hay centros disponibles y recargar la página
+  useEffect(() => {
+    // Solo recargar si la lista de centros existe pero está vacía
+    if (centrosDisponibles && centrosDisponibles.length === 0) {
+      window.location.reload();
+    }
+  }, [centrosDisponibles]); // Dependencia del efecto
 
   return (
     <>
@@ -14,7 +22,7 @@ export default function AppLogo() {
           <AppLogoIcon className="w-5 h-5" />
         </div>
 
-        {state !== "collapsed" && (
+        {state !== "collapsed" && centrosDisponibles && centrosDisponibles.length > 0 && (
           <select
             value={centro?.id ?? ''}
             onChange={(e) => {
