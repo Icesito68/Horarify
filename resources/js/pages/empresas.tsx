@@ -42,7 +42,6 @@ export default function Supermercados() {
         setForm({ Nombre: '', Direccion: '', NIF: '', Icon: 'pencil', user_id: 1 });
         setShowCreateModal(false);
 
-        // Mostrar notificación de éxito
         Swal.fire({
           icon: 'success',
           title: 'Supermercado creado',

@@ -86,9 +86,15 @@ export default function Vacaciones() {
       Fecha_inicio: nuevo.Fecha_inicio,
       Fecha_fin: nuevo.Fecha_fin,
     })
+    
       .then((res) => {
         setVacaciones((prev) => [...prev, res.data.data]);
         setNuevo({ empleado_id: '', Fecha_inicio: '', Fecha_fin: '' });
+        Swal.fire({
+                  icon: 'success',
+                  title: 'vaciones actualizado',
+                  text: `Vacaciones actualizadas exitosamente.`,
+        });
       });
   };
 
@@ -151,6 +157,11 @@ export default function Vacaciones() {
           prev.map((v) => (v.id === id ? res.data.data : v))
         );
         setEditandoId(null);
+      });
+      Swal.fire({
+        icon: 'success',
+        title: 'Vacaciones actualizada',
+        text: `Vacaciones actualizada exitosamente.`,
       });
   };
 

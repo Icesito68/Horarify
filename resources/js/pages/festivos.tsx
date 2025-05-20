@@ -9,6 +9,7 @@ import { BreadcrumbItem } from '@/types';
 import { Pencil, Save, X } from 'lucide-react';
 import {axiosGet, axiosPost, axiosPut } from '@/lib/axios';
 import axios from 'axios';
+import Swal from 'sweetalert2';
 
 
 const headers = ['Nombre', 'Fecha'];
@@ -49,10 +50,19 @@ export default function DiasFestivos() {
             .then(() => {
                 setFestivos((prev) => prev.filter(f => !seleccionados.includes(f.id)));
                 setSeleccionados([]);
+                Swal.fire({
+                  icon: 'success',
+                  title: 'Festivo eliminado',
+                  text: `Festivos eliminados exitosamente.`,
+                });
             })
             .catch(err => {
                 console.error('Error al eliminar festivos:', err);
-                alert('No se pudo eliminar. Inténtalo de nuevo.');
+                Swal.fire({
+                  icon: 'error',
+                  title: 'error',
+                  text: `Ha ocurrido un error eliminando los festivos.`,
+                });
             });
     };
 
@@ -82,10 +92,21 @@ export default function DiasFestivos() {
                 setFestivos(prev => [...prev, festivoCreado]);
 
                 setNuevo({ nombre: '', fecha: '' });
+
+                Swal.fire({
+                  icon: 'success',
+                  title: 'festivo creado',
+                  text: `Fesivo creado exitosamente.`,
+                });
+                
             })
             .catch(err => {
                 console.error('Error al agregar festivo:', err);
-                alert('No se pudo agregar el festivo. Inténtalo de nuevo.');
+                Swal.fire({
+                  icon: 'error',
+                  title: 'error',
+                  text: `Error al crear el nuevo festivo.`,
+                });
             });
     };
 
@@ -102,11 +123,20 @@ export default function DiasFestivos() {
                 setFestivos(prev =>
                     prev.map(f => (f.id === id ? actualizado : f))
                 );
+                Swal.fire({
+                  icon: 'success',
+                  title: 'festivo actualizado',
+                  text: `Fesivo actualizado exitosamente.`,
+                });
                 cancelarEdicion();
             })
             .catch(err => {
                 console.error('Error al actualizar festivo:', err);
-                alert('No se pudo actualizar el festivo. Inténtalo de nuevo.');
+                Swal.fire({
+                  icon: 'error',
+                  title: 'error',
+                  text: `Ha ocurrido un problema al actualizar el festivo.`,
+                });
             });
     };
 

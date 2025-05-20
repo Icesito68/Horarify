@@ -10,6 +10,7 @@ import DialogAddEmpleado from '@/components/dialog/DialogAddEmpleado';
 import DialogEditEmpleado from '@/components/dialog/DialogEditEmpleado';
 import DialogDeleteEmpleados from '@/components/dialog/DialogDeleteEmpleado';
 import { axiosGet, axiosPost, axiosPut } from '@/lib/axios';
+import Swal from 'sweetalert2';
 
 const headers = ['DNI', 'Nombre', 'Apellidos', 'Turno', 'Email', 'Número'];
 
@@ -89,9 +90,21 @@ export default function Empleados() {
       setEmpleados((prev) =>
         prev.map((emp) => (emp.id === updatedEmpleado.id ? updatedEmpleado : emp))
       );
+
+      Swal.fire({
+            icon: 'success',
+            title: 'Empleado actualizado',
+            text: `El empleado se ha actualizado exitosamente.`,
+      });
+
       setShowEditModal(false);
     } catch (error) {
       console.error('Error actualizando empleado:', error);
+      Swal.fire({
+            icon: 'error',
+            title: 'error',
+            text: `Ha ocurrido un problema actualizando al empleado.`,
+      });
     }
   };
 
@@ -129,8 +142,18 @@ export default function Empleados() {
       const nuevoEmpleado = response.data.data;
       setEmpleados((prev) => [...prev, nuevoEmpleado]);
       setShowAddModal(false);
+      Swal.fire({
+            icon: 'success',
+            title: 'Empleado creado',
+            text: `El nuevo empleado se ha añadido exitosamente.`,
+      });
     } catch (error) {
       console.error('Error creando empleado:', error);
+      Swal.fire({
+            icon: 'error',
+            title: 'error',
+            text: `Ha ocurrido un problema creando al nuevo empleado.`,
+      });
     }
   };
 
