@@ -10,6 +10,7 @@ import { Pencil, Save, X } from 'lucide-react';
 import {axiosGet, axiosPost, axiosPut } from '@/lib/axios';
 import axios from 'axios';
 import Swal from 'sweetalert2';
+import { Bugfender } from '@bugfender/sdk';
 
 
 const headers = ['Nombre', 'Fecha'];
@@ -55,6 +56,7 @@ export default function DiasFestivos() {
                   title: 'Festivo eliminado',
                   text: `Festivos eliminados exitosamente.`,
                 });
+                Bugfender.log('Festivo creado con exito');
             })
             .catch(err => {
                 console.error('Error al eliminar festivos:', err);
@@ -63,6 +65,7 @@ export default function DiasFestivos() {
                   title: 'error',
                   text: `Ha ocurrido un error eliminando los festivos.`,
                 });
+                Bugfender.error('Ha ocurrido un error con los festivos', err);
             });
     };
 
@@ -98,7 +101,7 @@ export default function DiasFestivos() {
                   title: 'festivo creado',
                   text: `Fesivo creado exitosamente.`,
                 });
-                
+                Bugfender.log('Festivo creado con exito');
             })
             .catch(err => {
                 console.error('Error al agregar festivo:', err);
@@ -107,6 +110,7 @@ export default function DiasFestivos() {
                   title: 'error',
                   text: `Error al crear el nuevo festivo.`,
                 });
+                Bugfender.error('Ha ocurrido un error con los empleados de un supermercado', err);
             });
     };
 
@@ -128,6 +132,7 @@ export default function DiasFestivos() {
                   title: 'festivo actualizado',
                   text: `Fesivo actualizado exitosamente.`,
                 });
+                Bugfender.log('Festivo creado con exito');
                 cancelarEdicion();
             })
             .catch(err => {
@@ -137,6 +142,7 @@ export default function DiasFestivos() {
                   title: 'error',
                   text: `Ha ocurrido un problema al actualizar el festivo.`,
                 });
+                Bugfender.error('Ha ocurrido un error con los festivos', err);
             });
     };
 
@@ -161,8 +167,12 @@ export default function DiasFestivos() {
             .then(res => {
                 const data = Array.isArray(res.data) ? res.data : res.data.data;
                 setFestivos(data);
+                Bugfender.log('Festivo creado con exito');
             })
-            .catch(err => console.error('Error al cargar festivos:', err));
+            .catch(err => {
+                console.error('Error al cargar festivos:', err)
+                Bugfender.error('Ha ocurrido un error con los festivos', err);
+            });
     }, [centroId]);
 
     return (

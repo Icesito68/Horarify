@@ -1,4 +1,5 @@
 import { axiosGet, axiosPost, axiosPut } from '@/lib/axios';
+import { Bugfender } from '@bugfender/sdk';
 import Swal from 'sweetalert2';
 
 export async function generarHorario(centroId: number) {
@@ -36,6 +37,7 @@ export async function generarHorario(centroId: number) {
       title: 'horario creado',
       text: `El nuevo horario se ha creado exitosamente.`,
     });
+    Bugfender.log('El nuevo horario se ha creado exitosamente');
 
     } catch (err) {
         console.error('Error generando horario:', err);

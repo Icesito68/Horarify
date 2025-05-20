@@ -9,6 +9,7 @@ import { useCentro } from '@/providers/centroProvider';
 import Swal from 'sweetalert2';
 import { axiosGet, axiosPost, axiosPut } from '@/lib/axios';
 import axios from 'axios';
+import { Bugfender } from '@bugfender/sdk';
 
 type Empleado = {
   id: number;
@@ -118,10 +119,12 @@ export default function Vacaciones() {
         .then(() => {
           setVacaciones((prev) => prev.filter((v) => !seleccionados.includes(v.id)));
           setSeleccionados([]);
+          Bugfender.log('Festivo creado con exito');
           Swal.fire('Eliminado', 'Las vacaciones han sido eliminadas.', 'success');
         })
-        .catch(() => {
-          Swal.fire('Error', 'No se pudieron eliminar las vacaciones.', 'error');
+        .catch((err) => {
+          Swal.fire('Error', 'No se pudieron eliminar las vacaciones.', err);
+          Bugfender.error('Ha ocurrido un error con las vacaciones', err);
         });
       }
     });

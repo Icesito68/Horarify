@@ -11,6 +11,7 @@ import DialogEditEmpleado from '@/components/dialog/DialogEditEmpleado';
 import DialogDeleteEmpleados from '@/components/dialog/DialogDeleteEmpleado';
 import { axiosGet, axiosPost, axiosPut } from '@/lib/axios';
 import Swal from 'sweetalert2';
+import { Bugfender } from '@bugfender/sdk';
 
 const headers = ['DNI', 'Nombre', 'Apellidos', 'Turno', 'Email', 'Número'];
 
@@ -41,8 +42,14 @@ export default function Empleados() {
     if (!centro?.id) return;
 
     axiosGet(`/api/supermercados/${centro.id}/empleados`)
-      .then((res) => setEmpleados(res.data))
-      .catch((err) => console.error('Error cargando empleados:', err));
+      .then((res) => {
+        setEmpleados(res.data)
+        Bugfender.log('Todo bien con los empleados de un supermercado');
+      })
+      .catch((err) => {console.error('Error cargando empleados:', err)
+        Bugfender.error('Ha ocurrido un error con los empleados de un supermercado', err);
+      });
+      
   }, [centro]);
 
 
