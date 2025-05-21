@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Empleado } from '@/types';
 import { useState } from 'react';
 import axios from 'axios';
+import Swal from 'sweetalert2';
 
 
 interface Props {
@@ -32,8 +33,18 @@ export default function DialogDeleteEmpleados({
       setEmpleados(empleados.filter(emp => !selected.includes(emp.id)));
       setSelected([]);
       setOpen(false); // ✅ Cierra el diálogo
+      Swal.fire({
+                  icon: 'success',
+                  title: 'Empleado eliminado',
+                  text: `Empleados eliminados exitosamente.`,
+            });
     } catch (err) {
       console.error('Error eliminando empleados:', err);
+      Swal.fire({
+                  icon: 'error',
+                  title: 'error',
+                  text: `Ha ocurrido un error al eliminar los empleados.`,
+      });
     }
   };
 
