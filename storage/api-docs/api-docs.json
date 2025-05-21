@@ -1,72 +1,226 @@
 {
-    "openapi": "3.0.0",
-    "info": {
-        "title": "API de Horarify",
-        "description": "Documentación de la API REST para el sistema de Horarify.",
-        "contact": {
-            "email": "soporte@tudominio.com"
-        },
-        "version": "1.0.0"
-    },
-    "paths": {
-        "/api/users/{userId}/supermercados": {
-            "get": {
-                "tags": [
-                    "Usuarios"
-                ],
-                "summary": "Obtener supermercados del usuario",
-                "description": "Devuelve la lista de supermercados asociados a un usuario.",
-                "operationId": "f744481b92351e5463181895cd099b7c",
-                "parameters": [
-                    {
-                        "name": "userId",
-                        "in": "path",
-                        "description": "ID del usuario",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Lista de supermercados",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "properties": {
-                                            "id": {
-                                                "type": "integer",
-                                                "example": 1
-                                            },
-                                            "nombre": {
-                                                "type": "string",
-                                                "example": "Supermercado El Ahorro"
-                                            },
-                                            "direccion": {
-                                                "type": "string",
-                                                "example": "Calle 123"
-                                            }
-                                        },
-                                        "type": "object"
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Usuario no encontrado"
-                    }
-                }
+  "openapi": "3.0.0",
+  "info": {
+    "title": "API de Horarify",
+    "description": "Documentación de la API REST para Horarify.",
+    "version": "0.0.1"
+  },
+  "paths": {
+    "/api/users/{userId}/supermercados": {
+      "get": {
+        "tags": ["Usuarios"],
+        "summary": "Obtener supermercados del usuario",
+        "description": "Devuelve la lista de supermercados asociados a un usuario.",
+        "operationId": "f744481b92351e5463181895cd099b7c",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "ID del usuario",
+            "required": true,
+            "schema": {
+              "type": "integer"
             }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de supermercados",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer",
+                        "example": 1
+                      },
+                      "nombre": {
+                        "type": "string",
+                        "example": "Supermercado El Ahorro"
+                      },
+                      "direccion": {
+                        "type": "string",
+                        "example": "Calle 123"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Usuario no encontrado"
+          }
         }
+      }
     },
-    "tags": [
-        {
-            "name": "Usuarios",
-            "description": "Usuarios"
+    
+    "/api/supermercados":{
+     "get":{
+      "tags": ["Supermercados"],
+        "summary": "Obtener todos los supermercados",
+        "description": "Devuelve la lista de supermercados."
+     } 
+    },
+    "/api/supermercados/{id}/empleados":{
+      "get":{
+      "tags": ["Supermercados"],
+        "summary": "Obtener todos los empleados de un supermercado",
+        "description": "Devuelve la lista de empleados de un supermercado."
+      }
+    },
+    "/api/supermercados/{id}/horarios":{
+      "get":{
+      "tags": ["Supermercados"],
+        "summary": "Obtener todos los horarios de un supermercado",
+        "description": "Devuelve la lista de horarios de un supermercado."
+      }
+    },
+    "/api/supermercados/{id}/festivos":{
+      "get":{
+      "tags": ["Supermercados"],
+        "summary": "Obtener todos los festivos de un supermercado",
+        "description": "Devuelve la lista de festivos de un supermercado."
+      }
+    },
+    "/api/supermercados/{id}/ultimoHorario":{
+      "get":{
+      "tags": ["Supermercados"],
+        "summary": "Obtener todos los supermercados",
+        "description": "Devuelve todos los supermercados."
+      }
+    },
+
+
+    "/api/horarios": {
+      "get": {
+        "tags": ["Horarios"],
+        "summary": "Obtener todos los horarios",
+        "description": "Devuelve la lista completa de horarios de empleados.",
+        "operationId": "getHorarios",
+        "responses": {
+          "200": {
+            "description": "Lista de horarios",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": { "type": "integer", "example": 1 },
+                          "Lunes": { "type": "string", "example": "07:30 - 15:30" },
+                          "Martes": { "type": "string", "example": "07:30 - 15:30" },
+                          "Miercoles": { "type": "string", "example": "07:30 - 15:30" },
+                          "Jueves": { "type": "string", "example": "07:30 - 15:30" },
+                          "Viernes": { "type": "string", "example": "07:30 - 15:30" },
+                          "Sabado": { "type": "string", "example": "Libre" },
+                          "Domingo": { "type": "string", "example": "Libre" },
+                          "Inicio_Semana": {
+                            "type": "string",
+                            "format": "date-time",
+                            "example": "2025-05-05T00:00:00.000000Z"
+                          },
+                          "supermercado_id": { "type": "integer", "example": 1 },
+                          "empleado_id": { "type": "integer", "example": 1 },
+                          "created_at": {
+                            "type": "string",
+                            "format": "date-time",
+                            "example": "2025-05-16T09:54:48.000000Z"
+                          },
+                          "updated_at": {
+                            "type": "string",
+                            "format": "date-time",
+                            "example": "2025-05-16T09:54:48.000000Z"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
         }
-    ]
+      }
+    },
+
+    "/api/empleados":{
+      "get":{
+      "tags": ["Empleados"],
+        "summary": "Obtener todos los empleados",
+        "description": "Devuelve todos los empleados."
+      },
+      "delete":{
+      "tags": ["Empleados"],
+        "summary": "Borrar uno o varios empleados",
+        "description": "Puedes borrar uno o varios empleados."
+      }
+    },
+    "/empleado/{userId}/vacaciones":{
+      "get":{
+      "tags": ["Empleados"],
+        "summary": "Obtener todas las vacaciones de un empleado",
+        "description": "Devuelve todas las vacaciones de un empleado."
+      }
+    },
+    
+    "/api/festivos":{
+      "get":{
+      "tags": ["Festivos"],
+        "summary": "Obtener el último horario de un supermercado",
+        "description": "Devuelve el último horario de un supermercado."
+      },
+      "delete":{
+      "tags": ["Festivos"],
+        "summary": "Borrar uno o varios festivos",
+        "description": "Puedes borrar uno o varios festivos."
+      }
+    },
+
+    "/api/vacaciones":{
+      "get":{
+      "tags": ["Vacaciones"],
+        "summary": "Obtener todas las vacaciones",
+        "description": "Devuelve todas las vacaciones."
+      },
+      "delete":{
+      "tags": ["Vacaciones"],
+        "summary": "Borrar una o varias vacaciones",
+        "description": "Puedes borrar una o varias vacaciones."
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "Usuarios",
+      "description": "Usuarios"
+    },
+    {
+      "name": "Supermercados",
+      "description": "Supermercados"
+    },
+    {
+      "name": "Horarios",
+      "description": "Horarios"
+    },
+    {
+      "name": "Empleados",
+      "description": "Empleados"
+    },
+    {
+      "name": "Festivos",
+      "description": "Festivos"
+    },
+    {
+      "name": "Vacaciones",
+      "description": "Vacaciones"
+    }
+  ]
 }
