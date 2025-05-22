@@ -16,27 +16,29 @@ interface CentroContextType {
   setCentro: (centro: Centro) => void;
   centrosDisponibles: Centro[];
   setCentrosDisponibles: (centros: Centro[]) => void;
+  setUserId: (id: number) => void;
 }
 
 const CentroContext = createContext<CentroContextType | undefined>(undefined);
 
 interface CentroProviderProps {
-  userId: number;
   children: ReactNode;
 }
 
-export const CentroProvider = ({ userId, children }: CentroProviderProps) => {
+export const CentroProvider = ({ children }: CentroProviderProps) => {
   const [centro, setCentroState] = useState<Centro | null>(null);
   const [centrosDisponibles, setCentrosDisponibles] = useState<Centro[]>([]);
   const [loading, setLoading] = useState(true);
-  // const token = localStorage.getItem('token');
-
+  const [userId, setUserId] = useState<number | null>(null);
 
   useEffect(() => {
+    if (!userId) return;
+
     const fetchCentros = async () => {
       try {
         const res = await axiosGet(`/api/user/${userId}/supermercados`);
         const supermercados = res.data;
+
         setCentrosDisponibles(supermercados);
 
         const savedId = localStorage.getItem('centroId');
@@ -59,10 +61,10 @@ export const CentroProvider = ({ userId, children }: CentroProviderProps) => {
     localStorage.setItem('centroId', centro.id.toString());
   };
 
-  if (loading) return null;
+  if (loading && userId !== null) return null;
 
   return (
-    <CentroContext.Provider value={{ centro, setCentro, centrosDisponibles, setCentrosDisponibles }}>
+    <CentroContext.Provider value={{ centro, setCentro, centrosDisponibles, setCentrosDisponibles, setUserId }}>
       {children}
     </CentroContext.Provider>
   );
