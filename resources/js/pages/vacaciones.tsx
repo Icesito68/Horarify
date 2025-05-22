@@ -9,6 +9,7 @@ import { useCentro } from '@/providers/centroProvider';
 import Swal from 'sweetalert2';
 import { axiosGet, axiosPost, axiosPut } from '@/lib/axios';
 import axios from 'axios';
+import { Bugfender } from '@bugfender/sdk';
 
 type Empleado = {
   id: number;
@@ -86,9 +87,15 @@ export default function Vacaciones() {
       Fecha_inicio: nuevo.Fecha_inicio,
       Fecha_fin: nuevo.Fecha_fin,
     })
+    
       .then((res) => {
         setVacaciones((prev) => [...prev, res.data.data]);
         setNuevo({ empleado_id: '', Fecha_inicio: '', Fecha_fin: '' });
+        Swal.fire({
+                  icon: 'success',
+                  title: 'vaciones actualizado',
+                  text: `Vacaciones actualizadas exitosamente.`,
+        });
       });
   };
 
@@ -112,10 +119,12 @@ export default function Vacaciones() {
         .then(() => {
           setVacaciones((prev) => prev.filter((v) => !seleccionados.includes(v.id)));
           setSeleccionados([]);
+          Bugfender.log('Festivo creado con exito');
           Swal.fire('Eliminado', 'Las vacaciones han sido eliminadas.', 'success');
         })
-        .catch(() => {
-          Swal.fire('Error', 'No se pudieron eliminar las vacaciones.', 'error');
+        .catch((err) => {
+          Swal.fire('Error', 'No se pudieron eliminar las vacaciones.', err);
+          Bugfender.error('Ha ocurrido un error con las vacaciones', err);
         });
       }
     });
@@ -151,6 +160,11 @@ export default function Vacaciones() {
           prev.map((v) => (v.id === id ? res.data.data : v))
         );
         setEditandoId(null);
+      });
+      Swal.fire({
+        icon: 'success',
+        title: 'Vacaciones actualizada',
+        text: `Vacaciones actualizada exitosamente.`,
       });
   };
 

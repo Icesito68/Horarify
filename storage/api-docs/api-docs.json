@@ -1,72 +1,1414 @@
 {
-    "openapi": "3.0.0",
-    "info": {
-        "title": "API de Horarify",
-        "description": "Documentación de la API REST para el sistema de Horarify.",
-        "contact": {
-            "email": "soporte@tudominio.com"
-        },
-        "version": "1.0.0"
-    },
-    "paths": {
-        "/api/users/{userId}/supermercados": {
-            "get": {
-                "tags": [
-                    "Usuarios"
-                ],
-                "summary": "Obtener supermercados del usuario",
-                "description": "Devuelve la lista de supermercados asociados a un usuario.",
-                "operationId": "f744481b92351e5463181895cd099b7c",
-                "parameters": [
-                    {
-                        "name": "userId",
-                        "in": "path",
-                        "description": "ID del usuario",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Lista de supermercados",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "properties": {
-                                            "id": {
-                                                "type": "integer",
-                                                "example": 1
-                                            },
-                                            "nombre": {
-                                                "type": "string",
-                                                "example": "Supermercado El Ahorro"
-                                            },
-                                            "direccion": {
-                                                "type": "string",
-                                                "example": "Calle 123"
-                                            }
-                                        },
-                                        "type": "object"
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Usuario no encontrado"
-                    }
-                }
+  "openapi": "3.0.0",
+  "info": {
+    "title": "API de Horarify",
+    "description": "Documentación de la API REST para Horarify.",
+    "version": "0.0.1"
+  },
+  "paths": {
+    "/api/users/{userId}/supermercados": {
+      "get": {
+        "tags": ["Usuarios"],
+        "summary": "Obtener supermercados del usuario",
+        "description": "Devuelve la lista de supermercados asociados a un usuario.",
+        "operationId": "f744481b92351e5463181895cd099b7c",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "ID del usuario",
+            "required": true,
+            "schema": {
+              "type": "integer"
             }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de supermercados",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer",
+                        "example": 1
+                      },
+                      "nombre": {
+                        "type": "string",
+                        "example": "Supermercado El Ahorro"
+                      },
+                      "direccion": {
+                        "type": "string",
+                        "example": "Calle 123"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Usuario no encontrado"
+          }
         }
+      }
     },
-    "tags": [
-        {
-            "name": "Usuarios",
-            "description": "Usuarios"
+    
+    "/api/supermercados": {
+      "get": {
+        "tags": ["Supermercados"],
+        "summary": "Obtener todos los supermercados",
+        "description": "Devuelve una lista de supermercados con todos sus datos.",
+        "responses": {
+          "200": {
+            "description": "Lista de supermercados obtenida exitosamente.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": { "type": "integer", "example": 1 },
+                          "Nombre": { "type": "string", "example": "Suma Playa La Arena" },
+                          "Direccion": { "type": "string", "example": "Av. Marítima Puerto de Santiago" },
+                          "NIF": { "type": "string", "example": "12345678A" },
+                          "Icon": { "type": "string", "example": "Pencil" },
+                          "user_id": { "type": "integer", "example": 1 },
+                          "created_at": { "type": "string", "format": "date-time", "example": "2025-05-16T09:54:48.000000Z" },
+                          "updated_at": { "type": "string", "format": "date-time", "example": "2025-05-16T09:54:48.000000Z" }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
         }
-    ]
+      },
+      "post": {
+        "tags": ["Supermercados"],
+        "summary": "Crear un nuevo supermercado",
+        "description": "Crea un nuevo supermercado con los datos proporcionados.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["Nombre", "Direccion", "NIF", "Icon", "user_id"],
+                "properties": {
+                  "Nombre": { "type": "string", "example": "Supermercado Central" },
+                  "Direccion": { "type": "string", "example": "Calle Falsa 123" },
+                  "NIF": { "type": "string", "example": "A12345678" },
+                  "Icon": { "type": "string", "example": "Store" },
+                  "user_id": { "type": "integer", "example": 1 }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Supermercado creado exitosamente.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": { "type": "string", "example": "Supermercado creado correctamente." },
+                    "data": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/Supermercado"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/api/supermercados/{supermercado}": {
+      "put": {
+        "tags": ["Supermercados"],
+        "summary": "Actualizar un supermercado existente",
+        "description": "Actualiza los datos de un supermercado según su ID.",
+        "parameters": [
+          {
+            "name": "supermercado",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" },
+            "example": 1
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "Nombre": { "type": "string", "example": "Nuevo nombre" },
+                  "Direccion": { "type": "string", "example": "Nueva dirección" },
+                  "NIF": { "type": "string", "example": "B98765432" },
+                  "Icon": { "type": "string", "example": "ShoppingCart" },
+                  "user_id": { "type": "integer", "example": 2 }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Supermercado actualizado correctamente.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": { "type": "string", "example": "Supermercado actualizado correctamente." },
+                    "data": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/Supermercado"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Supermercados"],
+        "summary": "Eliminar un supermercado",
+        "description": "Elimina un supermercado a partir de su ID.",
+        "parameters": [
+          {
+            "name": "supermercado",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Supermercado eliminado correctamente.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": { "type": "string", "example": "Supermercado eliminado correctamente." }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Supermercado no encontrado."
+          }
+        }
+      }
+    },
+
+    "/api/supermercados/{id}/empleados": {
+      "get": {
+        "tags": ["Supermercados"],
+        "summary": "Obtener todos los empleados de un supermercado",
+        "description": "Devuelve la lista de empleados de un supermercado.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "ID del supermercado"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de empleados obtenida exitosamente.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": { "type": "integer", "example": 4 },
+                          "DNI": { "type": "string", "example": "45678901D" },
+                          "Nombre": { "type": "string", "example": "Laura" },
+                          "Apellidos": { "type": "string", "example": "Fernandez" },
+                          "Telefono": { "type": "string", "example": "600000004" },
+                          "Turno": { "type": "string", "example": "14:00 - 20:00" },
+                          "Horas_Semanales": { "type": "string", "example": "30" },
+                          "Dia_Libre": { "type": "string", "example": "Miercoles" },
+                          "Rotativo": { "type": "boolean", "example": true },
+                          "Turno_Rotativo": { "type": "string", "example": "08:00 - 14:00" },
+                          "Especial": { "type": "boolean", "example": false },
+                          "Email": { "type": "string", "example": "laura.fernandez@gmail.com" },
+                          "supermercado_id": { "type": "integer", "example": 2 },
+                          "created_at": {
+                            "type": "string",
+                            "format": "date-time",
+                            "example": "2025-05-16T09:54:48.000000Z"
+                          },
+                          "updated_at": {
+                            "type": "string",
+                            "format": "date-time",
+                            "example": "2025-05-20T07:23:53.000000Z"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/api/supermercados/{id}/horarios": {
+      "get": {
+        "tags": ["Supermercados"],
+        "summary": "Obtener todos los horarios de un supermercado",
+        "description": "Devuelve la lista de horarios de un supermercado.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "ID del supermercado"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de horarios obtenida exitosamente.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": { "type": "integer", "example": 34 },
+                          "Lunes": { "type": "string", "example": "08:00 - 14:00" },
+                          "Martes": { "type": "string", "example": "Libre" },
+                          "Miercoles": { "type": "string", "example": "Libre" },
+                          "Jueves": { "type": "string", "example": "08:00 - 14:00" },
+                          "Viernes": { "type": "string", "example": "08:00 - 14:00" },
+                          "Sabado": { "type": "string", "example": "08:00 - 14:00" },
+                          "Domingo": { "type": "string", "example": "08:00 - 14:00" },
+                          "Inicio_Semana": {
+                            "type": "string",
+                            "format": "date-time",
+                            "example": "2025-05-19T00:00:00.000000Z"
+                          },
+                          "supermercado_id": { "type": "integer", "example": 2 },
+                          "empleado_id": { "type": "integer", "example": 4 },
+                          "created_at": {
+                            "type": "string",
+                            "format": "date-time",
+                            "example": "2025-05-20T07:23:53.000000Z"
+                          },
+                          "updated_at": {
+                            "type": "string",
+                            "format": "date-time",
+                            "example": "2025-05-20T07:23:53.000000Z"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/api/supermercados/{id}/festivos": {
+      "get": {
+        "tags": ["Supermercados"],
+        "summary": "Obtener todos los festivos de un supermercado",
+        "description": "Devuelve la lista de festivos de un supermercado.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "ID del supermercado"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de festivos obtenida exitosamente.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": { "type": "integer", "example": 12 },
+                          "Fecha": {
+                            "type": "string",
+                            "format": "date-time",
+                            "example": "2025-01-01T00:00:00.000000Z"
+                          },
+                          "Nombre": { "type": "string", "example": "Año Nuevo" },
+                          "supermercado_id": { "type": "integer", "example": 2 },
+                          "created_at": {
+                            "type": "string",
+                            "format": "date-time",
+                            "example": "2025-05-16T09:54:48.000000Z"
+                          },
+                          "updated_at": {
+                            "type": "string",
+                            "format": "date-time",
+                            "example": "2025-05-16T09:54:48.000000Z"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    
+    "/api/supermercados/{id}/ultimoHorario": {
+      "get": {
+        "tags": ["Supermercados"],
+        "summary": "Obtener la fecha del último horario registrado",
+        "description": "Devuelve la fecha de inicio de semana del último horario registrado para un supermercado.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "ID del supermercado"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Fecha del último horario obtenida exitosamente.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "inicio_semana": {
+                      "type": "string",
+                      "format": "date-time",
+                      "example": "2025-05-19T00:00:00.000000Z"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/api/horarios": {
+  "get": {
+    "tags": ["Horarios"],
+    "summary": "Obtener todos los horarios",
+    "description": "Devuelve la lista completa de horarios de empleados.",
+    "operationId": "getHorarios",
+    "responses": {
+      "200": {
+        "description": "Lista de horarios",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": { "type": "integer", "example": 1 },
+                      "Lunes": { "type": "string", "example": "07:30 - 15:30" },
+                      "Martes": { "type": "string", "example": "07:30 - 15:30" },
+                      "Miercoles": { "type": "string", "example": "07:30 - 15:30" },
+                      "Jueves": { "type": "string", "example": "07:30 - 15:30" },
+                      "Viernes": { "type": "string", "example": "07:30 - 15:30" },
+                      "Sabado": { "type": "string", "example": "Libre" },
+                      "Domingo": { "type": "string", "example": "Libre" },
+                      "Inicio_Semana": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-05-05T00:00:00.000000Z"
+                      },
+                      "supermercado_id": { "type": "integer", "example": 1 },
+                      "empleado_id": { "type": "integer", "example": 1 },
+                      "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-05-16T09:54:48.000000Z"
+                      },
+                      "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-05-16T09:54:48.000000Z"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "post": {
+    "tags": ["Horarios"],
+    "summary": "Crear un nuevo horario",
+    "description": "Registra un nuevo horario para un empleado en una semana específica.",
+    "requestBody": {
+      "required": true,
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "object",
+            "required": ["Inicio_Semana", "empleado_id", "supermercado_id"],
+            "properties": {
+              "Lunes": { "type": "string", "example": "07:30 - 15:30" },
+              "Martes": { "type": "string", "example": "07:30 - 15:30" },
+              "Miercoles": { "type": "string", "example": "07:30 - 15:30" },
+              "Jueves": { "type": "string", "example": "07:30 - 15:30" },
+              "Viernes": { "type": "string", "example": "07:30 - 15:30" },
+              "Sabado": { "type": "string", "example": "Libre" },
+              "Domingo": { "type": "string", "example": "Libre" },
+              "Inicio_Semana": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2025-05-12T00:00:00.000000Z"
+              },
+              "empleado_id": { "type": "integer", "example": 1 },
+              "supermercado_id": { "type": "integer", "example": 1 }
+            }
+          }
+        }
+      }
+    },
+    "responses": {
+      "201": {
+        "description": "Horario creado correctamente.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Horario creado correctamente"
+                },
+                "data": {
+                  "$ref": "#/components/schemas/Horario"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "put": {
+    "tags": ["Horarios"],
+    "summary": "Actualizar horario",
+    "description": "Actualiza un horario específico mediante su ID.",
+    "parameters": [
+      {
+        "name": "id",
+        "in": "query",
+        "required": true,
+        "schema": { "type": "integer" },
+        "example": 1
+      }
+    ],
+    "requestBody": {
+      "required": true,
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "Lunes": { "type": "string", "example": "08:00 - 16:00" },
+              "Martes": { "type": "string", "example": "08:00 - 16:00" },
+              "Miercoles": { "type": "string", "example": "08:00 - 16:00" },
+              "Jueves": { "type": "string", "example": "08:00 - 16:00" },
+              "Viernes": { "type": "string", "example": "08:00 - 16:00" },
+              "Sabado": { "type": "string", "example": "Libre" },
+              "Domingo": { "type": "string", "example": "Libre" },
+              "Inicio_Semana": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2025-05-19T00:00:00.000000Z"
+              },
+              "empleado_id": { "type": "integer", "example": 1 },
+              "supermercado_id": { "type": "integer", "example": 1 }
+            }
+          }
+        }
+      }
+    },
+    "responses": {
+      "200": {
+        "description": "Horario actualizado correctamente.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Horario actualizado correctamente"
+                },
+                "data": {
+                  "$ref": "#/components/schemas/Horario"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "delete": {
+    "tags": ["Horarios"],
+    "summary": "Borrar uno o varios horarios",
+    "description": "Elimina uno o varios horarios especificando sus IDs.",
+    "requestBody": {
+      "required": true,
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "ids": {
+                "type": "array",
+                "items": { "type": "integer" },
+                "example": [1, 2, 3]
+              }
+            },
+            "required": ["ids"]
+          }
+        }
+      }
+    },
+    "responses": {
+      "200": {
+        "description": "Horarios eliminados correctamente.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Horarios eliminados correctamente"
+                }
+              }
+            }
+          }
+        }
+      },
+      "422": {
+        "description": "No se proporcionaron IDs válidos.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "No se proporcionaron IDs válidos"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+},
+
+    "/api/empleados": {
+  "get": {
+    "tags": ["Empleados"],
+    "summary": "Obtener todos los empleados",
+    "description": "Devuelve todos los empleados.",
+    "responses": {
+      "200": {
+        "description": "Lista de empleados obtenida exitosamente.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": { "type": "integer", "example": 1 },
+                      "DNI": { "type": "string", "example": "12345678A" },
+                      "Nombre": { "type": "string", "example": "Joel" },
+                      "Apellidos": { "type": "string", "example": "Lopez" },
+                      "Telefono": { "type": "string", "example": "600000001" },
+                      "Turno": { "type": "string", "example": "07:30 - 15:30" },
+                      "Horas_Semanales": { "type": "string", "example": "40" },
+                      "Dia_Libre": { "type": "string", "example": "Sabado" },
+                      "Rotativo": { "type": "boolean", "example": false },
+                      "Turno_Rotativo": { "type": "string", "example": "" },
+                      "Especial": { "type": "boolean", "example": true },
+                      "Email": { "type": "string", "example": "joel.lopez@gmail.com" },
+                      "supermercado_id": { "type": "integer", "example": 1 },
+                      "created_at": { "type": "string", "format": "date-time", "example": "2025-05-16T09:54:48.000000Z" },
+                      "updated_at": { "type": "string", "format": "date-time", "example": "2025-05-16T09:54:48.000000Z" }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "post": {
+    "tags": ["Empleados"],
+    "summary": "Crear un nuevo empleado",
+    "description": "Crea un nuevo empleado con los datos proporcionados.",
+    "requestBody": {
+      "required": true,
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "object",
+            "required": ["DNI", "Nombre", "Apellidos", "Telefono", "Turno", "Horas_Semanales", "Dia_Libre", "Rotativo", "Especial", "Email", "supermercado_id"],
+            "properties": {
+              "DNI": { "type": "string", "example": "87654321B" },
+              "Nombre": { "type": "string", "example": "Lucía" },
+              "Apellidos": { "type": "string", "example": "Martínez" },
+              "Telefono": { "type": "string", "example": "600000002" },
+              "Turno": { "type": "string", "example": "15:00 - 23:00" },
+              "Horas_Semanales": { "type": "string", "example": "35" },
+              "Dia_Libre": { "type": "string", "example": "Domingo" },
+              "Rotativo": { "type": "boolean", "example": true },
+              "Turno_Rotativo": { "type": "string", "example": "Mañana / Tarde" },
+              "Especial": { "type": "boolean", "example": false },
+              "Email": { "type": "string", "example": "lucia.martinez@example.com" },
+              "supermercado_id": { "type": "integer", "example": 2 }
+            }
+          }
+        }
+      }
+    },
+    "responses": {
+      "201": {
+        "description": "Empleado creado exitosamente.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": { "type": "string", "example": "Empleado creado correctamente." },
+                "data": {
+                  "$ref": "#/components/schemas/Empleado"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "put": {
+    "tags": ["Empleados"],
+    "summary": "Actualizar un empleado existente",
+    "description": "Actualiza los datos de un empleado según su ID.",
+    "parameters": [
+      {
+        "name": "id",
+        "in": "query",
+        "required": true,
+        "schema": { "type": "integer" },
+        "example": 1
+      }
+    ],
+    "requestBody": {
+      "required": true,
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "DNI": { "type": "string", "example": "87654321B" },
+              "Nombre": { "type": "string", "example": "Lucía Actualizada" },
+              "Apellidos": { "type": "string", "example": "Martínez Gómez" },
+              "Telefono": { "type": "string", "example": "600000003" },
+              "Turno": { "type": "string", "example": "10:00 - 18:00" },
+              "Horas_Semanales": { "type": "string", "example": "30" },
+              "Dia_Libre": { "type": "string", "example": "Lunes" },
+              "Rotativo": { "type": "boolean", "example": false },
+              "Turno_Rotativo": { "type": "string", "example": "" },
+              "Especial": { "type": "boolean", "example": false },
+              "Email": { "type": "string", "example": "lucia.actualizada@example.com" },
+              "supermercado_id": { "type": "integer", "example": 1 }
+            }
+          }
+        }
+      }
+    },
+    "responses": {
+      "200": {
+        "description": "Empleado actualizado correctamente.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": { "type": "string", "example": "Empleado actualizado correctamente." },
+                "data": {
+                  "$ref": "#/components/schemas/Empleado"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "delete": {
+    "tags": ["Empleados"],
+    "summary": "Borrar uno o varios empleados",
+    "description": "Puedes borrar uno o varios empleados proporcionando una lista de IDs.",
+    "requestBody": {
+      "required": true,
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "ids": {
+                "type": "array",
+                "items": { "type": "integer" },
+                "example": [1, 2, 3]
+              }
+            },
+            "required": ["ids"]
+          }
+        }
+      }
+    },
+    "responses": {
+      "200": {
+        "description": "Empleados eliminados correctamente.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Empleados eliminados correctamente"
+                }
+              }
+            }
+          }
+        }
+      },
+      "422": {
+        "description": "No se proporcionaron IDs válidos.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "No se proporcionaron IDs válidos"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+},
+    
+    "/empleado/{userId}/vacaciones": {
+      "get": {
+        "tags": ["Empleados"],
+        "summary": "Obtener todas las vacaciones de un empleado",
+        "description": "Devuelve todas las vacaciones de un empleado.",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "description": "ID del empleado",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Vacaciones obtenidas correctamente.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": { "type": "integer", "example": 1 },
+                    "Fecha_inicio": {
+                      "type": "string",
+                      "format": "date-time",
+                      "example": "2025-07-15T00:00:00.000000Z"
+                    },
+                    "Fecha_fin": {
+                      "type": "string",
+                      "format": "date-time",
+                      "example": "2025-07-31T00:00:00.000000Z"
+                    },
+                    "empleado_id": { "type": "integer", "example": 1 },
+                    "created_at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "example": "2025-05-16T09:54:49.000000Z"
+                    },
+                    "updated_at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "example": "2025-05-16T09:54:49.000000Z"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    
+    "/api/festivos": {
+  "get": {
+    "tags": ["Festivos"],
+    "summary": "Obtener todos los festivos",
+    "description": "Devuelve la lista de todos los festivos.",
+    "responses": {
+      "200": {
+        "description": "Festivos obtenidos correctamente.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": { "type": "integer", "example": 1 },
+                      "Fecha": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-01-01T00:00:00.000000Z"
+                      },
+                      "Nombre": { "type": "string", "example": "Año Nuevo" },
+                      "supermercado_id": { "type": "integer", "example": 1 },
+                      "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-05-16T09:54:48.000000Z"
+                      },
+                      "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-05-16T09:54:48.000000Z"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "post": {
+    "tags": ["Festivos"],
+    "summary": "Crear un nuevo festivo",
+    "description": "Crea un nuevo festivo con los datos proporcionados.",
+    "requestBody": {
+      "required": true,
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "object",
+            "required": ["Fecha", "Nombre", "supermercado_id"],
+            "properties": {
+              "Fecha": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2025-12-25T00:00:00.000000Z"
+              },
+              "Nombre": {
+                "type": "string",
+                "example": "Navidad"
+              },
+              "supermercado_id": {
+                "type": "integer",
+                "example": 1
+              }
+            }
+          }
+        }
+      }
+    },
+    "responses": {
+      "201": {
+        "description": "Festivo creado correctamente.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Festivo creado correctamente"
+                },
+                "data": {
+                  "$ref": "#/components/schemas/Festivo"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "put": {
+    "tags": ["Festivos"],
+    "summary": "Actualizar un festivo existente",
+    "description": "Actualiza los datos de un festivo según su ID.",
+    "parameters": [
+      {
+        "name": "id",
+        "in": "query",
+        "required": true,
+        "schema": {
+          "type": "integer"
+        },
+        "example": 1
+      }
+    ],
+    "requestBody": {
+      "required": true,
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "Fecha": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2025-12-31T00:00:00.000000Z"
+              },
+              "Nombre": {
+                "type": "string",
+                "example": "Nochevieja"
+              },
+              "supermercado_id": {
+                "type": "integer",
+                "example": 1
+              }
+            }
+          }
+        }
+      }
+    },
+    "responses": {
+      "200": {
+        "description": "Festivo actualizado correctamente.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Festivo actualizado correctamente"
+                },
+                "data": {
+                  "$ref": "#/components/schemas/Festivo"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "delete": {
+    "tags": ["Festivos"],
+    "summary": "Borrar uno o varios festivos",
+    "description": "Puedes borrar uno o varios festivos enviando una lista de IDs.",
+    "requestBody": {
+      "required": true,
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "ids": {
+                "type": "array",
+                "items": { "type": "integer" },
+                "example": [1, 2, 3]
+              }
+            },
+            "required": ["ids"]
+          }
+        }
+      }
+    },
+    "responses": {
+      "200": {
+        "description": "Festivos eliminados correctamente.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Festivos eliminados correctamente"
+                }
+              }
+            }
+          }
+        }
+      },
+      "400": {
+        "description": "Error por falta de IDs válidos.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "No se enviaron IDs válidos"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+,
+
+    "/api/vacaciones": {
+  "get": {
+    "tags": ["Vacaciones"],
+    "summary": "Obtener todas las vacaciones",
+    "description": "Devuelve todas las vacaciones.",
+    "responses": {
+      "200": {
+        "description": "Vacaciones obtenidas correctamente.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": { "type": "integer", "example": 1 },
+                      "Fecha_inicio": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-07-15T00:00:00.000000Z"
+                      },
+                      "Fecha_fin": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-07-31T00:00:00.000000Z"
+                      },
+                      "empleado_id": { "type": "integer", "example": 1 },
+                      "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-05-16T09:54:49.000000Z"
+                      },
+                      "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-05-16T09:54:49.000000Z"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "post": {
+    "tags": ["Vacaciones"],
+    "summary": "Crear nuevas vacaciones",
+    "description": "Crea un nuevo registro de vacaciones para un empleado.",
+    "requestBody": {
+      "required": true,
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "object",
+            "required": ["Fecha_inicio", "Fecha_fin", "empleado_id"],
+            "properties": {
+              "Fecha_inicio": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2025-08-01T00:00:00.000000Z"
+              },
+              "Fecha_fin": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2025-08-15T00:00:00.000000Z"
+              },
+              "empleado_id": {
+                "type": "integer",
+                "example": 1
+              }
+            }
+          }
+        }
+      }
+    },
+    "responses": {
+      "201": {
+        "description": "Vacaciones creadas correctamente.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Vacaciones creadas correctamente"
+                },
+                "data": {
+                  "$ref": "#/components/schemas/Vacaciones"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "put": {
+    "tags": ["Vacaciones"],
+    "summary": "Actualizar vacaciones",
+    "description": "Actualiza un registro de vacaciones según su ID.",
+    "parameters": [
+      {
+        "name": "id",
+        "in": "query",
+        "required": true,
+        "schema": {
+          "type": "integer"
+        },
+        "example": 1
+      }
+    ],
+    "requestBody": {
+      "required": true,
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "Fecha_inicio": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2025-08-05T00:00:00.000000Z"
+              },
+              "Fecha_fin": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2025-08-20T00:00:00.000000Z"
+              },
+              "empleado_id": {
+                "type": "integer",
+                "example": 1
+              }
+            }
+          }
+        }
+      }
+    },
+    "responses": {
+      "200": {
+        "description": "Vacaciones actualizadas correctamente.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Vacaciones actualizadas correctamente"
+                },
+                "data": {
+                  "$ref": "#/components/schemas/Vacaciones"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "delete": {
+    "tags": ["Vacaciones"],
+    "summary": "Borrar una o varias vacaciones",
+    "description": "Puedes borrar una o varias vacaciones enviando una lista de IDs.",
+    "requestBody": {
+      "required": true,
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "ids": {
+                "type": "array",
+                "items": { "type": "integer" },
+                "example": [1, 2, 3]
+              }
+            },
+            "required": ["ids"]
+          }
+        }
+      }
+    },
+    "responses": {
+      "200": {
+        "description": "Vacaciones eliminadas correctamente.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Vacaciones eliminadas correctamente"
+                }
+              }
+            }
+          }
+        }
+      },
+      "422": {
+        "description": "No se proporcionaron IDs válidos.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "No se proporcionaron IDs válidos"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+  },
+
+  "tags": [
+    {
+      "name": "Usuarios",
+      "description": "Usuarios"
+    },
+    {
+      "name": "Supermercados",
+      "description": "Supermercados"
+    },
+    {
+      "name": "Horarios",
+      "description": "Horarios"
+    },
+    {
+      "name": "Empleados",
+      "description": "Empleados"
+    },
+    {
+      "name": "Festivos",
+      "description": "Festivos"
+    },
+    {
+      "name": "Vacaciones",
+      "description": "Vacaciones"
+    }
+  ]
 }
