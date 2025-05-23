@@ -1,16 +1,12 @@
 import { useEffect, useState } from 'react';
-import HorarioDialog from '@/components/dialog/HorarioDialog';
 import { useCentro } from '@/providers/centroProvider';
 import { generarHorario } from '@/components/GenerarHorario';
 import { Button } from '@/components/ui/button';
-import { CalendarClock } from 'lucide-react';
-import { axiosGet } from '@/lib/axios';
+import { CalendarClock, Pencil, Trash2, Save, X } from 'lucide-react';
+import { axiosGet, axiosPut } from '@/lib/axios';
+import { Input } from '@/components/ui/input';
 
-const headers = [
-  // 'DNI', 
-  'Nombre', 'Apellidos', 'Lunes', 'Martes', 'Miércoles', 'Jueves',
-  'Viernes', 'Sábado', 'Domingo',
-];
+const headers = ['Nombre', 'Apellidos', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
 
 type Horario = {
   id: number;
@@ -42,6 +38,8 @@ export default function Table() {
   const { centro } = useCentro();
   const [horarios, setHorarios] = useState<HorarioConEmpleado[]>([]);
   const [agrupado, setAgrupado] = useState<Map<string, HorarioConEmpleado[]>>(new Map());
+  const [editandoId, setEditandoId] = useState<number | null>(null);
+  const [editData, setEditData] = useState<Partial<Horario>>({});
   const centroId = Number(centro?.id ?? 1);
 
   const fetchData = async () => {
@@ -80,7 +78,6 @@ export default function Table() {
     }
   };
 
-  // Mantener la llamada inicial
   useEffect(() => {
     fetchData();
   }, [centroId]);
@@ -88,12 +85,22 @@ export default function Table() {
   const handleAddHorario = async () => {
     try {
       await generarHorario(centroId);
-      await fetchData(); 
+      await fetchData();
     } catch (err) {
       console.error(err);
     }
   };
 
+  const handleSave = async (id: number) => {
+    try {
+      await axiosPut(`/api/horarios/${id}`, editData);
+      setEditandoId(null);
+      setEditData({});
+      await fetchData();
+    } catch (error) {
+      console.error('Error actualizando horario:', error);
+    }
+  };
 
   return (
     <div className="space-y-10">
@@ -104,57 +111,82 @@ export default function Table() {
         </Button>
       </div>
 
-      {[...agrupado.entries()].map(([inicioSemana, horarios]) => {
+      {[...agrupado.entries()].map(([inicioSemana, horariosSemana]) => {
         const inicio = new Date(inicioSemana);
         const fin = new Date(inicio);
         fin.setDate(inicio.getDate() + 6);
 
         return (
-          <div
-            key={inicioSemana}
-            className="bg-card text-card-foreground shadow-md rounded-xl overflow-auto"
-          >
-            <div className="border-b border-border bg-primary text-primary-foreground px-4 py-3 flex items-center">
-              <div className="flex-1 text-center font-semibold text-sm sm:text-base">
+          <div key={inicioSemana} className="bg-card text-card-foreground shadow-md rounded-xl overflow-auto">
+            <div className="border-b border-border bg-primary text-primary-foreground px-4 py-3 flex justify-center">
+              <div className="text-sm sm:text-base font-semibold text-center">
                 {inicio.toLocaleDateString()} - {fin.toLocaleDateString()}
               </div>
-              <HorarioDialog
-                semana={inicioSemana}
-                inicio={inicio}
-                fin={fin}
-                datos={agrupado.get(inicioSemana) || []}
-              />
-
             </div>
 
             <table className="min-w-full border-collapse text-sm">
               <thead>
                 <tr>
                   {headers.map((header) => (
-                    <th
-                      key={header}
-                      className="bg-primary text-primary-foreground px-4 py-3 border border-border text-left"
-                    >
+                    <th key={header} className="bg-primary text-primary-foreground px-4 py-3 border border-border text-left">
                       {header}
                     </th>
                   ))}
+                  <th className="bg-primary text-primary-foreground px-4 py-3 border border-border text-left">Acciones</th>
                 </tr>
               </thead>
               <tbody>
-                {horarios.map((horario) => (
-                  <tr key={horario.id}>
-                    {/* <td className="px-4 py-2 border border-border">{horario.empleado?.DNI || '-'}</td> */}
-                    <td className="px-4 py-2 border border-border">{horario.empleado?.Nombre || '-'}</td>
-                    <td className="px-4 py-2 border border-border">{horario.empleado?.Apellidos || '-'}</td>
-                    <td className="px-4 py-2 border border-border">{horario.Lunes}</td>
-                    <td className="px-4 py-2 border border-border">{horario.Martes}</td>
-                    <td className="px-4 py-2 border border-border">{horario.Miercoles}</td>
-                    <td className="px-4 py-2 border border-border">{horario.Jueves}</td>
-                    <td className="px-4 py-2 border border-border">{horario.Viernes}</td>
-                    <td className="px-4 py-2 border border-border">{horario.Sabado}</td>
-                    <td className="px-4 py-2 border border-border">{horario.Domingo}</td>
-                  </tr>
-                ))}
+                {horariosSemana.map((horario) => {
+                  const isEditing = editandoId === horario.id;
+                  const updateField = (field: keyof Horario, value: string) =>
+                    setEditData((prev) => ({ ...prev, [field]: value }));
+
+                  return (
+                    <tr key={horario.id}>
+                      <td className="px-4 py-2 border border-border">{horario.empleado?.Nombre || '-'}</td>
+                      <td className="px-4 py-2 border border-border">{horario.empleado?.Apellidos || '-'}</td>
+
+                      {['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado', 'Domingo'].map((dia) => (
+                        <td key={dia} className="px-2 py-2 border border-border">
+                          {isEditing ? (
+                            <Input
+                              value={(editData as any)[dia] ?? (horario as any)[dia]}
+                              onChange={(e) => updateField(dia as keyof Horario, e.target.value)}
+                              className="h-8"
+                            />
+                          ) : (
+                            (horario as any)[dia]
+                          )}
+                        </td>
+                      ))}
+
+                      <td className="px-2 py-2 border border-border">
+                        {isEditing ? (
+                          <div className="flex gap-2">
+                            <Button size="icon" onClick={() => handleSave(horario.id)}>
+                              <Save className="w-4 h-4" />
+                            </Button>
+                            <Button size="icon" variant="secondary" onClick={() => setEditandoId(null)}>
+                              <X className="w-4 h-4" />
+                            </Button>
+                          </div>
+                        ) : (
+                          <div className="flex gap-2">
+                            <Button size="icon" variant="ghost" onClick={() => {
+                              setEditandoId(horario.id);
+                              setEditData(horario);
+                            }}>
+                              <Pencil className="w-4 h-4" />
+                            </Button>
+                            <Button size="icon" variant="destructive" disabled>
+                              <Trash2 className="w-4 h-4" />
+                            </Button>
+                          </div>
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
