@@ -6,6 +6,7 @@ import { CalendarClock, Pencil, Trash2, Save, X } from 'lucide-react';
 import { axiosGet, axiosPut } from '@/lib/axios';
 import { Input } from '@/components/ui/input';
 import axios from 'axios';
+import Swal from 'sweetalert2';
 
 const headers = ['Nombre', 'Apellidos', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
 
@@ -101,6 +102,11 @@ export default function Table() {
       setAgrupado(agruparHorarios(updated));
       setEditandoId(null);
       setEditData({});
+      Swal.fire({
+        icon: 'success',
+        title: 'horario actualizado',
+        text: `El horario se ha actualizado exitosamente.`,
+      });
     } catch (error) {
       console.error('Error actualizando horario:', error);
     }
@@ -118,6 +124,11 @@ export default function Table() {
       const updated = horarios.filter((h) => h.id !== id);
       setHorarios(updated);
       setAgrupado(agruparHorarios(updated));
+      Swal.fire({
+        icon: 'success',
+        title: 'horario eliminado',
+        text: `El horario se ha eliminado exitosamente.`,
+      });
     } catch (error) {
       console.error('Error eliminando horario:', error);
     }
