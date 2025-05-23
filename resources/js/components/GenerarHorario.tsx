@@ -192,27 +192,36 @@ const actualizarDiaLibre = async (
     }
 };
 
+type Vacacion = {
+    Fecha_inicio: string;
+    Fecha_fin: string;
+};
+
 const obtenerVacaciones = async (empleadoId: number): Promise<string[]> => {
     try {
         const response = await axiosGet(`/api/empleado/${empleadoId}/vacaciones`);
-        const { Fecha_inicio, Fecha_fin } = response.data;
+        const vacaciones: Vacacion[] = response.data;
 
-        const fechaInicio = new Date(Fecha_inicio);
-        const fechaFin = new Date(Fecha_fin);
-        const diasVacaciones: string[] = [];
+        const diasVacaciones: Set<string> = new Set();
 
-        const currentDate = new Date(fechaInicio);
-        while (currentDate <= fechaFin) {
-            diasVacaciones.push(currentDate.toISOString().split('T')[0]);
-            currentDate.setDate(currentDate.getDate() + 1);
+        for (const vacacion of vacaciones) {
+            const fechaInicio = new Date(vacacion.Fecha_inicio);
+            const fechaFin = new Date(vacacion.Fecha_fin);
+
+            const currentDate = new Date(fechaInicio);
+            while (currentDate <= fechaFin) {
+                diasVacaciones.add(currentDate.toISOString().split('T')[0]);
+                currentDate.setDate(currentDate.getDate() + 1);
+            }
         }
 
-        return diasVacaciones;
+        return Array.from(diasVacaciones).sort();
     } catch (err) {
         console.warn(`No se pudieron obtener las vacaciones del empleado ${empleadoId}`, err);
         return [];
     }
 };
+
 
 
 const obtenerFestivos = async (centroId: number): Promise<{ fecha: string; nombre: string }[]> => {

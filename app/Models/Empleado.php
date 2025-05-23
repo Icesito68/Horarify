@@ -57,8 +57,8 @@ class Empleado extends Model
         return $this->hasMany(Horario::class);
     }
 
-    public function vacaciones(): HasOne
+    public function vacaciones()
     {
-        return $this->hasOne(Vacaciones::class);
+        return $this->hasMany(Vacaciones::class);
     }
 }
