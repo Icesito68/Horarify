@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { CalendarClock, Pencil, Trash2, Save, X } from 'lucide-react';
 import { axiosGet, axiosPut } from '@/lib/axios';
 import { Input } from '@/components/ui/input';
+import axios from 'axios';
 
 const headers = ['Nombre', 'Apellidos', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
 
@@ -42,6 +43,20 @@ export default function Table() {
   const [editData, setEditData] = useState<Partial<Horario>>({});
   const centroId = Number(centro?.id ?? 1);
 
+  const agruparHorarios = (lista: HorarioConEmpleado[]) => {
+    const grouped = new Map<string, HorarioConEmpleado[]>();
+    lista.forEach((h) => {
+      if (!grouped.has(h.Inicio_Semana)) grouped.set(h.Inicio_Semana, []);
+      grouped.get(h.Inicio_Semana)!.push(h);
+    });
+
+    return new Map(
+      [...grouped.entries()].sort(
+        ([a], [b]) => new Date(a).getTime() - new Date(b).getTime()
+      )
+    );
+  };
+
   const fetchData = async () => {
     try {
       const [horariosRes, empleadosRes] = await Promise.all([
@@ -59,20 +74,7 @@ export default function Table() {
       }));
 
       setHorarios(enriched);
-
-      const grouped = new Map<string, HorarioConEmpleado[]>();
-      enriched.forEach((h) => {
-        if (!grouped.has(h.Inicio_Semana)) grouped.set(h.Inicio_Semana, []);
-        grouped.get(h.Inicio_Semana)!.push(h);
-      });
-
-      setAgrupado(
-        new Map(
-          [...grouped.entries()].sort(
-            ([a], [b]) => new Date(a).getTime() - new Date(b).getTime()
-          )
-        )
-      );
+      setAgrupado(agruparHorarios(enriched));
     } catch (error) {
       console.error('Error cargando datos:', error);
     }
@@ -94,13 +96,33 @@ export default function Table() {
   const handleSave = async (id: number) => {
     try {
       await axiosPut(`/api/horarios/${id}`, editData);
+      const updated = horarios.map((h) => (h.id === id ? { ...h, ...editData } : h));
+      setHorarios(updated);
+      setAgrupado(agruparHorarios(updated));
       setEditandoId(null);
       setEditData({});
-      await fetchData();
     } catch (error) {
       console.error('Error actualizando horario:', error);
     }
   };
+
+  const handleDelete = async (id: number) => {
+    try {
+      await axios.delete(`/api/horarios/${id}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          Accept: 'application/json',
+        },
+      });
+
+      const updated = horarios.filter((h) => h.id !== id);
+      setHorarios(updated);
+      setAgrupado(agruparHorarios(updated));
+    } catch (error) {
+      console.error('Error eliminando horario:', error);
+    }
+  };
+
 
   return (
     <div className="space-y-10">
@@ -172,13 +194,17 @@ export default function Table() {
                           </div>
                         ) : (
                           <div className="flex gap-2">
-                            <Button size="icon" variant="ghost" onClick={() => {
-                              setEditandoId(horario.id);
-                              setEditData(horario);
-                            }}>
+                            <Button
+                              size="icon"
+                              variant="ghost"
+                              onClick={() => {
+                                setEditandoId(horario.id);
+                                setEditData(horario);
+                              }}
+                            >
                               <Pencil className="w-4 h-4" />
                             </Button>
-                            <Button size="icon" variant="destructive" disabled>
+                            <Button size="icon" variant="destructive" onClick={() => handleDelete(horario.id)}>
                               <Trash2 className="w-4 h-4" />
                             </Button>
                           </div>
